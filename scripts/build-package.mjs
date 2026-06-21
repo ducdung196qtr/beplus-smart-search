@@ -1,23 +1,47 @@
 #!/usr/bin/env node
 /**
  * Package the plugin into a distributable ZIP for WordPress.
+ * Cross-platform (Windows/macOS/Linux) — uses archiver, not the zip CLI.
  *
- * Reads BEPLUS_SMART_SEARCH_VERSION from beplus-smart-search.php and creates
- * beplus-smart-search-v{version}.zip in the plugin root directory.
+ * Ships runtime files only (PHP, built JS/CSS, block assets, readme.txt).
+ * Dev tooling (.env, composer wrappers, TS sources, docs) is excluded.
  *
  * Usage:
  *   npm run build:package
  *   node scripts/build-package.mjs
  */
 
-import { execSync } from 'node:child_process';
+import archiver from 'archiver';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { globSync } from 'glob';
 
 const __dirname = path.dirname( fileURLToPath( import.meta.url ) );
 const ROOT = path.resolve( __dirname, '..' );
 const PLUGIN_SLUG = path.basename( ROOT );
+
+/**
+ * Allowlist — only paths needed to run the plugin in WordPress.
+ * Run `npm run build` before packaging so block/admin JS is up to date.
+ */
+const INCLUDE_GLOBS = [
+	'beplus-smart-search.php',
+	'readme.txt',
+	'src/**/*.php',
+	'includes/**/*.php',
+	'admin/**/*.php',
+	'admin/css/**',
+	'admin/js/*.js',
+	'admin/js/*.asset.php',
+	'blocks/**/block.json',
+	'blocks/**/render.php',
+	'blocks/**/style.css',
+	'blocks/**/index.js',
+	'blocks/**/index.asset.php',
+	'blocks/**/view.bundle.js',
+	'languages/**',
+];
 
 function readVersion() {
 	const bootstrap = fs.readFileSync(
@@ -36,8 +60,46 @@ function readVersion() {
 	return m[ 1 ];
 }
 
-function run( cmd, opts = {} ) {
-	return execSync( cmd, { stdio: 'inherit', cwd: ROOT, ...opts } );
+function collectFiles() {
+	/** @type {Set<string>} */
+	const files = new Set();
+
+	for ( const pattern of INCLUDE_GLOBS ) {
+		for ( const rel of globSync( pattern, {
+			cwd: ROOT,
+			dot: false,
+			nodir: true,
+			nocase: process.platform === 'win32',
+		} ) ) {
+			files.add( rel.split( path.sep ).join( '/' ) );
+		}
+	}
+
+	return [ ...files ].sort();
+}
+
+function createZip( zipPath, files ) {
+	return new Promise( ( resolve, reject ) => {
+		const output = fs.createWriteStream( zipPath );
+		const archive = archiver( 'zip', { zlib: { level: 9 } } );
+
+		output.on( 'close', resolve );
+		archive.on( 'error', reject );
+		output.on( 'error', reject );
+
+		archive.pipe( output );
+
+		for ( const rel of files ) {
+			const abs = path.join( ROOT, rel );
+			if ( ! fs.existsSync( abs ) ) {
+				continue;
+			}
+			const entryName = `${PLUGIN_SLUG}/${rel}`;
+			archive.file( abs, { name: entryName } );
+		}
+
+		archive.finalize();
+	} );
 }
 
 const version = readVersion();
@@ -48,45 +110,29 @@ if ( fs.existsSync( zipPath ) ) {
 	fs.unlinkSync( zipPath );
 }
 
-const excludes = [
-	`${PLUGIN_SLUG}/node_modules/*`,
-	`${PLUGIN_SLUG}/vendor/*`,
-	'*.zip',
+const files = collectFiles();
 
-	`${PLUGIN_SLUG}/.git/*`,
-	`${PLUGIN_SLUG}/.github/*`,
-	`${PLUGIN_SLUG}/.husky/*`,
-	`${PLUGIN_SLUG}/.gitignore`,
-	`${PLUGIN_SLUG}/.nvmrc`,
-	`${PLUGIN_SLUG}/.lintstagedrc.cjs`,
+if ( files.length === 0 ) {
+	console.error( 'No files matched the release allowlist. Run npm run build first.' );
+	process.exit( 1 );
+}
 
-	`${PLUGIN_SLUG}/.cursor/*`,
-	`${PLUGIN_SLUG}/AGENTS.md`,
-	`${PLUGIN_SLUG}/Document Plugin.md`,
+const missingBuild = [
+	'blocks/advanced-woo-search/index.js',
+	'blocks/advanced-woo-search/view.bundle.js',
+	'admin/js/settings.js',
+].filter( ( f ) => ! files.includes( f ) );
 
-	`${PLUGIN_SLUG}/scripts/*`,
-	`${PLUGIN_SLUG}/tools/*`,
-	`${PLUGIN_SLUG}/docs/*`,
+if ( missingBuild.length > 0 ) {
+	console.warn(
+		'Warning: built assets missing — run `npm run build` before packaging:',
+		missingBuild.join( ', ' ),
+	);
+}
 
-	`${PLUGIN_SLUG}/blocks/*/*.ts`,
-	`${PLUGIN_SLUG}/blocks/*/*.tsx`,
-	`${PLUGIN_SLUG}/blocks/*/*.d.ts`,
-	`${PLUGIN_SLUG}/admin/js/*.ts`,
+console.log( `Packaging ${PLUGIN_SLUG} v${version} → ${zipName} (${files.length} files)` );
 
-	`${PLUGIN_SLUG}/composer.json`,
-	`${PLUGIN_SLUG}/composer.lock`,
-	`${PLUGIN_SLUG}/package.json`,
-	`${PLUGIN_SLUG}/package-lock.json`,
-	`${PLUGIN_SLUG}/phpstan-bootstrap.php`,
-	`${PLUGIN_SLUG}/phpstan.neon`,
-	`${PLUGIN_SLUG}/tsconfig.json`,
-	`${PLUGIN_SLUG}/.php-cs-fixer.dist.php`,
-	`${PLUGIN_SLUG}/.php-cs-fixer.cache`,
-];
+await createZip( zipPath, files );
 
-const excludeArgs = excludes.map( ( e ) => `-x "${e}"` ).join( ' ' );
-const cmd = `cd "${path.dirname( ROOT )}" && zip -r "${zipPath}" "${PLUGIN_SLUG}/" ${excludeArgs}`;
-
-console.log( `Packaging ${PLUGIN_SLUG} v${version} → ${zipName}` );
-run( cmd );
-console.log( `Created ${zipPath}` );
+const { size } = fs.statSync( zipPath );
+console.log( `Created ${zipPath} (${( size / 1024 ).toFixed( 1 )} KB)` );

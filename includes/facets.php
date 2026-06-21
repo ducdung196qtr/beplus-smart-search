@@ -42,6 +42,28 @@ function beplus_smart_search_get_product_categories(): array {
 }
 
 /**
+ * Product categories for block editor (slug + name).
+ *
+ * @return array<int, array{slug: string, name: string}>
+ */
+function beplus_smart_search_get_product_category_definitions(): array {
+	$terms  = beplus_smart_search_get_product_categories();
+	$result = array();
+
+	foreach ( $terms as $term ) {
+		if ( ! $term instanceof WP_Term ) {
+			continue;
+		}
+		$result[] = array(
+			'slug' => $term->slug,
+			'name' => $term->name,
+		);
+	}
+
+	return $result;
+}
+
+/**
  * Get product tags for filter selects.
  *
  * @return array<int, WP_Term>

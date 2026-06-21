@@ -1,0 +1,95 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "beplus-smart-search/live-search",
+	"version": "1.0.0",
+	"title": "Live Search",
+	"category": "beplus-smart-search",
+	"icon": "search",
+	"description": "Live product search with suggestions dropdown, keyword highlighting, and add to cart.",
+	"keywords": [ "search", "woocommerce", "live", "autocomplete", "suggestions", "dropdown" ],
+	"example": {
+		"attributes": {
+			"placeholder": "Search products…",
+			"enableSuggestions": true,
+			"showCategory": true
+		}
+	},
+	"textdomain": "beplus-smart-search",
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ],
+		"spacing": {
+			"margin": true,
+			"padding": true
+		}
+	},
+	"attributes": {
+		"placeholder": {
+			"type": "string",
+			"default": "Search products…"
+		},
+		"showCategory": {
+			"type": "boolean",
+			"default": true
+		},
+		"searchScope": {
+			"type": "string",
+			"enum": [ "all", "limited" ],
+			"default": "all"
+		},
+		"limitCategorySlugs": {
+			"type": "array",
+			"default": []
+		},
+		"searchFields": {
+			"type": "array",
+			"default": [ "title" ]
+		},
+		"maxResults": {
+			"type": "number",
+			"default": 6
+		},
+		"debounceMs": {
+			"type": "number",
+			"default": 280
+		},
+		"minChars": {
+			"type": "number",
+			"default": 2
+		},
+		"enableSuggestions": {
+			"type": "boolean",
+			"default": true
+		},
+		"misspellingFix": {
+			"type": "boolean",
+			"default": true
+		},
+		"exactMatch": {
+			"type": "boolean",
+			"default": false
+		},
+		"searchLogic": {
+			"type": "string",
+			"enum": [ "or", "and" ],
+			"default": "or"
+		},
+		"showAddToCart": {
+			"type": "boolean",
+			"default": true
+		},
+		"showViewAll": {
+			"type": "boolean",
+			"default": true
+		},
+		"highlightColor": {
+			"type": "string",
+			"default": "#ffff00"
+		}
+	},
+	"render": "file:./render.php",
+	"editorScript": "file:./index.js",
+	"style": "file:./style.css",
+	"viewScript": [ "bpss-data", "file:./view.bundle.js" ]
+}

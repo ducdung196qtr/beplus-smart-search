@@ -1,0 +1,385 @@
+.beplus-smart-search--live-search {
+	--bpss-gap: 0;
+	--bpss-accent: #e53935;
+	--bpss-highlight: #ffff00;
+	--bpss-border: #e8e8e8;
+	--bpss-text: #1a1a1a;
+	--bpss-text-muted: #888;
+	--bpss-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+	position: relative;
+	max-width: 640px;
+	margin-block: 1rem;
+}
+
+.beplus-smart-search--live-search .beplus-smart-search__live-form {
+	position: relative;
+}
+
+/* ── Search bar ── */
+
+.beplus-smart-search__live-bar {
+	display: flex;
+	align-items: stretch;
+	border: 1px solid var(--bpss-border);
+	border-radius: 6px;
+	overflow: hidden;
+	background: #fff;
+}
+
+.beplus-smart-search__live-category {
+	flex: 0 0 auto;
+	border-right: 1px solid var(--bpss-border);
+}
+
+.beplus-smart-search__live-category-select {
+	appearance: none;
+	border: 0;
+	background: #fff
+		url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M2 4l4 4 4-4'/%3E%3C/svg%3E")
+		no-repeat right 0.75rem center;
+	padding: 0.75rem 2rem 0.75rem 1rem;
+	font-size: 0.875rem;
+	color: var(--bpss-text);
+	cursor: pointer;
+	min-width: 9rem;
+	height: 100%;
+}
+
+.beplus-smart-search__live-input-wrap {
+	display: flex;
+	flex: 1 1 auto;
+	align-items: center;
+	position: relative;
+	min-width: 0;
+}
+
+.beplus-smart-search__live-input-stack {
+	position: relative;
+	flex: 1 1 auto;
+	min-width: 0;
+	overflow: hidden;
+}
+
+.beplus-smart-search__live-ghost {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	padding: 0.75rem 0 0.75rem 1rem;
+	font-size: 0.9375rem;
+	line-height: 1.4;
+	pointer-events: none;
+	white-space: pre;
+	overflow: hidden;
+	z-index: 0;
+}
+
+.beplus-smart-search__live-ghost[hidden] {
+	display: none;
+}
+
+.beplus-smart-search__live-ghost-prefix {
+	color: transparent;
+}
+
+.beplus-smart-search__live-ghost-suffix {
+	color: var(--bpss-text-muted);
+	opacity: 0.75;
+}
+
+.beplus-smart-search__live-input {
+	position: relative;
+	z-index: 1;
+	width: 100%;
+	border: 0;
+	padding: 0.75rem 0 0.75rem 1rem;
+	font-size: 0.9375rem;
+	line-height: 1.4;
+	color: var(--bpss-text);
+	background: transparent;
+	outline: none;
+	min-width: 0;
+}
+
+.beplus-smart-search__live-input::placeholder {
+	color: var(--bpss-text-muted);
+}
+
+.beplus-smart-search__live-submit {
+	flex: 0 0 auto;
+	border: 0;
+	background: transparent;
+	padding: 0 1rem;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--bpss-text-muted);
+}
+
+.beplus-smart-search__live-submit-icon {
+	display: block;
+	width: 20px;
+	height: 20px;
+	background: currentColor;
+	mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-4-4'/%3E%3C/svg%3E")
+		center / contain no-repeat;
+}
+
+.beplus-smart-search__live-submit:hover {
+	color: var(--bpss-text);
+}
+
+/* ── Dropdown panel ── */
+
+.beplus-smart-search__live-dropdown {
+	position: absolute;
+	top: calc(100% + 4px);
+	left: 0;
+	right: 0;
+	z-index: 100;
+	background: #fff;
+	border: 1px solid var(--bpss-border);
+	border-radius: 6px;
+	box-shadow: var(--bpss-shadow);
+	overflow: hidden;
+	max-height: 70vh;
+	overflow-y: auto;
+}
+
+.beplus-smart-search__live-dropdown[hidden] {
+	display: none;
+}
+
+.beplus-smart-search__live-product-title mark {
+	background: var(--bpss-highlight);
+	color: inherit;
+	font-weight: 700;
+	padding: 0 1px;
+	border-radius: 2px;
+}
+
+/* ── Product rows ── */
+
+.beplus-smart-search__live-product {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	padding: 0.75rem 1rem;
+	border-bottom: 1px solid var(--bpss-border);
+}
+
+.beplus-smart-search__live-product:last-child {
+	border-bottom: 0;
+}
+
+.beplus-smart-search__live-product.is-active {
+	background: #f7f7f7;
+}
+
+.beplus-smart-search__live-product-link {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	flex: 1 1 auto;
+	min-width: 0;
+	text-decoration: none;
+	color: inherit;
+}
+
+.beplus-smart-search__live-product-image {
+	flex: 0 0 auto;
+	width: 60px;
+	height: 60px;
+	border-radius: 4px;
+	overflow: hidden;
+	background: #f5f5f5;
+}
+
+.beplus-smart-search__live-product-image img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.beplus-smart-search__live-product-body {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+	min-width: 0;
+}
+
+.beplus-smart-search__live-product-title {
+	font-weight: 600;
+	font-size: 0.9375rem;
+	line-height: 1.3;
+	color: var(--bpss-text);
+}
+
+.beplus-smart-search__live-product-price {
+	font-size: 0.875rem;
+	color: var(--bpss-text);
+}
+
+.beplus-smart-search__live-product-price del {
+	color: var(--bpss-text-muted);
+	margin-right: 0.35rem;
+}
+
+.beplus-smart-search__live-product-price ins {
+	text-decoration: none;
+	font-weight: 700;
+}
+
+.beplus-smart-search__live-product-meta-wrap {
+	display: flex;
+	flex-direction: column;
+	gap: 0.15rem;
+	margin-top: 0.15rem;
+}
+
+.beplus-smart-search__live-product-meta {
+	display: block;
+	font-size: 0.75rem;
+	line-height: 1.35;
+	color: var(--bpss-text-muted);
+}
+
+.beplus-smart-search__live-product-meta-label {
+	font-weight: 600;
+	margin-right: 0.25rem;
+}
+
+.beplus-smart-search__live-product-meta-value mark {
+	background: var(--bpss-highlight);
+	color: inherit;
+	font-weight: 700;
+	padding: 0 1px;
+	border-radius: 2px;
+}
+
+.beplus-smart-search__live-product-action {
+	flex: 0 0 auto;
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	min-width: 6.75rem;
+}
+
+.beplus-smart-search--live-search .beplus-smart-search__live-cart {
+	appearance: none;
+	-webkit-appearance: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 6.75rem;
+	padding: 0.5rem 0.75rem;
+	border-radius: 4px;
+	font-family: inherit;
+	font-size: 0.8125rem;
+	font-weight: 600;
+	line-height: 1.25;
+	text-decoration: none;
+	text-align: center;
+	white-space: nowrap;
+	cursor: pointer;
+	box-sizing: border-box;
+	transition:
+		background-color 0.15s ease,
+		border-color 0.15s ease,
+		opacity 0.15s ease;
+}
+
+.beplus-smart-search--live-search .beplus-smart-search__live-cart--add {
+	background: var(--bpss-accent);
+	color: #fff;
+	border: 1px solid var(--bpss-accent);
+}
+
+.beplus-smart-search--live-search .beplus-smart-search__live-cart--add:hover:not(:disabled) {
+	opacity: 0.92;
+	color: #fff;
+}
+
+.beplus-smart-search--live-search .beplus-smart-search__live-cart--add.is-loading {
+	opacity: 0.65;
+	cursor: wait;
+}
+
+.beplus-smart-search--live-search .beplus-smart-search__live-cart--add.is-added {
+	background: #2e7d32;
+	border-color: #2e7d32;
+	cursor: default;
+}
+
+.beplus-smart-search--live-search .beplus-smart-search__live-cart--view {
+	background: #fff;
+	color: var(--bpss-accent);
+	border: 1px solid var(--bpss-accent);
+}
+
+.beplus-smart-search--live-search .beplus-smart-search__live-cart--view:hover {
+	background: color-mix(in srgb, var(--bpss-accent) 8%, #fff);
+	color: var(--bpss-accent);
+}
+
+/* WooCommerce may inject this link after AJAX add-to-cart — hide inside live search. */
+.beplus-smart-search--live-search a.added_to_cart {
+	display: none !important;
+}
+
+/* ── Footer ── */
+
+.beplus-smart-search__live-footer {
+	background: #f7f7f7;
+	border-top: 1px solid var(--bpss-border);
+	text-align: center;
+	padding: 0.75rem 1rem;
+}
+
+.beplus-smart-search__live-view-all {
+	font-weight: 700;
+	font-size: 0.9375rem;
+	color: var(--bpss-text);
+	text-decoration: none;
+}
+
+.beplus-smart-search__live-view-all:hover {
+	text-decoration: underline;
+}
+
+/* ── Empty / loading ── */
+
+.beplus-smart-search__live-empty {
+	padding: 1.25rem 1rem;
+	margin: 0;
+	text-align: center;
+	color: var(--bpss-text-muted);
+	font-size: 0.9375rem;
+}
+
+.beplus-smart-search--live-search.beplus-smart-search--loading .beplus-smart-search__live-bar {
+	opacity: 0.7;
+}
+
+/* ── Accessibility ── */
+
+@media (prefers-reduced-motion: reduce) {
+	.beplus-smart-search__live-cart {
+		transition: none;
+	}
+}
+
+.screen-reader-text {
+	border: 0;
+	clip: rect(1px, 1px, 1px, 1px);
+	clip-path: inset(50%);
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
+	width: 1px;
+	word-wrap: normal !important;
+}

@@ -590,7 +590,7 @@ function beplus_smart_search_render_sidebar_filter_section(
 				</label>
 				<input
 					type="search"
-					name="s"
+					name="bpss_s"
 					id="<?php echo esc_attr( $block_id ); ?>-keyword"
 					class="beplus-smart-search__input beplus-smart-search__input--search"
 					placeholder="<?php echo esc_attr( $attrs['placeholder'] ); ?>"
@@ -783,7 +783,7 @@ function beplus_smart_search_render_inline_filter_section(
 				</label>
 				<input
 					type="search"
-					name="s"
+					name="bpss_s"
 					id="<?php echo esc_attr( $block_id ); ?>-keyword"
 					class="beplus-smart-search__input"
 					placeholder="<?php echo esc_attr( $attrs['placeholder'] ); ?>"

@@ -172,7 +172,7 @@ npm run build
 npm run build:package
 ```
 
-Creates `beplus-smart-search-v{version}.zip` in the plugin root (excludes `node_modules`, dev config, TS sources).
+Creates `beplus-smart-search-v{version}.zip` in the plugin root (runtime files only: PHP, built JS/CSS, `readme.txt` — no dev config or TS sources).
 
 ---
 

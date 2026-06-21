@@ -107,7 +107,7 @@ class AssetLoader extends AbstractModule {
 	 * @return array<string, mixed>
 	 */
 	private function get_localized_data(): array {
-		return array(
+		$data = array(
 			'restUrl' => esc_url_raw( rest_url( 'beplus-smart-search/v1/' ) ),
 			'nonce'   => wp_create_nonce( 'wp_rest' ),
 			'shopUrl' => function_exists( 'wc_get_page_permalink' )
@@ -116,13 +116,25 @@ class AssetLoader extends AbstractModule {
 			'facetDisplayMode' => beplus_smart_search_get_facet_display_mode(),
 			'filterSections'   => beplus_smart_search_get_filter_section_catalog(),
 			'attributeDefinitions' => beplus_smart_search_get_all_attribute_definitions(),
+			'productCategories'    => beplus_smart_search_get_product_category_definitions(),
 			'i18n'    => array(
 				'searching'    => __( 'Searching…', 'beplus-smart-search' ),
 				'noResults'    => __( 'No products found.', 'beplus-smart-search' ),
 				'resultsFound' => __( '%d products found', 'beplus-smart-search' ),
 				'error'        => __( 'Search failed. Please try again.', 'beplus-smart-search' ),
 				'cleared'      => __( 'Filters cleared.', 'beplus-smart-search' ),
+				'addToCart'    => __( 'Add to cart', 'beplus-smart-search' ),
+				'viewProduct'  => __( 'View product', 'beplus-smart-search' ),
+				'added'        => __( 'Added', 'beplus-smart-search' ),
+				'addedToCart'  => __( 'Added to cart', 'beplus-smart-search' ),
+				'viewAll'      => __( 'View All Results', 'beplus-smart-search' ),
 			),
 		);
+
+		if ( class_exists( 'WC_AJAX' ) ) {
+			$data['wcAjaxUrl'] = esc_url_raw( \WC_AJAX::get_endpoint( '%%endpoint%%' ) );
+		}
+
+		return $data;
 	}
 }

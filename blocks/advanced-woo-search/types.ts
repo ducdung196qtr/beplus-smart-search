@@ -6,6 +6,7 @@ export interface AttributeDefinition {
 export interface BpssEditorData {
 	filterSections?: Record< string, string >;
 	attributeDefinitions?: AttributeDefinition[];
+	productCategories?: Array< { slug: string; name: string } >;
 }
 
 export interface BlockAttributes {

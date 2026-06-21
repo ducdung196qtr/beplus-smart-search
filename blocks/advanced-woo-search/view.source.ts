@@ -44,10 +44,11 @@
 	}
 
 	const URL_PAGE_KEY = 'bpss_page';
+	const URL_KEYWORD_KEY = 'bpss_s';
 	const URL_ORDERBY_KEY = 'orderby';
 
 	const URL_FILTER_KEYS = [
-		's',
+		URL_KEYWORD_KEY,
 		'product_cat',
 		'product_tag',
 		'min_price',
@@ -100,8 +101,10 @@
 			attribute: {},
 		};
 
-		if ( params.get( 's' ) ) {
-			filters.s = params.get( 's' ) || '';
+		const keyword =
+			params.get( URL_KEYWORD_KEY ) || params.get( 's' ) || '';
+		if ( keyword ) {
+			filters.s = keyword;
 		}
 
 		if ( params.get( 'product_cat' ) ) {
@@ -201,6 +204,7 @@
 		URL_FILTER_KEYS.forEach( ( key ) => {
 			url.searchParams.delete( key );
 		} );
+		url.searchParams.delete( 's' );
 		url.searchParams.delete( URL_PAGE_KEY );
 
 		const keysToDelete: string[] = [];
@@ -222,7 +226,7 @@
 		clearUrlFilterParams( url );
 
 		if ( filters.s ) {
-			url.searchParams.set( 's', filters.s );
+			url.searchParams.set( URL_KEYWORD_KEY, filters.s );
 		}
 
 		if ( filters.product_cat ) {

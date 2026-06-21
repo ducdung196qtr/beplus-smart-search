@@ -38,7 +38,14 @@ final class ProductQueryBuilder {
 		);
 
 		if ( $query->get_keyword() ) {
-			$args['s'] = $query->get_keyword();
+			if ( SearchFieldsFilter::should_apply( $query ) ) {
+				$args[ SearchFieldsFilter::QUERY_FLAG ] = true;
+			} else {
+				$args['s'] = $query->get_keyword();
+				if ( KeywordSearchFilter::should_apply( $query ) ) {
+					$args[ KeywordSearchFilter::QUERY_FLAG ] = true;
+				}
+			}
 		}
 
 		$tax_query = array();
@@ -180,10 +187,19 @@ final class ProductQueryBuilder {
 		$args = self::build_args( $query, $overrides );
 		self::apply_wc_catalog_ordering( $query, $args );
 
-		$price_filter = null;
+		$price_filter   = null;
+		$keyword_filter = null;
+		$fields_filter  = null;
 		if ( ! empty( $args[ PriceQueryFilter::QUERY_FLAG ] ) ) {
 			$price_filter = new PriceQueryFilter();
 			add_filter( 'posts_clauses', array( $price_filter, 'add_clauses' ), 10, 2 );
+		}
+
+		if ( ! empty( $args[ SearchFieldsFilter::QUERY_FLAG ] ) ) {
+			$fields_filter = SearchFieldsFilter::register( $query );
+		} elseif ( ! empty( $args[ KeywordSearchFilter::QUERY_FLAG ] ) ) {
+			$keyword_filter = new KeywordSearchFilter( $query );
+			add_filter( 'posts_search', array( $keyword_filter, 'filter_search' ), 10, 2 );
 		}
 
 		try {
@@ -191,6 +207,12 @@ final class ProductQueryBuilder {
 		} finally {
 			if ( $price_filter ) {
 				remove_filter( 'posts_clauses', array( $price_filter, 'add_clauses' ), 10 );
+			}
+			if ( $fields_filter ) {
+				$fields_filter->unregister();
+			}
+			if ( $keyword_filter ) {
+				remove_filter( 'posts_search', array( $keyword_filter, 'filter_search' ), 10 );
 			}
 			self::clear_wc_catalog_ordering_filters();
 		}

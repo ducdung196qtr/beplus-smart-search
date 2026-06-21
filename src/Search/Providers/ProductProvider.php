@@ -9,6 +9,7 @@
 
 namespace BePlusSmartSearch\Search\Providers;
 
+use BePlusSmartSearch\Search\ProductMatchMeta;
 use BePlusSmartSearch\Search\ProductQueryBuilder;
 use BePlusSmartSearch\Search\ProductTemplateRenderer;
 use BePlusSmartSearch\Search\SearchQuery;
@@ -58,7 +59,7 @@ class ProductProvider extends AbstractProvider {
 		$items = array();
 		foreach ( $products as $product ) {
 			if ( $product instanceof WC_Product ) {
-				$items[] = $this->normalize_product( $product );
+				$items[] = $this->normalize_product( $product, $query );
 			}
 		}
 
@@ -75,11 +76,12 @@ class ProductProvider extends AbstractProvider {
 	/**
 	 * Normalize product to REST item.
 	 *
-	 * @param WC_Product $product Product object.
+	 * @param WC_Product  $product Product object.
+	 * @param SearchQuery $query   Active search query.
 	 *
 	 * @return array<string, mixed>
 	 */
-	private function normalize_product( WC_Product $product ): array {
+	private function normalize_product( WC_Product $product, SearchQuery $query ): array {
 		$image_id  = (int) $product->get_image_id();
 		$image_url = $image_id > 0
 			? wp_get_attachment_image_url( $image_id, 'woocommerce_thumbnail' )
@@ -87,15 +89,18 @@ class ProductProvider extends AbstractProvider {
 		$html      = ProductTemplateRenderer::render_product( $product->get_id() );
 
 		return array(
-			'id'           => $product->get_id(),
-			'title'        => $product->get_name(),
-			'url'          => get_permalink( $product->get_id() ),
-			'image'        => $image_url ? $image_url : '',
-			'price_html'   => $product->get_price_html(),
-			'stock_status' => $product->get_stock_status(),
-			'on_sale'      => $product->is_on_sale(),
-			'type'         => 'product',
-			'html'         => $html,
+			'id'              => $product->get_id(),
+			'title'           => $product->get_name(),
+			'url'             => get_permalink( $product->get_id() ),
+			'image'           => $image_url ? $image_url : '',
+			'price_html'      => $product->get_price_html(),
+			'stock_status'    => $product->get_stock_status(),
+			'on_sale'         => $product->is_on_sale(),
+			'type'            => 'product',
+			'product_type'    => $product->get_type(),
+			'ajax_add_to_cart' => $product->supports( 'ajax_add_to_cart' ),
+			'html'            => $html,
+			'match_meta'      => ProductMatchMeta::collect( $product, $query ),
 		);
 	}
 

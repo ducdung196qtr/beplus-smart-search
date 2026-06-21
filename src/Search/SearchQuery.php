@@ -94,6 +94,26 @@ final class SearchQuery {
 	private string $order;
 
 	/**
+	 * @var bool
+	 */
+	private bool $exact_match;
+
+	/**
+	 * @var string
+	 */
+	private string $search_logic;
+
+	/**
+	 * @var bool
+	 */
+	private bool $misspelling_fix;
+
+	/**
+	 * @var array<int, string>
+	 */
+	private array $search_fields;
+
+	/**
 	 * @param array<string, mixed> $args Query arguments.
 	 */
 	public function __construct( array $args = array() ) {
@@ -127,6 +147,10 @@ final class SearchQuery {
 		);
 		$this->orderby      = $parsed_orderby['orderby'];
 		$this->order        = $parsed_orderby['order'];
+		$this->exact_match  = ! empty( $args['exact_match'] );
+		$this->search_logic = self::normalize_search_logic( $args['search_logic'] ?? 'or' );
+		$this->misspelling_fix = ! empty( $args['misspelling_fix'] );
+		$this->search_fields   = SearchFieldsFilter::normalize_fields( $args['search_fields'] ?? array() );
 	}
 
 	/**
@@ -172,8 +196,28 @@ final class SearchQuery {
 				'per_page'      => $per_page,
 				'orderby'       => sanitize_text_field( (string) $request->get_param( 'orderby' ) ),
 				'order'         => sanitize_key( (string) $request->get_param( 'order' ) ),
+				'exact_match'   => self::request_bool( $request, 'exact_match' ),
+				'search_logic'  => sanitize_key( (string) $request->get_param( 'search_logic' ) ),
+				'misspelling_fix' => self::request_bool( $request, 'misspelling_fix' ),
+				'search_fields'   => self::search_fields_from_request( $request ),
 			),
 		);
+	}
+
+	/**
+	 * Parse search_fields from REST request.
+	 *
+	 * @param \WP_REST_Request $request REST request.
+	 *
+	 * @return array<int, string>
+	 */
+	private static function search_fields_from_request( \WP_REST_Request $request ): array {
+		$value = $request->get_param( 'search_fields' );
+		if ( null === $value || ( is_array( $value ) && empty( $value ) ) || ( is_string( $value ) && '' === $value ) ) {
+			return array();
+		}
+
+		return SearchFieldsFilter::normalize_fields( $value );
 	}
 
 	/**
@@ -359,5 +403,34 @@ final class SearchQuery {
 
 	public function get_order(): string {
 		return in_array( $this->order, array( 'asc', 'desc' ), true ) ? $this->order : 'asc';
+	}
+
+	public function is_exact_match(): bool {
+		return $this->exact_match;
+	}
+
+	public function get_search_logic(): string {
+		return $this->search_logic;
+	}
+
+	public function is_misspelling_fix(): bool {
+		return $this->misspelling_fix;
+	}
+
+	/**
+	 * @return array<int, string>
+	 */
+	public function get_search_fields(): array {
+		return $this->search_fields;
+	}
+
+	/**
+	 * @param mixed $value Raw search logic value.
+	 *
+	 * @return string
+	 */
+	private static function normalize_search_logic( $value ): string {
+		$logic = is_string( $value ) ? strtolower( $value ) : 'or';
+		return 'and' === $logic ? 'and' : 'or';
 	}
 }

@@ -18,7 +18,7 @@
 		}
 	},
 	"scripts": {
-		"phpstan": "@php vendor/bin/phpstan analyse --memory-limit=1G",
+		"phpstan": "@php vendor/bin/phpstan analyse --memory-limit=2G",
 		"php-cs-fixer": "@php vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --verbose --show-progress=dots --allow-unsupported-php-version=yes",
 		"php-cs-fixer:check": "@php vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --dry-run --diff --allow-unsupported-php-version=yes"
 	}

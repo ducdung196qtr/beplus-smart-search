@@ -32,6 +32,53 @@ final class ShopQueryIntegration extends AbstractModule {
 		add_filter( 'query_loop_block_query_vars', array( $this, 'filter_query_loop_block' ), 20, 3 );
 		add_action( 'pre_get_posts', array( $this, 'filter_main_product_query' ), 20 );
 		add_filter( 'render_block_data', array( $this, 'filter_product_collection_block' ), 20, 1 );
+		add_action( 'template_redirect', array( $this, 'redirect_legacy_keyword_param' ), 0 );
+	}
+
+	/**
+	 * WordPress treats ?s= as site search and may redirect (e.g. to a single product).
+	 * Use bpss_s in URLs instead; migrate old links before core handles ?s=.
+	 *
+	 * @return void
+	 */
+	public function redirect_legacy_keyword_param(): void {
+		if ( is_admin() || ! $this->should_override_per_page() ) {
+			return;
+		}
+
+		if ( ! $this->is_product_catalog_view() ) {
+			return;
+		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( empty( $_GET['s'] ) || ! empty( $_GET['bpss_s'] ) ) {
+			return;
+		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$keyword = sanitize_text_field( wp_unslash( (string) $_GET['s'] ) );
+		if ( '' === $keyword ) {
+			return;
+		}
+
+		$target = remove_query_arg( 's' );
+		$target = add_query_arg( 'bpss_s', $keyword, $target );
+
+		wp_safe_redirect( $target, 302 );
+		exit;
+	}
+
+	/**
+	 * Whether the current front-end request is a WooCommerce catalog view.
+	 *
+	 * @return bool
+	 */
+	private function is_product_catalog_view(): bool {
+		if ( function_exists( 'is_shop' ) && is_shop() ) {
+			return true;
+		}
+
+		return function_exists( 'is_product_taxonomy' ) && is_product_taxonomy();
 	}
 
 	/**

@@ -39,6 +39,8 @@
 /* ── Sidebar layout ── */
 
 .beplus-smart-search--sidebar {
+	--bpss-sidebar-inset: 1.125rem;
+	--bpss-sidebar-gap: 0.625rem;
 	max-width: 300px;
 }
 
@@ -47,19 +49,25 @@
 	flex-direction: column;
 	background: #fff;
 	border: 1px solid var(--bpss-border);
-	border-radius: 4px;
+	border-radius: 6px;
 	overflow: hidden;
+}
+
+.beplus-smart-search__form--sidebar *,
+.beplus-smart-search__form--sidebar *::before,
+.beplus-smart-search__form--sidebar *::after {
+	box-sizing: border-box;
 }
 
 .beplus-smart-search__search-wrap {
 	position: relative;
-	padding: 1rem 1.25rem;
+	padding: var(--bpss-sidebar-inset);
 	border-bottom: 1px solid var(--bpss-border);
 }
 
 .beplus-smart-search__input--search {
 	width: 100%;
-	padding: 0.65rem 2.5rem 0.65rem 0.85rem;
+	padding: 0.625rem 2.25rem 0.625rem 0.75rem;
 	border: 1px solid #ddd;
 	border-radius: 4px;
 	font-size: 0.9375rem;
@@ -69,13 +77,13 @@
 
 .beplus-smart-search__search-icon {
 	position: absolute;
-	right: 1.75rem;
+	right: calc(var(--bpss-sidebar-inset) + 0.625rem);
 	top: 50%;
 	transform: translateY(-50%);
-	width: 18px;
-	height: 18px;
+	width: 15px;
+	height: 15px;
 	pointer-events: none;
-	opacity: 0.45;
+	opacity: 0.4;
 	background: currentColor;
 	mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-4-4'/%3E%3C/svg%3E") center / contain no-repeat;
 	-webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-4-4'/%3E%3C/svg%3E") center / contain no-repeat;
@@ -94,8 +102,9 @@
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	gap: 0.75rem;
 	width: 100%;
-	padding: 1rem 1.25rem;
+	padding: 0.875rem var(--bpss-sidebar-inset);
 	margin: 0;
 	border: 0;
 	background: transparent;
@@ -108,21 +117,21 @@
 }
 
 .beplus-smart-search__panel-title {
-	font-size: 0.9375rem;
-	font-weight: 700;
+	font-size: 0.875rem;
+	font-weight: 600;
 	color: #1a1a1a;
-	line-height: 1.3;
+	line-height: 1.35;
 }
 
 .beplus-smart-search__panel-icon {
-	width: 10px;
-	height: 10px;
-	border-right: 2px solid #666;
-	border-bottom: 2px solid #666;
+	width: 7px;
+	height: 7px;
+	border-right: 1.5px solid #888;
+	border-bottom: 1.5px solid #888;
 	transform: rotate(45deg);
 	transition: transform 0.2s ease;
 	flex-shrink: 0;
-	margin-left: 0.5rem;
+	margin-left: auto;
 }
 
 .beplus-smart-search__panel-toggle[aria-expanded="false"] .beplus-smart-search__panel-icon {
@@ -130,7 +139,7 @@
 }
 
 .beplus-smart-search__panel-body {
-	padding: 0 1.25rem 1rem;
+	padding: 0 var(--bpss-sidebar-inset) 1.125rem;
 }
 
 .beplus-smart-search__panel-body[hidden] {
@@ -143,32 +152,35 @@
 	padding: 0;
 	display: flex;
 	flex-direction: column;
-	gap: 0.15rem;
+	gap: 0.125rem;
 }
 
 .beplus-smart-search__list-label {
 	display: flex;
 	align-items: center;
 	gap: 0.5rem;
-	padding: 0.3rem 0;
+	padding: 0.35rem 0;
 	cursor: pointer;
-	font-size: 0.9375rem;
+	font-size: 0.875rem;
 	line-height: 1.4;
 	color: var(--bpss-text);
 }
 
 .beplus-smart-search__list-text {
 	flex: 1;
+	min-width: 0;
 }
 
 .beplus-smart-search__list-count {
 	color: var(--bpss-text-muted);
-	font-size: 0.875rem;
+	font-size: 0.8125rem;
 	flex-shrink: 0;
 }
 
 .beplus-smart-search__list-input {
 	flex-shrink: 0;
+	width: 1rem;
+	height: 1rem;
 	margin: 0;
 	accent-color: var(--bpss-accent);
 }
@@ -180,7 +192,8 @@
 .beplus-smart-search__list-row {
 	display: flex;
 	align-items: center;
-	gap: 0;
+	gap: 0.25rem;
+	min-width: 0;
 }
 
 .beplus-smart-search__list-row .beplus-smart-search__list-label,
@@ -197,10 +210,10 @@
 .beplus-smart-search__list-meta {
 	display: inline-flex;
 	align-items: center;
-	gap: 0.15rem;
+	gap: 0.25rem;
 	flex-shrink: 0;
 	margin-left: auto;
-	padding: 0.3rem 0;
+	padding: 0.35rem 0;
 }
 
 .beplus-smart-search__list-meta .beplus-smart-search__list-count {
@@ -212,30 +225,30 @@
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	width: 1.25rem;
-	height: 1.25rem;
+	width: 1.125rem;
+	height: 1.125rem;
 	padding: 0;
 	border: 0;
 	border-radius: 3px;
 	background: transparent;
 	cursor: pointer;
-	color: #666;
+	color: #888;
 	transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .beplus-smart-search__term-toggle:hover,
 .beplus-smart-search__term-toggle:focus-visible {
 	background: #f3f3f3;
-	color: #333;
+	color: #555;
 	outline: none;
 }
 
 .beplus-smart-search__term-toggle-icon {
 	display: block;
-	width: 10px;
-	height: 10px;
-	border-right: 2px solid currentColor;
-	border-bottom: 2px solid currentColor;
+	width: 7px;
+	height: 7px;
+	border-right: 1.5px solid currentColor;
+	border-bottom: 1.5px solid currentColor;
 	transform: rotate(45deg);
 	transition: transform 0.2s ease;
 }
@@ -246,8 +259,8 @@
 
 .beplus-smart-search__list--children {
 	list-style: none;
-	margin: 0.1rem 0 0.25rem;
-	padding: 0.15rem 0 0.15rem 0.85rem;
+	margin: 0.125rem 0 0.375rem;
+	padding: 0.125rem 0 0.125rem 0.75rem;
 	border-left: 1px solid var(--bpss-border);
 }
 
@@ -267,16 +280,17 @@
 
 .beplus-smart-search__price-slider {
 	position: relative;
-	height: 28px;
-	margin-bottom: 1rem;
+	height: 26px;
+	margin-bottom: 0.875rem;
+	padding-inline: 8px;
 }
 
 .beplus-smart-search__price-track {
 	position: absolute;
 	top: 50%;
-	left: 0;
-	right: 0;
-	height: 4px;
+	left: 8px;
+	right: 8px;
+	height: 3px;
 	transform: translateY(-50%);
 	background: #e8e8e8;
 	border-radius: 2px;
@@ -297,9 +311,9 @@
 .beplus-smart-search__range {
 	position: absolute;
 	top: 0;
-	left: 0;
-	width: 100%;
-	height: 28px;
+	left: 8px;
+	width: calc(100% - 16px);
+	height: 26px;
 	margin: 0;
 	background: none;
 	pointer-events: none;
@@ -310,23 +324,23 @@
 .beplus-smart-search__range::-webkit-slider-thumb {
 	-webkit-appearance: none;
 	appearance: none;
-	width: 18px;
-	height: 18px;
+	width: 16px;
+	height: 16px;
 	border-radius: 50%;
 	background: var(--bpss-accent);
 	border: 2px solid #fff;
-	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
 	cursor: pointer;
 	pointer-events: auto;
 }
 
 .beplus-smart-search__range::-moz-range-thumb {
-	width: 18px;
-	height: 18px;
+	width: 16px;
+	height: 16px;
 	border-radius: 50%;
 	background: var(--bpss-accent);
 	border: 2px solid #fff;
-	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
 	cursor: pointer;
 	pointer-events: auto;
 }
@@ -337,14 +351,18 @@
 
 .beplus-smart-search__price-inputs {
 	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: 0.75rem;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+	gap: 0.625rem;
+}
+
+.beplus-smart-search__price-field {
+	min-width: 0;
 }
 
 .beplus-smart-search__price-label {
 	display: block;
-	margin-bottom: 0.35rem;
-	font-size: 0.8125rem;
+	margin-bottom: 0.3rem;
+	font-size: 0.75rem;
 	color: var(--bpss-text-muted);
 }
 
@@ -354,19 +372,21 @@
 
 .beplus-smart-search__price-input {
 	width: 100%;
-	padding: 0.5rem 1.75rem 0.5rem 0.65rem;
+	max-width: 100%;
+	padding: 0.45rem 1.625rem 0.45rem 0.55rem;
 	border: 1px solid #ddd;
 	border-radius: 4px;
-	font-size: 0.9375rem;
+	font-size: 0.875rem;
+	line-height: 1.35;
 }
 
 .beplus-smart-search__price-currency {
 	position: absolute;
-	right: 0.65rem;
+	right: 0.5rem;
 	top: 50%;
 	transform: translateY(-50%);
 	color: var(--bpss-text-muted);
-	font-size: 0.875rem;
+	font-size: 0.8125rem;
 	pointer-events: none;
 }
 
@@ -374,7 +394,7 @@
 	display: flex;
 	flex-direction: column;
 	gap: 0.5rem;
-	padding: 1rem 1.25rem;
+	padding: var(--bpss-sidebar-inset);
 	background: #fafafa;
 	border-top: 1px solid var(--bpss-border);
 }

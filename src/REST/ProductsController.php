@@ -11,6 +11,7 @@ namespace BePlusSmartSearch\REST;
 
 use BePlusSmartSearch\Core\AbstractModule;
 use BePlusSmartSearch\Search\SearchEngine;
+use BePlusSmartSearch\Search\SearchFieldsFilter;
 use BePlusSmartSearch\Search\SearchQuery;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -152,6 +153,21 @@ class ProductsController extends AbstractModule {
 				'sanitize_callback' => 'sanitize_key',
 				'default'           => 'asc',
 			),
+			'exact_match'   => array(
+				'type' => 'boolean',
+			),
+			'search_logic'  => array(
+				'type'              => 'string',
+				'default'           => 'or',
+				'sanitize_callback' => 'sanitize_key',
+			),
+			'misspelling_fix' => array(
+				'type' => 'boolean',
+			),
+			'search_fields' => array(
+				'type'              => array( 'string', 'array' ),
+				'sanitize_callback' => array( $this, 'sanitize_search_fields_param' ),
+			),
 		);
 
 		if ( function_exists( 'beplus_smart_search_get_configured_filter_taxonomies' ) ) {
@@ -201,5 +217,20 @@ class ProductsController extends AbstractModule {
 	 */
 	public function sanitize_rating_param( $value ): float {
 		return max( 0, min( 5, (float) $value ) );
+	}
+
+	/**
+	 * Sanitize search_fields REST param.
+	 *
+	 * @param mixed $value Raw value.
+	 *
+	 * @return array<int, string>|string
+	 */
+	public function sanitize_search_fields_param( $value ) {
+		if ( is_array( $value ) ) {
+			return SearchFieldsFilter::normalize_fields( $value );
+		}
+
+		return sanitize_text_field( (string) $value );
 	}
 }

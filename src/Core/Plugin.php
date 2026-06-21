@@ -14,6 +14,7 @@ use BePlusSmartSearch\Blocks\BlockRegistry;
 use BePlusSmartSearch\Frontend\ShopQueryIntegration;
 use BePlusSmartSearch\REST\FacetsController;
 use BePlusSmartSearch\REST\ProductsController;
+use BePlusSmartSearch\REST\SuggestionsController;
 use BePlusSmartSearch\Search\ProductTemplateRenderer;
 use BePlusSmartSearch\Search\SearchEngine;
 use BePlusSmartSearch\Search\SearchRegistry;
@@ -143,6 +144,7 @@ class Plugin {
 			SearchRegistry::class,
 			ProductsController::class,
 			FacetsController::class,
+			SuggestionsController::class,
 		);
 	}
 
