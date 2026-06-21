@@ -1,0 +1,26 @@
+includes:
+	- vendor/szepeviktor/phpstan-wordpress/extension.neon
+
+parameters:
+	bootstrapFiles:
+		- phpstan-bootstrap.php
+	stubFiles:
+		- stubs/phpstan.php
+	level: 6
+	treatPhpDocTypesAsCertain: false
+	paths:
+		- beplus-smart-search.php
+		- src
+		- includes
+		- blocks
+		- admin
+	excludePaths:
+		analyse:
+			- vendor
+			- node_modules
+			- stubs
+			- blocks/*/index.js
+			- blocks/*/view.js
+			- blocks/*/index.asset.php
+			- admin/js/settings.js
+			- admin/js/settings.asset.php

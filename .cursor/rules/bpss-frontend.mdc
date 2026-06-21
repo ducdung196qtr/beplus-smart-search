@@ -1,0 +1,52 @@
+---
+description: BePlus Smart Search front-end — admin JS, assets, wp-scripts build output
+globs: admin/js/**,assets/**,build/**
+alwaysApply: false
+---
+
+# BePlus Smart Search — front-end (JS + CSS)
+
+## Source vs build
+
+| Edit | Output |
+|------|--------|
+| `admin/js/**` | `build/admin.js`, `build/admin.css`, `build/admin.asset.php` |
+| `assets/js/**`, `assets/css/**` | `build/frontend.js` (if configured) |
+| `blocks/<name>/block.js` | `build/blocks/<name>.js` via wp-scripts |
+
+Run **`npm run build`** or **`npm run start`** after source changes. Never hand-edit `build/**`.
+
+## Admin (React)
+
+- Entry: `admin/js/admin.js` — settings dashboard, analytics, provider toggles.
+- Use `@wordpress/*` packages; read dependencies from `build/admin.asset.php`.
+- REST calls target `beplus-smart-search/v1`; pass `X-WP-Nonce` from localized `bpssData.nonce`.
+
+## Front-end (search UI)
+
+- Autocomplete / live search: fetch `rest_url( 'beplus-smart-search/v1/search' )`.
+- Localized data shape:
+
+```php
+array(
+  'restUrl' => rest_url( 'beplus-smart-search/v1/' ),
+  'nonce'   => wp_create_nonce( 'wp_rest' ),
+)
+```
+
+- CSS prefix: `beplus-smart-search` with BEM (`__element--modifier`).
+- Keep plugin styles scoped — do not reset global theme styles.
+
+## Block editor scripts
+
+- Block category: `beplus-smart-search`.
+- Block name prefix: `beplus-smart-search/`.
+- `@wordpress/*` externals map to `window.wp.*` in built output.
+
+```text
+❌ Hard-code /wp-json/ path in admin/js/api.js
+✅ Use bpssData.restUrl from wp_localize_script
+
+❌ Global .button { … } in assets/css/frontend.css
+✅ .beplus-smart-search__submit { … }
+```

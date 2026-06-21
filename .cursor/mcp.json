@@ -1,0 +1,23 @@
+{
+	"mcpServers": {
+		"github": {
+			"url": "https://api.githubcopilot.com/mcp/",
+			"headers": {
+				"Authorization": "Bearer ${env:GITHUB_PERSONAL_ACCESS_TOKEN}"
+			}
+		},
+		"wordpress-plugin-local": {
+			"command": "npx",
+			"args": [
+				"-y",
+				"@automattic/mcp-wordpress-remote@latest"
+			],
+			"env": {
+				"WP_API_URL": "http://plugin.local/wp-json/mcp/mcp-adapter-default-server",
+				"WP_API_USERNAME": "REPLACE_WITH_WP_USERNAME",
+				"WP_API_PASSWORD": "REPLACE_WITH_APPLICATION_PASSWORD",
+				"LOG_FILE": "C:/Users/MieuDaiNhan/Local Sites/plugin/app/public/wp-content/plugins/beplus-smart-search/.cursor/mcp-wordpress.log"
+			}
+		}
+	}
+}

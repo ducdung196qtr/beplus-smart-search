@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+
+# Pre-commit: auto-fix staged PHP, then run the full PHP + TS quality gate.
+
+if [ ! -f vendor/bin/phpstan ]; then
+	echo "husky pre-commit: missing vendor/bin/phpstan — run npm run composer:install in the plugin root."
+	exit 1
+fi
+
+npx lint-staged
+
+npm run lint:php:all

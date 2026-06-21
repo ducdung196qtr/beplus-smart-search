@@ -1,0 +1,45 @@
+---
+description: BePlus Smart Search block accessibility — combobox, live regions, semantic markup
+globs: blocks/**
+alwaysApply: false
+---
+
+# BePlus Smart Search — block accessibility
+
+## Search bar (`render.php` + block JS)
+
+- **Input:** `<label>` associated via `for`/`id` or `aria-label`; `type="search"` or `role="search"`.
+- **Autocomplete:** `role="combobox"`, `aria-autocomplete="list"`, `aria-expanded`, `aria-controls` pointing to results listbox id.
+- **Results list:** `role="listbox"`; each item `role="option"` with `aria-selected` updated on keyboard nav.
+- **Status:** `[data-bpss-search-status]` live region (`aria-live="polite"`) for result count and errors.
+- **Clear button:** `<button type="button">` with translatable `aria-label`.
+- **Decorative icons:** `aria-hidden="true"`.
+
+## Keyboard
+
+- **ArrowDown/ArrowUp:** navigate suggestions.
+- **Enter:** select highlighted result or submit search.
+- **Escape:** close dropdown and return focus to input.
+
+## Motion
+
+- Skip transition animations when `prefers-reduced-motion: reduce`.
+- Use `--loading` → `--ready` CSS classes for stable layout before JS init.
+
+## Markup
+
+- Result links: real `<a href="…">` with escaped URLs.
+- Empty state: visible text, not icon-only.
+- Headings in results block: proper `<h2>`–`<h6>` hierarchy.
+
+Reference UX: Nextora `spotlight-search` block (adapt combobox pattern for plugin).
+
+After `render.php` edits: verify escaping. After block JS/CSS: **`npm run build`**.
+
+```text
+❌ <div onclick="search()"> with no keyboard support
+✅ <button type="submit" class="beplus-smart-search__submit">
+
+❌ Dynamic results injected without aria-live update
+✅ Update [data-bpss-search-status] when results load or fail
+```

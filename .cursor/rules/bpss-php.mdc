@@ -1,0 +1,46 @@
+---
+description: BePlus Smart Search PHP — PSR-4, prefixes, AbstractModule, security
+globs: "**/*.php"
+alwaysApply: false
+---
+
+# BePlus Smart Search — PHP
+
+## Quality gate
+
+Before finishing PHP work:
+
+1. Every file starts with `if ( ! defined( 'ABSPATH' ) ) { exit; }`.
+2. New classes under `src/` use namespace `BePlusSmartSearch\...` matching the directory path.
+3. Global functions use prefix `beplus_smart_search_` with full PHPDoc (`@param`, `@return`).
+4. When PHPCS/WPCS is configured, run it on changed files and fix violations.
+
+## Conventions
+
+- **Bootstrap:** Constants and boot functions live in `beplus-smart-search.php`; domain logic in `src/`.
+- **Modules:** Extend `AbstractModule`; constructor receives `Container`; implement `register(): void`.
+- **Services:** Resolve via `Container::get()` — do not `new` singletons in random files.
+- **Settings:** Use `SettingsRegistry` with `OPTION_KEY` constant and merged defaults — do not scatter `get_option()` calls.
+- **Block `render.php`:** `@var array<string, mixed> $attributes` in file docblock; escape all output.
+- **Script data:** Prefer `wp_localize_script` in `AssetLoader` with handle `beplus-smart-search-frontend` and object `bpssData`.
+
+## Naming
+
+| Type | Pattern | Example |
+|------|---------|---------|
+| Class | PascalCase | `SearchEngine`, `SettingsRegistry` |
+| Abstract | `Abstract` + name | `AbstractProvider`, `AbstractModule` |
+| Legacy file | `class-{kebab}.php` | `includes/class-base.php` |
+| Hook constant | `HookManager::CONST` | `FILTER_SERVICES` |
+
+## GiftFlow alignment
+
+Mirror patterns from `giftflow/src/Core/Plugin.php`, `Container.php`, `SettingsRegistry.php`, and REST controllers when adding new infrastructure.
+
+```text
+❌ function get_settings() without prefix in includes/common.php
+✅ function beplus_smart_search_get_settings()
+
+❌ new SearchEngine() in beplus-smart-search.php top level
+✅ $container->get( SearchEngine::class ) inside Plugin boot
+```

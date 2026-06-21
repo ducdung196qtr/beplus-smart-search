@@ -1,0 +1,10 @@
+node_modules/
+vendor/
+.phpunit.cache/
+.php-cs-fixer.cache
+*.log
+.DS_Store
+beplus-smart-search-v*.zip
+tools/composer.phar
+.env
+.cursor/mcp-wordpress.log

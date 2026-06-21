@@ -1,0 +1,27 @@
+---
+description: BePlus Smart Search front-end a11y — autocomplete, focus-visible, reduced motion
+globs: admin/js/**,assets/**
+alwaysApply: false
+---
+
+# BePlus Smart Search — front-end accessibility
+
+## JavaScript (`admin/js/`, `assets/js/`)
+
+- **Autocomplete:** implement combobox keyboard nav (see [`bpss-a11y-blocks.mdc`](./bpss-a11y-blocks.mdc)); trap focus inside open dropdown only when modal-style overlay is used.
+- **Live region:** announce result counts and errors via `aria-live="polite"` — debounce announcements to avoid chatter.
+- **Admin React:** form controls need `<label>` or `aria-label`; error messages linked with `aria-describedby`.
+- **Reduced motion:** check `window.matchMedia('(prefers-reduced-motion: reduce)').matches` before animating dropdown open/close.
+
+## CSS (`assets/css/`)
+
+- Use **`:focus-visible`**, not bare `:focus`, for interactive elements.
+- Add **`@media (prefers-reduced-motion: reduce)`** when adding transitions on dropdown or skeleton loaders.
+- Minimum touch target ~44×44px for mobile clear/submit buttons where feasible.
+
+Compile with **`npm run build`** — do not edit `build/**` directly.
+
+```text
+❌ .beplus-smart-search__input:focus { outline: none; }
+✅ .beplus-smart-search__input:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+```

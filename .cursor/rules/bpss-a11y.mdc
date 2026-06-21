@@ -1,0 +1,29 @@
+---
+description: BePlus Smart Search accessibility — WCAG 2.1 AA hub, i18n, focus, reduced motion
+alwaysApply: true
+---
+
+# BePlus Smart Search — accessibility
+
+Target **WCAG 2.1 AA** for plugin-owned UI (search bar, autocomplete, results, admin settings). Theme and third-party page builders share responsibility for surrounding layout.
+
+## Must-do on every a11y touch
+
+- **i18n:** All visible and assistive copy uses text domain **`beplus-smart-search`** — `esc_attr__()`, `__()`, or localized JS strings via `bpssData.i18n`. No hard-coded English in `aria-label`.
+- **Icon-only controls:** `aria-label` required; decorative SVGs `aria-hidden="true"`.
+- **Focus:** Never `outline: none` without a `:focus-visible` replacement.
+- **Reduced motion:** Honor `prefers-reduced-motion: reduce` in CSS and JS (skip animation-heavy autocomplete transitions).
+- **Semantics:** `<button type="button">` for actions; `<a href>` for result links — not clickable `<div>` without keyboard + ARIA.
+- **Search combobox:** Follow WAI-ARIA combobox pattern for autocomplete (`role="combobox"`, `aria-expanded`, `aria-controls`, listbox options).
+
+## File-specific rules
+
+| Rule | Scope |
+|------|--------|
+| [`bpss-a11y-blocks.mdc`](./bpss-a11y-blocks.mdc) | `blocks/**` |
+| [`bpss-a11y-frontend.mdc`](./bpss-a11y-frontend.mdc) | `admin/js/**`, `assets/**` |
+
+```text
+❌ aria-label="Search" hard-coded in render.php
+✅ aria-label="<?php echo esc_attr__( 'Search', 'beplus-smart-search' ); ?>"
+```

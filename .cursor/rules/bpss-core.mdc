@@ -1,0 +1,23 @@
+---
+description: BePlus Smart Search core — naming, architecture, builds, doc entry points
+alwaysApply: true
+---
+
+# BePlus Smart Search — core
+
+- **Briefing:** Read [`AGENTS.md`](../../AGENTS.md) first; architecture in [`Document Plugin.md`](../../Document Plugin.md).
+- **Slug / i18n:** Text domain `beplus-smart-search`; PHP hooks/functions `beplus_smart_search_`; PSR-4 `BePlusSmartSearch\` → `src/`.
+- **Constants:** `BEPLUS_SMART_SEARCH_VERSION`, `BEPLUS_SMART_SEARCH_PLUGIN_DIR`, `BEPLUS_SMART_SEARCH_PLUGIN_URL`, `BEPLUS_SMART_SEARCH_PLUGIN_BASENAME`.
+- **Architecture:** Single entry `Plugin::boot()`; modules extend `AbstractModule` and attach hooks only in `register()` — no side effects at file load.
+- **After editing** `admin/js/**`, `assets/**`, or block sources under `blocks/**`, run **`npm run build`** or **`npm run start`** from the plugin root.
+- **Do not treat as source** (regenerate via npm): `build/admin.js`, `build/admin.asset.php`, `build/frontend.js`, `build/blocks/**`.
+- **Target:** WordPress 6.0+; PHP 7.4+ (prefer `declare(strict_types=1);` in new PHP under `src/`).
+- **Reference plugin:** [`plugins/giftflow/`](../../../giftflow/) for `Container`, `BlockRegistry`, `SettingsRegistry`, REST patterns.
+
+```text
+❌ add_action() at top level in src/Search/SearchEngine.php
+✅ Register hooks inside SearchRegistry::register() or the owning module
+
+❌ Edit build/admin.js by hand to fix a bug
+✅ Fix admin/js/** or blocks/** then npm run build
+```

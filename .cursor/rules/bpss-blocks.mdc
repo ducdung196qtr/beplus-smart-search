@@ -1,0 +1,60 @@
+---
+description: BePlus Smart Search plugin blocks — block.json, render.php, REST-backed search UI
+globs: blocks/**
+alwaysApply: false
+---
+
+# BePlus Smart Search — plugin blocks
+
+Standards: [`Document Plugin.md`](../../Document Plugin.md) § Gutenberg Blocks. Skills: `bpss-add-plugin-block`.
+
+## Registration and build
+
+- One folder per block under `blocks/` with `block.json`.
+- `BlockRegistry` auto-discovers via `register_block_type_from_metadata()`.
+- Built assets via wp-scripts → `build/blocks/` (or block-local `index.js` + `index.asset.php` if using custom pipeline).
+- Extension filter: `beplus_smart_search.blocks`.
+
+## block.json conventions
+
+- `textdomain`: `beplus-smart-search`
+- `category`: `beplus-smart-search`
+- `name`: `beplus-smart-search/{slug}` (e.g. `beplus-smart-search/search-bar`)
+- Prefer `render: file:./render.php` for dynamic search UI.
+- Attributes: camelCase (`placeholder`, `showIcon`, `maxResults`, `enableLiveSearch`).
+
+## Planned blocks
+
+| Block | Purpose |
+|-------|---------|
+| `advanced-woo-search` | **Primary** — Woo filters (keyword, category, tag, attribute, stock); no page reload on shop |
+| `search-bar` | Input + autocomplete dropdown |
+| `search-results` | Full results list/grid; pagination |
+
+Full build spec: [`docs/advanced-woo-search-block.md`](../../docs/advanced-woo-search-block.md).
+
+## Editor and render
+
+- `render.php`: escape output; use `get_block_wrapper_attributes()`; enqueue block styles via `block.json` `style` key.
+- `block.js` / `edit` component: Inspector panels **Settings**, **Display**, **Behavior** — align labels with existing blocks.
+- Live search: debounce input; call REST `GET /search`; show loading / empty / error states.
+- Do not embed SQL or direct `WP_Query` in `render.php` for interactive search — use REST + JS or server render via `SearchEngine`.
+
+## Styling
+
+- Scoped classes: `beplus-smart-search__*` — inherit theme typography where possible.
+- Loading state: `beplus-smart-search--loading` → `beplus-smart-search--ready` after init (avoid layout shift).
+- Idempotent JS init: `data-bpss-search-init-pending` / `data-bpss-search-inited`.
+
+## Reference
+
+- GiftFlow block pattern: `plugins/giftflow/blocks/donation-button/block.json`
+- Nextora spotlight search UX (theme): `themes/nextora-develop/blocks/spotlight-search/` — adapt combobox ARIA for plugin block
+
+```text
+❌ New block named giftflow/search-bar or category widgets
+✅ beplus-smart-search/search-bar, category beplus-smart-search
+
+❌ Inline <script> in render.php for autocomplete
+✅ block.js + REST + wp_enqueue_script via block.json editorScript/viewScript
+```

@@ -1,0 +1,70 @@
+---
+description: BePlus Smart Search REST API — routes, permissions, sanitization
+globs: src/REST/**
+alwaysApply: false
+---
+
+# BePlus Smart Search — REST API
+
+## Namespace
+
+- Base: `beplus-smart-search/v1`
+- Controllers extend `WP_REST_Controller` under `src/REST/`.
+
+## Route conventions
+
+| Route | Methods | Permission | Notes |
+|-------|---------|------------|-------|
+| `/search` | GET | public read | Sanitize `s` param; apply `beplus-smart-search/search.query` filter |
+| `/settings` | GET, POST | `manage_options` | Delegate to `SettingsRegistry` |
+| `/settings/defaults` | GET | `manage_options` | Return schema defaults |
+
+Register routes on `rest_api_init` inside `Plugin::register_core_services()`.
+
+## Controller pattern
+
+```php
+class SearchController extends \WP_REST_Controller {
+
+	public function __construct() {
+		$this->namespace = 'beplus-smart-search/v1';
+		$this->rest_base = 'search';
+	}
+
+	public function register_routes(): void { /* register_rest_route */ }
+}
+```
+
+## Security
+
+- **`permission_callback`:** Required on every route — never omit.
+- **Public search:** `__return_true` only for read-only search; validate and limit query length.
+- **Settings write:** `current_user_can( 'manage_options' )`.
+- **Input:** `sanitize_text_field()`, `absint()` in `args` schema or callback.
+- **Output:** Return arrays/JSON — no raw HTML unless escaped and documented.
+
+## Response shape
+
+Normalize search results:
+
+```php
+array(
+  'id'    => (int) $post_id,
+  'title' => (string) $title,
+  'url'   => (string) $permalink,
+  'type'  => (string) $post_type,
+  'excerpt' => (string) $excerpt, // optional
+)
+```
+
+Apply `beplus-smart-search/search.results` filter before returning.
+
+Reference: `giftflow/src/REST/SettingsController.php`.
+
+```text
+❌ register_rest_route without permission_callback
+✅ Explicit callback per method; manage_options for settings POST
+
+❌ echo HTML from REST callback
+✅ wp_send_json_success( $normalized_results )
+```
