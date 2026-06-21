@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Products REST controller.
  *
@@ -9,7 +10,6 @@
 namespace BePlusSmartSearch\REST;
 
 use BePlusSmartSearch\Core\AbstractModule;
-use BePlusSmartSearch\Core\Container;
 use BePlusSmartSearch\Search\SearchEngine;
 use BePlusSmartSearch\Search\SearchQuery;
 use WP_REST_Request;
@@ -55,7 +55,7 @@ class ProductsController extends AbstractModule {
 				'callback'            => array( $this, 'get_items' ),
 				'permission_callback' => '__return_true',
 				'args'                => $this->get_collection_params(),
-			)
+			),
 		);
 	}
 
@@ -63,6 +63,7 @@ class ProductsController extends AbstractModule {
 	 * Handle GET /products.
 	 *
 	 * @param WP_REST_Request $request REST request.
+	 *
 	 * @return WP_REST_Response
 	 */
 	public function get_items( WP_REST_Request $request ): WP_REST_Response {
@@ -78,7 +79,7 @@ class ProductsController extends AbstractModule {
 					'page'       => $query->get_page(),
 					'perPage'    => $query->get_per_page(),
 				),
-				200
+				200,
 			);
 		}
 
@@ -169,6 +170,7 @@ class ProductsController extends AbstractModule {
 	 * Sanitize taxonomy REST param.
 	 *
 	 * @param mixed $value Raw value.
+	 *
 	 * @return array<int, string>|string
 	 */
 	public function sanitize_terms_param( $value ) {
@@ -183,6 +185,7 @@ class ProductsController extends AbstractModule {
 	 * Sanitize price REST param (WP passes 3 args; floatval accepts only 1).
 	 *
 	 * @param mixed $value Raw value.
+	 *
 	 * @return float
 	 */
 	public function sanitize_price_param( $value ): float {
@@ -193,6 +196,7 @@ class ProductsController extends AbstractModule {
 	 * Sanitize rating REST param.
 	 *
 	 * @param mixed $value Raw value.
+	 *
 	 * @return float
 	 */
 	public function sanitize_rating_param( $value ): float {

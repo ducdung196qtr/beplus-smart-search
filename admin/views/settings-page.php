@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$option_key            = \BePlusSmartSearch\Settings\SettingsRegistry::OPTION_KEY;
+$option_key            = BePlusSmartSearch\Settings\SettingsRegistry::OPTION_KEY;
 $modes                 = isset( $sidebar['taxonomy_modes'] ) && is_array( $sidebar['taxonomy_modes'] ) ? $sidebar['taxonomy_modes'] : array();
 $sub_modes             = isset( $sidebar['taxonomy_sub_modes'] ) && is_array( $sidebar['taxonomy_sub_modes'] ) ? $sidebar['taxonomy_sub_modes'] : array();
 $price                 = beplus_smart_search_get_price_settings();
@@ -33,7 +33,7 @@ $brand_taxonomy        = function_exists( 'beplus_smart_search_get_brand_taxonom
 $selectable_taxonomies = function_exists( 'beplus_smart_search_get_selectable_product_taxonomies' )
 	? beplus_smart_search_get_selectable_product_taxonomies()
 	: array();
-$menu_slug             = \BePlusSmartSearch\Admin\SettingsPage::MENU_SLUG;
+$menu_slug             = BePlusSmartSearch\Admin\SettingsPage::MENU_SLUG;
 
 // Redirect legacy tab slugs.
 if ( in_array( $tab, array( 'taxonomies', 'price', 'sidebar' ), true ) ) {
@@ -59,6 +59,7 @@ $base_url = admin_url( 'admin.php?page=' . $menu_slug );
  * @param string $sub_name     Field name for sub checkbox.
  * @param string $current_mode Current mode value.
  * @param bool   $show_sub     Whether sub toggle is checked.
+ *
  * @return void
  */
 function bpss_render_filter_mode_controls( string $option_key, string $mode_name, string $sub_name, string $current_mode, bool $show_sub ): void {
@@ -196,7 +197,7 @@ function bpss_render_filter_mode_controls( string $option_key, string $mode_name
 							'[sidebar][taxonomy_modes][product_cat]',
 							'[sidebar][taxonomy_sub_modes][product_cat]',
 							(string) ( $modes['product_cat'] ?? 'radio' ),
-							! empty( $sub_modes['product_cat'] )
+							! empty( $sub_modes['product_cat'] ),
 						);
 						?>
 					</div>
@@ -212,7 +213,7 @@ function bpss_render_filter_mode_controls( string $option_key, string $mode_name
 							'[sidebar][taxonomy_modes][product_tag]',
 							'[sidebar][taxonomy_sub_modes][product_tag]',
 							(string) ( $modes['product_tag'] ?? 'checkbox' ),
-							! empty( $sub_modes['product_tag'] )
+							! empty( $sub_modes['product_tag'] ),
 						);
 						?>
 					</div>
@@ -237,7 +238,7 @@ function bpss_render_filter_mode_controls( string $option_key, string $mode_name
 							'[sidebar][facets][brand][mode]',
 							'[sidebar][facets][brand][show_sub]',
 							(string) ( $brand_facet['mode'] ?? 'checkbox' ),
-							! empty( $brand_facet['show_sub'] )
+							! empty( $brand_facet['show_sub'] ),
 						);
 						?>
 					</div>

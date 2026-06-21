@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Facets REST controller.
  *
@@ -62,7 +63,7 @@ class FacetsController extends AbstractModule {
 				'callback'            => array( $this, 'get_facets' ),
 				'permission_callback' => '__return_true',
 				'args'                => $this->get_route_args(),
-			)
+			),
 		);
 	}
 
@@ -112,6 +113,7 @@ class FacetsController extends AbstractModule {
 	 * Handle GET /facets.
 	 *
 	 * @param WP_REST_Request $request REST request.
+	 *
 	 * @return WP_REST_Response
 	 */
 	public function get_facets( WP_REST_Request $request ): WP_REST_Response {
@@ -157,6 +159,7 @@ class FacetsController extends AbstractModule {
 	 * Whether request includes active product filters.
 	 *
 	 * @param SearchQuery $query Query.
+	 *
 	 * @return bool
 	 */
 	private function has_active_filters( SearchQuery $query ): bool {
@@ -177,6 +180,7 @@ class FacetsController extends AbstractModule {
 	 * Sanitize price REST param.
 	 *
 	 * @param mixed $value Raw value.
+	 *
 	 * @return float
 	 */
 	public function sanitize_price_param( $value ): float {

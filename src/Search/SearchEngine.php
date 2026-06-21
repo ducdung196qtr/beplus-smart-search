@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Search engine orchestrator.
  *
@@ -42,6 +43,7 @@ class SearchEngine {
 	 * Search products.
 	 *
 	 * @param SearchQuery $query Search query.
+	 *
 	 * @return array{items: array<int, array<string, mixed>>, total: int, totalPages: int, page: int, perPage: int}
 	 */
 	public function search( SearchQuery $query ): array {
@@ -72,6 +74,7 @@ class SearchEngine {
 	 * Get provider by ID.
 	 *
 	 * @param string $id Provider ID.
+	 *
 	 * @return AbstractProvider|null
 	 */
 	private function get_provider( string $id ): ?AbstractProvider {

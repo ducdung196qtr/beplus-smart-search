@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Contextual facet resolver.
  *
@@ -22,6 +23,7 @@ final class FacetService {
 	 *
 	 * @param SearchQuery $context Active filter context.
 	 * @param string      $mode    all|contextual.
+	 *
 	 * @return array<string, mixed>
 	 */
 	public function get_facets( SearchQuery $context, string $mode = 'all' ): array {
@@ -57,6 +59,7 @@ final class FacetService {
 
 	/**
 	 * @param SearchQuery $context Context.
+	 *
 	 * @return array<int, array<string, mixed>>
 	 */
 	private function get_contextual_categories( SearchQuery $context ): array {
@@ -69,12 +72,13 @@ final class FacetService {
 			$selected,
 			function ( \WP_Term $term ) use ( $base ) {
 				return $this->query_with_category( $base, array( $term->slug ) );
-			}
+			},
 		);
 	}
 
 	/**
 	 * @param SearchQuery $context Context.
+	 *
 	 * @return array<int, array<string, mixed>>
 	 */
 	private function get_contextual_tags( SearchQuery $context ): array {
@@ -87,12 +91,13 @@ final class FacetService {
 			$selected,
 			function ( \WP_Term $term ) use ( $base ) {
 				return $this->query_with_tag( $base, array( $term->slug ) );
-			}
+			},
 		);
 	}
 
 	/**
 	 * @param SearchQuery $context Context.
+	 *
 	 * @return array<int, array<string, mixed>>
 	 */
 	private function get_contextual_attributes( SearchQuery $context ): array {
@@ -122,7 +127,7 @@ final class FacetService {
 				$selected,
 				function ( \WP_Term $term ) use ( $base, $slug ) {
 					return $this->query_with_attribute( $base, $slug, array( $term->slug ) );
-				}
+				},
 			);
 
 			if ( empty( $term_items ) ) {
@@ -140,7 +145,7 @@ final class FacetService {
 							'count' => $item['count'],
 						);
 					},
-					$term_items
+					$term_items,
 				),
 			);
 		}
@@ -150,6 +155,7 @@ final class FacetService {
 
 	/**
 	 * @param SearchQuery $context Context.
+	 *
 	 * @return array<int, array<string, mixed>>
 	 */
 	private function get_contextual_ratings( SearchQuery $context ): array {
@@ -174,6 +180,7 @@ final class FacetService {
 
 	/**
 	 * @param SearchQuery $context Context.
+	 *
 	 * @return array<string, array<int, array<string, mixed>>>
 	 */
 	private function get_contextual_taxonomies( SearchQuery $context ): array {
@@ -196,6 +203,7 @@ final class FacetService {
 	/**
 	 * @param SearchQuery $context  Context.
 	 * @param string      $taxonomy Taxonomy slug.
+	 *
 	 * @return array<int, array<string, mixed>>
 	 */
 	private function get_contextual_taxonomy_terms( SearchQuery $context, string $taxonomy ): array {
@@ -210,14 +218,15 @@ final class FacetService {
 			$selected,
 			function ( \WP_Term $term ) use ( $base, $taxonomy ) {
 				return $this->query_with_taxonomy( $base, $taxonomy, array( $term->slug ) );
-			}
+			},
 		);
 	}
 
 	/**
-	 * @param array<int, WP_Term>        $terms    All terms.
-	 * @param array<int, string>         $selected Selected slugs (always visible).
-	 * @param callable                   $counter  Count callback.
+	 * @param array<int, \WP_Term> $terms    All terms.
+	 * @param array<int, string>   $selected Selected slugs (always visible).
+	 * @param callable             $counter  Count callback.
+	 *
 	 * @return array<int, array<string, mixed>>
 	 */
 	private function filter_available_terms( array $terms, array $selected, callable $counter ): array {
@@ -246,6 +255,7 @@ final class FacetService {
 	 * @param SearchQuery $context   Context.
 	 * @param string      $group     category|tag|attribute.
 	 * @param string      $attr_slug Attribute slug when group is attribute.
+	 *
 	 * @return SearchQuery
 	 */
 	private function context_without( SearchQuery $context, string $group, string $attr_slug = '' ): SearchQuery {
@@ -283,8 +293,9 @@ final class FacetService {
 	}
 
 	/**
-	 * @param SearchQuery        $base Base query.
+	 * @param SearchQuery        $base  Base query.
 	 * @param array<int, string> $slugs Category slugs.
+	 *
 	 * @return int
 	 */
 	private function query_with_category( SearchQuery $base, array $slugs ): int {
@@ -302,14 +313,15 @@ final class FacetService {
 					'min_rating'   => $base->get_min_rating(),
 					'min_price'    => $base->get_min_price(),
 					'max_price'    => $base->get_max_price(),
-				)
-			)
+				),
+			),
 		);
 	}
 
 	/**
-	 * @param SearchQuery        $base Base query.
+	 * @param SearchQuery        $base  Base query.
 	 * @param array<int, string> $slugs Tag slugs.
+	 *
 	 * @return int
 	 */
 	private function query_with_tag( SearchQuery $base, array $slugs ): int {
@@ -327,15 +339,16 @@ final class FacetService {
 					'min_rating'   => $base->get_min_rating(),
 					'min_price'    => $base->get_min_price(),
 					'max_price'    => $base->get_max_price(),
-				)
-			)
+				),
+			),
 		);
 	}
 
 	/**
-	 * @param SearchQuery        $base Base query.
-	 * @param string             $slug Attribute slug.
+	 * @param SearchQuery        $base       Base query.
+	 * @param string             $slug       Attribute slug.
 	 * @param array<int, string> $term_slugs Term slugs.
+	 *
 	 * @return int
 	 */
 	private function query_with_attribute( SearchQuery $base, string $slug, array $term_slugs ): int {
@@ -356,14 +369,15 @@ final class FacetService {
 					'min_rating'   => $base->get_min_rating(),
 					'min_price'    => $base->get_min_price(),
 					'max_price'    => $base->get_max_price(),
-				)
-			)
+				),
+			),
 		);
 	}
 
 	/**
-	 * @param SearchQuery $base Base query.
+	 * @param SearchQuery $base       Base query.
 	 * @param float       $min_rating Minimum rating.
+	 *
 	 * @return int
 	 */
 	private function query_with_rating( SearchQuery $base, float $min_rating ): int {
@@ -381,15 +395,16 @@ final class FacetService {
 					'min_rating'   => $min_rating,
 					'min_price'    => $base->get_min_price(),
 					'max_price'    => $base->get_max_price(),
-				)
-			)
+				),
+			),
 		);
 	}
 
 	/**
-	 * @param SearchQuery        $base Base query.
+	 * @param SearchQuery        $base     Base query.
 	 * @param string             $taxonomy Taxonomy slug.
-	 * @param array<int, string> $slugs Term slugs.
+	 * @param array<int, string> $slugs    Term slugs.
+	 *
 	 * @return int
 	 */
 	private function query_with_taxonomy( SearchQuery $base, string $taxonomy, array $slugs ): int {
@@ -410,13 +425,14 @@ final class FacetService {
 					'min_rating'   => $base->get_min_rating(),
 					'min_price'    => $base->get_min_price(),
 					'max_price'    => $base->get_max_price(),
-				)
-			)
+				),
+			),
 		);
 	}
 
 	/**
 	 * @param string $taxonomy Taxonomy name.
+	 *
 	 * @return array<int, \WP_Term>
 	 */
 	private function get_terms( string $taxonomy ): array {
@@ -428,7 +444,7 @@ final class FacetService {
 			array(
 				'taxonomy'   => $taxonomy,
 				'hide_empty' => true,
-			)
+			),
 		);
 
 		return is_wp_error( $terms ) ? array() : $terms;
@@ -436,6 +452,7 @@ final class FacetService {
 
 	/**
 	 * @param array<int, \WP_Term> $terms Terms.
+	 *
 	 * @return array<int, array<string, mixed>>
 	 */
 	private function format_terms( array $terms ): array {

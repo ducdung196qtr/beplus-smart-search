@@ -6,7 +6,7 @@ module.exports = {
 			return [];
 		}
 
-		return `bash scripts/lint-staged-php.sh ${ source.map( ( file ) => JSON.stringify( file ) ).join( ' ' ) }`;
+		return `node scripts/lint-staged-php.mjs ${ source.map( ( file ) => JSON.stringify( file ) ).join( ' ' ) }`;
 	},
 	'{admin/js,blocks}/**/*.{ts,tsx}': () => 'npm run typecheck',
 };

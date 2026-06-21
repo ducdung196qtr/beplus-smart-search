@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Plugin Name: BePlus Smart Search
  * Plugin URI:  https://beplusthemes.com/
@@ -11,7 +12,7 @@
  * Requires at least: 6.0
  * Requires PHP: 7.4
  * License:     GPL v2 or later
- * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html.
  *
  * @package BePlusSmartSearch
  */
@@ -45,19 +46,19 @@ if ( file_exists( $autoload ) ) {
 			if ( file_exists( $file ) ) {
 				require_once $file;
 			}
-		}
+		},
 	);
 }
 
 /**
  * Boot plugin.
  *
- * @return \BePlusSmartSearch\Core\Plugin
+ * @return BePlusSmartSearch\Core\Plugin
  */
 function beplus_smart_search_boot() {
 	static $plugin = null;
 	if ( null === $plugin ) {
-		$plugin = new \BePlusSmartSearch\Core\Plugin();
+		$plugin = new BePlusSmartSearch\Core\Plugin();
 		$plugin->boot();
 	}
 	return $plugin;
@@ -88,10 +89,10 @@ function beplus_smart_search_activate() {
 		wp_die(
 			esc_html__( 'BePlus Smart Search requires PHP 7.4 or higher.', 'beplus-smart-search' ),
 			'Plugin Activation Error',
-			array( 'back_link' => true )
+			array( 'back_link' => true ),
 		);
 	}
-	( new \BePlusSmartSearch\Core\Plugin() )->activate();
+	( new BePlusSmartSearch\Core\Plugin() )->activate();
 }
 
 /**
@@ -100,5 +101,5 @@ function beplus_smart_search_activate() {
  * @return void
  */
 function beplus_smart_search_deactivate() {
-	( new \BePlusSmartSearch\Core\Plugin() )->deactivate();
+	( new BePlusSmartSearch\Core\Plugin() )->deactivate();
 }

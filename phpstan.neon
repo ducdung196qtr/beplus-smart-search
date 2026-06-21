@@ -4,8 +4,7 @@ includes:
 parameters:
 	bootstrapFiles:
 		- phpstan-bootstrap.php
-	stubFiles:
-		- stubs/phpstan.php
+		- vendor/php-stubs/woocommerce-stubs/woocommerce-stubs.php
 	level: 6
 	treatPhpDocTypesAsCertain: false
 	paths:
@@ -18,7 +17,7 @@ parameters:
 		analyse:
 			- vendor
 			- node_modules
-			- stubs
+			- stubs (?)
 			- blocks/*/index.js
 			- blocks/*/view.js
 			- blocks/*/index.asset.php

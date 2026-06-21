@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Search provider registry.
  *
@@ -9,7 +10,6 @@
 namespace BePlusSmartSearch\Search;
 
 use BePlusSmartSearch\Core\AbstractModule;
-use BePlusSmartSearch\Core\Container;
 use BePlusSmartSearch\Core\HookManager;
 use BePlusSmartSearch\Search\Providers\AbstractProvider;
 use BePlusSmartSearch\Search\Providers\ProductProvider;
@@ -62,6 +62,7 @@ class SearchRegistry extends AbstractModule {
 	 * Add a provider.
 	 *
 	 * @param AbstractProvider $provider Provider instance.
+	 *
 	 * @return void
 	 */
 	public function add_provider( AbstractProvider $provider ): void {
@@ -72,6 +73,7 @@ class SearchRegistry extends AbstractModule {
 	 * Get provider by ID.
 	 *
 	 * @param string $id Provider ID.
+	 *
 	 * @return AbstractProvider|null
 	 */
 	public function get_provider( string $id ): ?AbstractProvider {
@@ -88,7 +90,7 @@ class SearchRegistry extends AbstractModule {
 			$this->providers,
 			function ( AbstractProvider $provider ) {
 				return $provider->is_enabled();
-			}
+			},
 		);
 	}
 }

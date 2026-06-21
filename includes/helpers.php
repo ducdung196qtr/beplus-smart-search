@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Global helper functions.
  *
@@ -18,8 +19,8 @@ function beplus_smart_search_get_settings(): array {
 	static $settings = null;
 
 	if ( null === $settings ) {
-		$registry = new \BePlusSmartSearch\Settings\SettingsRegistry(
-			new \BePlusSmartSearch\Core\Container()
+		$registry = new BePlusSmartSearch\Settings\SettingsRegistry(
+			new BePlusSmartSearch\Core\Container(),
 		);
 		$settings = $registry->get_settings();
 	}
@@ -96,7 +97,7 @@ function beplus_smart_search_get_sidebar_settings(): array {
 					),
 				),
 			),
-		)
+		),
 	);
 }
 
@@ -104,6 +105,7 @@ function beplus_smart_search_get_sidebar_settings(): array {
  * Get selection mode for a taxonomy group.
  *
  * @param string $taxonomy_key product_cat|product_tag|attribute|attribute:{slug}.
+ *
  * @return string radio|checkbox
  */
 function beplus_smart_search_get_taxonomy_mode( string $taxonomy_key ): string {
@@ -143,6 +145,7 @@ function beplus_smart_search_get_taxonomy_mode( string $taxonomy_key ): string {
  * Whether a taxonomy group should render nested sub-terms with toggles.
  *
  * @param string $taxonomy_key product_cat|product_tag|attribute|attribute:{slug}.
+ *
  * @return bool
  */
 function beplus_smart_search_show_sub_taxonomy( string $taxonomy_key ): bool {
@@ -198,7 +201,7 @@ function beplus_smart_search_get_facet_settings(): array {
 				'show_sub' => false,
 			),
 			'custom_taxonomies' => array(),
-		)
+		),
 	);
 }
 
@@ -272,7 +275,7 @@ function beplus_smart_search_get_custom_taxonomy_facets(): array {
 
 		$tax_object = get_taxonomy( $taxonomy );
 		$label      = sanitize_text_field( (string) ( $row['label'] ?? '' ) );
-		if ( '' === $label && $tax_object instanceof \WP_Taxonomy ) {
+		if ( '' === $label && $tax_object instanceof WP_Taxonomy ) {
 			$label = $tax_object->labels->name;
 		}
 
@@ -321,7 +324,7 @@ function beplus_smart_search_get_selectable_product_taxonomies(): array {
 	}
 
 	foreach ( $taxonomies as $taxonomy => $object ) {
-		if ( ! $object instanceof \WP_Taxonomy ) {
+		if ( ! $object instanceof WP_Taxonomy ) {
 			continue;
 		}
 
@@ -381,7 +384,7 @@ function beplus_smart_search_get_price_settings(): array {
 			'max'      => 1000,
 			'step'     => 1,
 			'segments' => array(),
-		)
+		),
 	);
 }
 
@@ -399,9 +402,10 @@ function beplus_smart_search_is_price_segments_mode(): bool {
 /**
  * Format a price segment label for display.
  *
- * @param float  $min      Segment minimum.
- * @param float  $max      Segment maximum (0 = open ended).
- * @param string $label    Custom label.
+ * @param float  $min   Segment minimum.
+ * @param float  $max   Segment maximum (0 = open ended).
+ * @param string $label Custom label.
+ *
  * @return string
  */
 function beplus_smart_search_format_price_segment_label( float $min, float $max, string $label = '' ): string {
@@ -427,6 +431,7 @@ function beplus_smart_search_format_price_segment_label( float $min, float $max,
  * Whether price filter is enabled (global settings).
  *
  * @deprecated Block attribute showPrice controls visibility.
+ *
  * @return bool
  */
 function beplus_smart_search_is_price_filter_enabled(): bool {
@@ -487,7 +492,7 @@ function beplus_smart_search_page_has_search_block(): bool {
 
 	if ( is_singular() ) {
 		global $post;
-		$has_block = ( $post instanceof \WP_Post ) && has_block( $block, $post );
+		$has_block = ( $post instanceof WP_Post ) && has_block( $block, $post );
 		return $has_block;
 	}
 
@@ -527,7 +532,7 @@ function beplus_smart_search_get_block_content_sources(): array {
 				array(
 					'slug__in' => $template_slugs,
 				),
-				'wp_template'
+				'wp_template',
 			);
 
 			foreach ( $templates as $template ) {
@@ -570,7 +575,7 @@ function beplus_smart_search_get_relevant_template_slugs(): array {
 		}
 
 		$queried = get_queried_object();
-		if ( $queried instanceof \WP_Term ) {
+		if ( $queried instanceof WP_Term ) {
 			$slugs[] = 'taxonomy-' . $queried->taxonomy;
 		}
 	}
@@ -586,7 +591,7 @@ function beplus_smart_search_get_relevant_template_slugs(): array {
 function beplus_smart_search_get_default_catalog_orderby(): string {
 	$default = apply_filters(
 		'woocommerce_default_catalog_orderby',
-		get_option( 'woocommerce_default_catalog_orderby', 'menu_order' )
+		get_option( 'woocommerce_default_catalog_orderby', 'menu_order' ),
 	);
 
 	return is_string( $default ) && '' !== $default ? $default : 'menu_order';
@@ -597,6 +602,7 @@ function beplus_smart_search_get_default_catalog_orderby(): string {
  *
  * @param string $raw   Raw orderby value from URL or REST.
  * @param string $order Optional explicit order (asc|desc).
+ *
  * @return array{orderby: string, order: string, wc_value: string}
  */
 function beplus_smart_search_parse_catalog_orderby( string $raw = '', string $order = '' ): array {
@@ -656,6 +662,7 @@ function beplus_smart_search_parse_catalog_orderby( string $raw = '', string $or
  * Catalog of sortable filter section IDs => labels (attributes as separate entries).
  *
  * @param array<string, mixed> $attrs Optional block attributes to filter attribute sections.
+ *
  * @return array<string, string>
  */
 function beplus_smart_search_get_filter_section_catalog( array $attrs = array() ): array {
@@ -668,7 +675,7 @@ function beplus_smart_search_get_filter_section_catalog( array $attrs = array() 
 	$brand_tax = beplus_smart_search_get_brand_taxonomy();
 	if ( $brand_tax ) {
 		$brand_object = get_taxonomy( $brand_tax );
-		$sections['brand'] = $brand_object instanceof \WP_Taxonomy
+		$sections['brand'] = $brand_object instanceof WP_Taxonomy
 			? $brand_object->labels->name
 			: __( 'Brand', 'beplus-smart-search' );
 	}
@@ -696,8 +703,9 @@ function beplus_smart_search_get_filter_section_catalog( array $attrs = array() 
 /**
  * Whether an attribute is enabled on a block instance.
  *
- * @param string               $slug Attribute slug.
+ * @param string               $slug  Attribute slug.
  * @param array<string, mixed> $attrs Block attributes.
+ *
  * @return bool
  */
 function beplus_smart_search_is_block_attribute_enabled( string $slug, array $attrs ): bool {
@@ -721,6 +729,7 @@ function beplus_smart_search_is_block_attribute_enabled( string $slug, array $at
  * Attribute slugs to render for a block instance.
  *
  * @param array<string, mixed> $attrs Block attributes.
+ *
  * @return array<int, string>
  */
 function beplus_smart_search_get_block_attribute_slugs( array $attrs ): array {
@@ -779,6 +788,7 @@ function beplus_smart_search_get_default_filter_order(): array {
  * Merge saved block order with catalog (append new sections, drop unknown).
  *
  * @param array<string, mixed> $attrs Block attributes.
+ *
  * @return array<int, string>
  */
 function beplus_smart_search_resolve_filter_order( array $attrs ): array {
@@ -807,11 +817,12 @@ function beplus_smart_search_resolve_filter_order( array $attrs ): array {
 /**
  * Whether a filter section should render for current block attrs and data.
  *
- * @param string               $section_id      Section key.
- * @param array<string, mixed> $attrs           Block attributes.
- * @param array<int, WP_Term>  $categories      Categories.
- * @param array<int, WP_Term>  $tags            Tags.
- * @param array<string, array> $attributes_by_slug Attribute map keyed by slug.
+ * @param string                              $section_id         Section key.
+ * @param array<string, mixed>                $attrs              Block attributes.
+ * @param array<int, WP_Term>                 $categories         Categories.
+ * @param array<int, WP_Term>                 $tags               Tags.
+ * @param array<string, array<string, mixed>> $attributes_by_slug Attribute map keyed by slug.
+ *
  * @return bool
  */
 function beplus_smart_search_should_render_filter_section(
@@ -819,7 +830,7 @@ function beplus_smart_search_should_render_filter_section(
 	array $attrs,
 	array $categories,
 	array $tags,
-	array $attributes_by_slug
+	array $attributes_by_slug,
 ): bool {
 	if ( 'keyword' === $section_id ) {
 		return ! empty( $attrs['showKeyword'] );

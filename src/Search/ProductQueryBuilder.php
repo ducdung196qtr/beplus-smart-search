@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Product query builder shared by search and facets.
  *
@@ -20,8 +21,9 @@ final class ProductQueryBuilder {
 	/**
 	 * Build wc_get_products args.
 	 *
-	 * @param SearchQuery $query  Search query.
-	 * @param array       $overrides Optional overrides (limit, paginate, return).
+	 * @param SearchQuery          $query     Search query.
+	 * @param array<string, mixed> $overrides Optional overrides (limit, paginate, return).
+	 *
 	 * @return array<string, mixed>
 	 */
 	public static function build_args( SearchQuery $query, array $overrides = array() ): array {
@@ -129,6 +131,7 @@ final class ProductQueryBuilder {
 	 *
 	 * @param array<int|string, mixed> $tax_query  Tax query clauses (by reference).
 	 * @param float                    $min_rating Minimum average rating (1-5).
+	 *
 	 * @return void
 	 */
 	private static function append_min_rating_tax_query( array &$tax_query, float $min_rating ): void {
@@ -170,6 +173,7 @@ final class ProductQueryBuilder {
 	 *
 	 * @param SearchQuery          $query     Search query.
 	 * @param array<string, mixed> $overrides Optional overrides.
+	 *
 	 * @return object|array<int, mixed>
 	 */
 	public static function query( SearchQuery $query, array $overrides = array() ) {
@@ -195,8 +199,9 @@ final class ProductQueryBuilder {
 	/**
 	 * Apply WooCommerce catalog ordering (price, popularity, rating, etc.).
 	 *
-	 * @param SearchQuery              $query Search query.
-	 * @param array<string, mixed>     $args  wc_get_products args (by reference).
+	 * @param SearchQuery          $query Search query.
+	 * @param array<string, mixed> $args  wc_get_products args (by reference).
+	 *
 	 * @return void
 	 */
 	private static function apply_wc_catalog_ordering( SearchQuery $query, array &$args ): void {
@@ -206,7 +211,7 @@ final class ProductQueryBuilder {
 
 		$ordering = WC()->query->get_catalog_ordering_args(
 			$query->get_orderby(),
-			strtoupper( $query->get_order() )
+			strtoupper( $query->get_order() ),
 		);
 
 		$args['orderby'] = $ordering['orderby'];
@@ -244,6 +249,7 @@ final class ProductQueryBuilder {
 	 * Count products matching query.
 	 *
 	 * @param SearchQuery $query Search query.
+	 *
 	 * @return int
 	 */
 	public static function count( SearchQuery $query ): int {
@@ -258,7 +264,7 @@ final class ProductQueryBuilder {
 				'page'     => 1,
 				'paginate' => true,
 				'return'   => 'ids',
-			)
+			),
 		);
 
 		return isset( $result->total ) ? (int) $result->total : 0;
@@ -268,6 +274,7 @@ final class ProductQueryBuilder {
 	 * Count published products for a taxonomy term (matches search results).
 	 *
 	 * @param \WP_Term $term Term object.
+	 *
 	 * @return int
 	 */
 	public static function count_for_term( \WP_Term $term ): int {
@@ -310,6 +317,7 @@ final class ProductQueryBuilder {
 
 	/**
 	 * @param string $orderby Order key.
+	 *
 	 * @return string
 	 */
 	private static function map_orderby( string $orderby ): string {

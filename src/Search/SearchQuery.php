@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Search query value object.
  *
@@ -117,12 +118,12 @@ final class SearchQuery {
 		$requested_per_page = isset( $args['per_page'] ) ? (int) $args['per_page'] : 0;
 		$this->per_page     = min(
 			50,
-			max( 1, $requested_per_page > 0 ? $requested_per_page : $default_per_page )
+			max( 1, $requested_per_page > 0 ? $requested_per_page : $default_per_page ),
 		);
 
 		$parsed_orderby     = beplus_smart_search_parse_catalog_orderby(
 			isset( $args['orderby'] ) ? (string) $args['orderby'] : '',
-			isset( $args['order'] ) ? (string) $args['order'] : ''
+			isset( $args['order'] ) ? (string) $args['order'] : '',
 		);
 		$this->orderby      = $parsed_orderby['orderby'];
 		$this->order        = $parsed_orderby['order'];
@@ -132,6 +133,7 @@ final class SearchQuery {
 	 * Build from REST request.
 	 *
 	 * @param \WP_REST_Request $request REST request.
+	 *
 	 * @return self
 	 */
 	public static function from_rest_request( \WP_REST_Request $request ): self {
@@ -160,8 +162,8 @@ final class SearchQuery {
 				'product_tags'  => self::normalize_terms( $request->get_param( 'product_tag' ) ),
 				'attributes'    => $attributes,
 				'stock_status'  => sanitize_key( (string) $request->get_param( 'stock_status' ) ),
-				'on_sale'       => rest_sanitize_boolean( $request->get_param( 'on_sale' ) ),
-				'featured'      => rest_sanitize_boolean( $request->get_param( 'featured' ) ),
+				'on_sale'       => self::request_bool( $request, 'on_sale' ),
+				'featured'      => self::request_bool( $request, 'featured' ),
 				'min_rating'    => (float) $request->get_param( 'min_rating' ),
 				'taxonomies'    => self::taxonomies_from_request( $request ),
 				'min_price'     => (float) $request->get_param( 'min_price' ),
@@ -170,7 +172,7 @@ final class SearchQuery {
 				'per_page'      => $per_page,
 				'orderby'       => sanitize_text_field( (string) $request->get_param( 'orderby' ) ),
 				'order'         => sanitize_key( (string) $request->get_param( 'order' ) ),
-			)
+			),
 		);
 	}
 
@@ -178,6 +180,7 @@ final class SearchQuery {
 	 * Read brand/custom taxonomy filters from REST request.
 	 *
 	 * @param \WP_REST_Request $request REST request.
+	 *
 	 * @return array<string, array<int, string>>
 	 */
 	private static function taxonomies_from_request( \WP_REST_Request $request ): array {
@@ -199,7 +202,30 @@ final class SearchQuery {
 	}
 
 	/**
+	 * Normalize a boolean REST parameter.
+	 *
+	 * @param \WP_REST_Request $request REST request.
+	 * @param string           $key     Parameter key.
+	 *
+	 * @return bool
+	 */
+	private static function request_bool( \WP_REST_Request $request, string $key ): bool {
+		$value = $request->get_param( $key );
+
+		if ( is_bool( $value ) ) {
+			return $value;
+		}
+
+		if ( is_string( $value ) ) {
+			return in_array( strtolower( $value ), array( '1', 'true', 'yes', 'on' ), true );
+		}
+
+		return (bool) $value;
+	}
+
+	/**
 	 * @param mixed $value Term value(s).
+	 *
 	 * @return array<int, string>
 	 */
 	private static function normalize_terms( $value ): array {
@@ -221,6 +247,7 @@ final class SearchQuery {
 
 	/**
 	 * @param mixed $value Attribute map.
+	 *
 	 * @return array<string, array<int, string>>
 	 */
 	private static function normalize_attributes( $value ): array {
@@ -242,6 +269,7 @@ final class SearchQuery {
 
 	/**
 	 * @param mixed $value Taxonomy map.
+	 *
 	 * @return array<string, array<int, string>>
 	 */
 	private static function normalize_taxonomies( $value ): array {

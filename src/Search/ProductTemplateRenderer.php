@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Render product cards using the theme's WooCommerce product-template block.
  *
@@ -45,8 +46,9 @@ final class ProductTemplateRenderer {
 	/**
 	 * Store parsed product-template block from a rendered product collection.
 	 *
-	 * @param string   $content Block HTML.
-	 * @param array    $block   Block data.
+	 * @param string               $content Block HTML.
+	 * @param array<string, mixed> $block   Block data.
+	 *
 	 * @return string
 	 */
 	public static function capture_from_collection_block( string $content, array $block ): string {
@@ -69,6 +71,7 @@ final class ProductTemplateRenderer {
 	 * Render a single product list item using the active product template.
 	 *
 	 * @param int $product_id Product post ID.
+	 *
 	 * @return string
 	 */
 	public static function render_product( int $product_id ): string {
@@ -85,7 +88,7 @@ final class ProductTemplateRenderer {
 		if ( $product->is_type( 'variable' ) && function_exists( 'wc_interactivity_api_load_variations' ) ) {
 			wc_interactivity_api_load_variations(
 				'I acknowledge that using experimental APIs means my theme or plugin will inevitably break in the next version of WooCommerce',
-				$product_id
+				$product_id,
 			);
 		}
 
@@ -108,19 +111,19 @@ final class ProductTemplateRenderer {
 			array(
 				'postType' => 'product',
 				'postId'   => $product_id,
-			)
+			),
 		);
 
 		$block_content = ( new WP_Block( $block_instance, $context ) )->render(
 			array(
 				'dynamic' => false,
-			)
+			),
 		);
 
 		if ( function_exists( 'wc_interactivity_api_load_product' ) ) {
 			wc_interactivity_api_load_product(
 				'I acknowledge that using experimental APIs means my theme or plugin will inevitably break in the next version of WooCommerce',
-				$product_id
+				$product_id,
 			);
 		}
 
@@ -131,13 +134,13 @@ final class ProductTemplateRenderer {
 					'productId'   => $product_id,
 					'variationId' => null,
 				),
-				'woocommerce/products'
+				'woocommerce/products',
 			);
 
 			$li_directives = trim(
 				'data-wp-interactive="woocommerce/product-collection" '
 				. $product_context_directive
-				. ' data-wp-key="product-item-' . $product_id . '"'
+				. ' data-wp-key="product-item-' . $product_id . '"',
 			);
 		}
 
@@ -213,6 +216,7 @@ final class ProductTemplateRenderer {
 	 * Build block context from product-collection attributes.
 	 *
 	 * @param array<string, mixed> $attrs Collection block attributes.
+	 *
 	 * @return array<string, mixed>
 	 */
 	private static function build_context_from_collection_attrs( array $attrs ): array {
@@ -273,7 +277,7 @@ final class ProductTemplateRenderer {
 				array_unshift(
 					$slugs,
 					'taxonomy-' . $term->taxonomy . '-' . $term->slug,
-					'taxonomy-' . $term->taxonomy
+					'taxonomy-' . $term->taxonomy,
 				);
 			}
 		}
@@ -285,6 +289,7 @@ final class ProductTemplateRenderer {
 	 * Load template content by slug from DB or theme files.
 	 *
 	 * @param string $slug Template slug.
+	 *
 	 * @return string
 	 */
 	private static function get_template_content_by_slug( string $slug ): string {
@@ -293,7 +298,7 @@ final class ProductTemplateRenderer {
 				array(
 					'slug__in' => array( $slug ),
 				),
-				'wp_template'
+				'wp_template',
 			);
 
 			if ( ! empty( $templates[0]->content ) ) {
@@ -320,6 +325,7 @@ final class ProductTemplateRenderer {
 	 *
 	 * @param array<int, array<string, mixed>> $blocks Block list.
 	 * @param string                           $name   Block name.
+	 *
 	 * @return array<string, mixed>|null
 	 */
 	private static function find_block( array $blocks, string $name ): ?array {

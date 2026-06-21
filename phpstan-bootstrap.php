@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Constants and optional plugin stubs for PHPStan analysis.
+ * Constants for PHPStan analysis.
  *
  * @package BePlusSmartSearch
  */
@@ -24,15 +24,4 @@ if ( ! defined( 'BEPLUS_SMART_SEARCH_PLUGIN_URL' ) ) {
 
 if ( ! defined( 'BEPLUS_SMART_SEARCH_PLUGIN_BASENAME' ) ) {
 	define( 'BEPLUS_SMART_SEARCH_PLUGIN_BASENAME', 'beplus-smart-search/beplus-smart-search.php' );
-}
-
-if ( ! function_exists( 'wc_get_page_permalink' ) ) {
-	function wc_get_page_permalink( string $page ): string {
-		return '';
-	}
-}
-
-if ( ! class_exists( 'WooCommerce', false ) ) {
-	class WooCommerce {
-	}
 }

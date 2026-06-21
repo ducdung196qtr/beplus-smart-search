@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Main plugin bootstrap.
  *
@@ -81,7 +82,7 @@ class Plugin {
 		load_plugin_textdomain(
 			'beplus-smart-search',
 			false,
-			dirname( BEPLUS_SMART_SEARCH_PLUGIN_BASENAME ) . '/languages'
+			dirname( BEPLUS_SMART_SEARCH_PLUGIN_BASENAME ) . '/languages',
 		);
 	}
 
@@ -107,6 +108,7 @@ class Plugin {
 	 * Register block category.
 	 *
 	 * @param array<int, array<string, mixed>> $categories Block categories.
+	 *
 	 * @return array<int, array<string, mixed>>
 	 */
 	public function register_block_category( array $categories ): array {
@@ -129,7 +131,7 @@ class Plugin {
 			SearchEngine::class,
 			function ( Container $container ) {
 				return new SearchEngine( $container );
-			}
+			},
 		);
 
 		$this->modules = array(

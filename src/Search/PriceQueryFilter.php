@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Applies WooCommerce-compatible price filtering to product queries.
  *
@@ -26,6 +27,7 @@ final class PriceQueryFilter {
 	 * Run wc_get_products with price filter clauses applied.
 	 *
 	 * @param array<string, mixed> $args wc_get_products args.
+	 *
 	 * @return object|array<int, mixed>
 	 */
 	public static function run( array $args ) {
@@ -44,6 +46,7 @@ final class PriceQueryFilter {
 	 *
 	 * @param array<string, mixed> $args     Query clauses.
 	 * @param \WP_Query            $wp_query WP_Query instance.
+	 *
 	 * @return array<string, mixed>
 	 */
 	public function add_clauses( array $args, \WP_Query $wp_query ): array {
@@ -86,6 +89,7 @@ final class PriceQueryFilter {
 	 * Join wc_product_meta_lookup to posts if not already joined.
 	 *
 	 * @param string $sql SQL join.
+	 *
 	 * @return string
 	 */
 	private function append_product_sorting_table_join( string $sql ): string {
@@ -120,6 +124,7 @@ final class PriceQueryFilter {
 	 * @param float  $price_filter Filter amount.
 	 * @param string $column       Lookup column (min_price or max_price).
 	 * @param string $operator     >= or <=.
+	 *
 	 * @return string
 	 */
 	private function get_price_filter_query_for_displayed_taxes( float $price_filter, string $column = 'min_price', string $operator = '>=' ): string {
@@ -142,7 +147,7 @@ final class PriceQueryFilter {
 			$or_queries[]          = $wpdb->prepare(
 				'( wc_product_meta_lookup.tax_class = %s AND wc_product_meta_lookup.`' . esc_sql( $column ) . '` ' . esc_sql( $operator ) . ' %f )',
 				$tax_class,
-				$adjusted_price_filter
+				$adjusted_price_filter,
 			);
 		}
 
@@ -151,7 +156,7 @@ final class PriceQueryFilter {
 				wc_product_meta_lookup.tax_status = "taxable" AND ( 0=1 OR ' . implode( ' OR ', $or_queries ) . ')
 				OR ( wc_product_meta_lookup.tax_status != "taxable" AND wc_product_meta_lookup.`' . esc_sql( $column ) . '` ' . esc_sql( $operator ) . ' %f )
 			) ',
-			$price_filter
+			$price_filter,
 		);
 	}
 
@@ -160,6 +165,7 @@ final class PriceQueryFilter {
 	 *
 	 * @param float  $price_filter Filter amount.
 	 * @param string $tax_class    Tax class slug.
+	 *
 	 * @return float
 	 */
 	private function adjust_price_filter_for_tax_class( float $price_filter, string $tax_class ): float {

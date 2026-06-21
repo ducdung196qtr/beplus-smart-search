@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Admin settings page.
  *
@@ -43,6 +44,7 @@ class SettingsPage extends AbstractModule {
 	 *
 	 * @param string $location Redirect URL.
 	 * @param int    $status   HTTP status.
+	 *
 	 * @return string
 	 */
 	public function preserve_settings_tab( string $location, int $status ): string {
@@ -86,7 +88,7 @@ class SettingsPage extends AbstractModule {
 			self::MENU_SLUG,
 			array( $this, 'render_page' ),
 			'dashicons-search',
-			56
+			56,
 		);
 
 		add_submenu_page(
@@ -95,7 +97,7 @@ class SettingsPage extends AbstractModule {
 			__( 'Settings', 'beplus-smart-search' ),
 			$cap,
 			self::MENU_SLUG,
-			array( $this, 'render_page' )
+			array( $this, 'render_page' ),
 		);
 	}
 
@@ -103,6 +105,7 @@ class SettingsPage extends AbstractModule {
 	 * Enqueue admin styles on settings page only.
 	 *
 	 * @param string $hook_suffix Current admin page hook.
+	 *
 	 * @return void
 	 */
 	public function enqueue_assets( string $hook_suffix ): void {
@@ -117,7 +120,7 @@ class SettingsPage extends AbstractModule {
 			'bpss-admin-settings',
 			$this->plugin_url . 'admin/css/settings.css',
 			array(),
-			$this->version
+			$this->version,
 		);
 
 		$asset_file = $this->plugin_dir . 'admin/js/settings.asset.php';
@@ -131,7 +134,7 @@ class SettingsPage extends AbstractModule {
 			$this->plugin_url . 'admin/js/settings.js',
 			$asset['dependencies'],
 			$asset['version'],
-			true
+			true,
 		);
 	}
 
@@ -156,8 +159,8 @@ class SettingsPage extends AbstractModule {
 				add_query_arg(
 					'tab',
 					'filters',
-					admin_url( 'admin.php?page=' . self::MENU_SLUG )
-				)
+					admin_url( 'admin.php?page=' . self::MENU_SLUG ),
+				),
 			);
 			exit;
 		}

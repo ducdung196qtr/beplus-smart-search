@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Facet helpers for block render.
  *
@@ -12,11 +13,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Count published products assigned to a taxonomy term (matches search query).
  *
- * @param \WP_Term $term Term object.
+ * @param WP_Term $term Term object.
+ *
  * @return int
  */
-function beplus_smart_search_count_products_for_term( \WP_Term $term ): int {
-	return \BePlusSmartSearch\Search\ProductQueryBuilder::count_for_term( $term );
+function beplus_smart_search_count_products_for_term( WP_Term $term ): int {
+	return BePlusSmartSearch\Search\ProductQueryBuilder::count_for_term( $term );
 }
 
 /**
@@ -33,7 +35,7 @@ function beplus_smart_search_get_product_categories(): array {
 		array(
 			'taxonomy'   => 'product_cat',
 			'hide_empty' => true,
-		)
+		),
 	);
 
 	return is_wp_error( $terms ) ? array() : $terms;
@@ -53,17 +55,16 @@ function beplus_smart_search_get_product_tags(): array {
 		array(
 			'taxonomy'   => 'product_tag',
 			'hide_empty' => true,
-		)
+		),
 	);
 
 	return is_wp_error( $terms ) ? array() : $terms;
 }
 
 /**
- * Get WooCommerce attribute taxonomies with terms.
+ * Get WooCommerce attribute taxonomy metadata (no terms loaded).
  *
- * @param array<int, string> $allowed_slugs Optional attribute slugs to include.
- * @return array<int, array{slug: string, label: string, taxonomy: string, terms: array<int, WP_Term>}>
+ * @return array<int, array{slug: string, label: string, taxonomy: string}>
  */
 function beplus_smart_search_get_all_attribute_definitions(): array {
 	if ( ! function_exists( 'wc_get_attribute_taxonomies' ) ) {
@@ -89,6 +90,7 @@ function beplus_smart_search_get_all_attribute_definitions(): array {
  * Whether an attribute slug is enabled for storefront search filters.
  *
  * @param string $slug Attribute slug.
+ *
  * @return bool
  */
 function beplus_smart_search_is_attribute_enabled( string $slug ): bool {
@@ -125,6 +127,7 @@ function beplus_smart_search_get_enabled_attribute_slugs(): array {
  * Get WooCommerce attribute taxonomies with terms.
  *
  * @param array<int, string> $allowed_slugs Optional attribute slugs to include.
+ *
  * @return array<int, array{slug: string, label: string, taxonomy: string, terms: array<int, WP_Term>}>
  */
 function beplus_smart_search_get_product_attributes( array $allowed_slugs = array() ): array {
@@ -152,7 +155,7 @@ function beplus_smart_search_get_product_attributes( array $allowed_slugs = arra
 			array(
 				'taxonomy'   => $taxonomy,
 				'hide_empty' => true,
-			)
+			),
 		);
 
 		if ( is_wp_error( $terms ) || empty( $terms ) ) {
@@ -174,14 +177,15 @@ function beplus_smart_search_get_product_attributes( array $allowed_slugs = arra
  * Build a hierarchical tree from a flat term list.
  *
  * @param array<int, WP_Term> $terms Terms.
- * @return array<int, array{term: WP_Term, children: array<int, array>}>
+ *
+ * @return array<int, array{term: WP_Term, children: array<int, array{term: WP_Term, children: array<int, mixed>}>}>
  */
 function beplus_smart_search_build_term_tree( array $terms ): array {
 	$indexed = array();
 	$tree    = array();
 
 	foreach ( $terms as $term ) {
-		if ( ! $term instanceof \WP_Term ) {
+		if ( ! $term instanceof WP_Term ) {
 			continue;
 		}
 		$indexed[ $term->term_id ] = array(
@@ -191,7 +195,7 @@ function beplus_smart_search_build_term_tree( array $terms ): array {
 	}
 
 	foreach ( $terms as $term ) {
-		if ( ! $term instanceof \WP_Term || ! isset( $indexed[ $term->term_id ] ) ) {
+		if ( ! $term instanceof WP_Term || ! isset( $indexed[ $term->term_id ] ) ) {
 			continue;
 		}
 
@@ -210,6 +214,7 @@ function beplus_smart_search_build_term_tree( array $terms ): array {
  * Get terms for a product taxonomy facet.
  *
  * @param string $taxonomy Taxonomy slug.
+ *
  * @return array<int, WP_Term>
  */
 function beplus_smart_search_get_taxonomy_terms( string $taxonomy ): array {
@@ -221,7 +226,7 @@ function beplus_smart_search_get_taxonomy_terms( string $taxonomy ): array {
 		array(
 			'taxonomy'   => $taxonomy,
 			'hide_empty' => true,
-		)
+		),
 	);
 
 	return is_wp_error( $terms ) ? array() : $terms;
@@ -245,6 +250,7 @@ function beplus_smart_search_get_brand_terms(): array {
  * Term IDs that should start expanded (current term + ancestors).
  *
  * @param string $taxonomy Taxonomy slug.
+ *
  * @return array<int, int>
  */
 function beplus_smart_search_get_expanded_term_ids( string $taxonomy ): array {
@@ -253,14 +259,14 @@ function beplus_smart_search_get_expanded_term_ids( string $taxonomy ): array {
 	}
 
 	$queried = get_queried_object();
-	if ( ! $queried instanceof \WP_Term || $queried->taxonomy !== $taxonomy ) {
+	if ( ! $queried instanceof WP_Term || $queried->taxonomy !== $taxonomy ) {
 		return array();
 	}
 
 	$ids = array( (int) $queried->term_id );
 	$ids = array_merge(
 		$ids,
-		array_map( 'intval', get_ancestors( $queried->term_id, $taxonomy, 'taxonomy' ) )
+		array_map( 'intval', get_ancestors( $queried->term_id, $taxonomy, 'taxonomy' ) ),
 	);
 
 	return array_values( array_unique( $ids ) );

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * PSR-11 compatible service container.
  *
@@ -36,6 +37,7 @@ class Container {
 	 *
 	 * @param string          $id    Service identifier.
 	 * @param callable|object $value Factory or instance.
+	 *
 	 * @return void
 	 */
 	public function set( string $id, $value ): void {
@@ -46,8 +48,10 @@ class Container {
 	/**
 	 * Retrieve a service instance.
 	 *
-	 * @template T
+	 * @template T of object
+	 *
 	 * @param class-string<T> $id Service identifier.
+	 *
 	 * @return T
 	 */
 	public function get( string $id ): object {
@@ -77,6 +81,7 @@ class Container {
 	 * Check if a service is registered.
 	 *
 	 * @param string $id Service identifier.
+	 *
 	 * @return bool
 	 */
 	public function has( string $id ): bool {
@@ -87,6 +92,7 @@ class Container {
 	 * Register multiple services.
 	 *
 	 * @param array<string, callable|object> $services Services map.
+	 *
 	 * @return void
 	 */
 	public function register( array $services ): void {

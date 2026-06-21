@@ -1,20 +1,4 @@
 #!/usr/bin/env bash
-# lint-staged helper: format staged PHP source files (skip generated block manifests).
+# Cross-platform wrapper — delegates to Node (PHP auto-discovery on Windows).
 set -euo pipefail
-
-files=()
-for file in "$@"; do
-	if [[ "${file}" == *index.asset.php ]] || [[ "${file}" == *settings.asset.php ]]; then
-		continue
-	fi
-	files+=("${file}")
-done
-
-if ((${#files[@]} == 0)); then
-	exit 0
-fi
-
-vendor/bin/php-cs-fixer fix \
-	--config=.php-cs-fixer.dist.php \
-	--allow-unsupported-php-version=yes \
-	-- "${files[@]}"
+exec node "$(dirname "$0")/lint-staged-php.mjs" "$@"

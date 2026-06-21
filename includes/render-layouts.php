@@ -12,11 +12,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Open a collapsible sidebar panel.
  *
- * @param string $title       Panel title.
- * @param string $section_mod BEM modifier.
- * @param array  $sidebar     Sidebar settings.
- * @param string $facet_panel Facet group key for contextual mode.
- * @param string $attr_slug   Attribute slug when facet panel is attribute.
+ * @param string               $title       Panel title.
+ * @param string               $section_mod BEM modifier.
+ * @param array<string, mixed> $sidebar     Sidebar settings.
+ * @param string               $facet_panel Facet group key for contextual mode.
+ * @param string               $attr_slug   Attribute slug when facet panel is attribute.
+ *
  * @return void
  */
 function beplus_smart_search_render_sidebar_panel_open( string $title, string $section_mod, array $sidebar, string $facet_panel = '', string $attr_slug = '' ): void {
@@ -30,7 +31,7 @@ function beplus_smart_search_render_sidebar_panel_open( string $title, string $s
 		$panel_attrs .= ' data-bpss-attr-slug="' . esc_attr( $attr_slug ) . '"';
 	}
 	?>
-	<div class="beplus-smart-search__panel beplus-smart-search__panel--<?php echo esc_attr( $section_mod ); ?>"<?php echo $panel_attrs; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+	<div class="beplus-smart-search__panel beplus-smart-search__panel--<?php echo esc_attr( $section_mod ); ?>"<?php echo $panel_attrs; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped?>>
 		<?php if ( $collapsible ) : ?>
 			<button
 				type="button"
@@ -66,20 +67,21 @@ function beplus_smart_search_render_sidebar_panel_close(): void {
 /**
  * Render a single taxonomy term row (and optional children).
  *
- * @param array{term: WP_Term, children: array<int, array>} $node         Tree node.
- * @param string                                            $filter_type  data-bpss-filter value.
- * @param string                                            $input_name   Input name.
- * @param string                                            $input_type   radio|checkbox.
- * @param string                                            $name_attr    Input name attribute.
- * @param string                                            $block_id     Block ID prefix.
- * @param string                                            $input_id     Input suffix.
- * @param array                                             $sidebar      Sidebar settings.
- * @param string                                            $attr_data    Attribute data HTML.
- * @param string                                            $multi_attr   Multi-select data HTML.
- * @param string                                            $current_slug Current term slug.
- * @param array<int, int>                                   $expand_ids   Expanded term IDs.
- * @param bool                                              $show_sub     Render nested children.
- * @param int                                               $depth        Nesting depth.
+ * @param array{term: WP_Term, children: array<int, array{term: WP_Term, children: array<int, mixed>}>} $node         Tree node.
+ * @param string                                                                                        $filter_type  data-bpss-filter value.
+ * @param string                                                                                        $input_name   Input name.
+ * @param string                                                                                        $input_type   radio|checkbox.
+ * @param string                                                                                        $name_attr    Input name attribute.
+ * @param string                                                                                        $block_id     Block ID prefix.
+ * @param string                                                                                        $input_id     Input suffix.
+ * @param array<string, mixed>                                                                          $sidebar      Sidebar settings.
+ * @param string                                                                                        $attr_data    Attribute data HTML.
+ * @param string                                                                                        $multi_attr   Multi-select data HTML.
+ * @param string                                                                                        $current_slug Current term slug.
+ * @param array<int, int>                                                                               $expand_ids   Expanded term IDs.
+ * @param bool                                                                                          $show_sub     Render nested children.
+ * @param int                                                                                           $depth        Nesting depth.
+ *
  * @return void
  */
 function beplus_smart_search_render_sidebar_taxonomy_item(
@@ -96,7 +98,7 @@ function beplus_smart_search_render_sidebar_taxonomy_item(
 	string $current_slug,
 	array $expand_ids,
 	bool $show_sub,
-	int $depth = 0
+	int $depth = 0,
 ): void {
 	$term         = $node['term'];
 	$children     = $show_sub ? $node['children'] : array();
@@ -134,7 +136,7 @@ function beplus_smart_search_render_sidebar_taxonomy_item(
 					<?php echo $is_current ? 'checked' : ''; ?>
 					data-bpss-filter="<?php echo esc_attr( $filter_type ); ?>"
 					data-bpss-term-url="<?php echo esc_url( $url ); ?>"
-					<?php echo $attr_data . $multi_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+					<?php echo $attr_data . $multi_attr; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped?>
 				/>
 				<span class="beplus-smart-search__list-text"><?php echo esc_html( $term->name ); ?></span>
 				<?php if ( $show_counts && ! $has_children ) : ?>
@@ -176,7 +178,7 @@ function beplus_smart_search_render_sidebar_taxonomy_item(
 						$current_slug,
 						$expand_ids,
 						$show_sub,
-						$depth + 1
+						$depth + 1,
 					);
 				}
 				?>
@@ -189,14 +191,15 @@ function beplus_smart_search_render_sidebar_taxonomy_item(
 /**
  * Render taxonomy list for sidebar.
  *
- * @param string              $filter_type   data-bpss-filter value.
- * @param string              $input_name    Input name.
- * @param string              $mode_key      Settings taxonomy mode key.
- * @param array<int, WP_Term> $terms         Terms.
- * @param string              $block_id      Block ID prefix.
- * @param string              $input_id      Input suffix.
- * @param array               $sidebar       Sidebar settings.
- * @param string              $attr_slug     Attribute slug.
+ * @param string               $filter_type data-bpss-filter value.
+ * @param string               $input_name  Input name.
+ * @param string               $mode_key    Settings taxonomy mode key.
+ * @param array<int, WP_Term>  $terms       Terms.
+ * @param string               $block_id    Block ID prefix.
+ * @param string               $input_id    Input suffix.
+ * @param array<string, mixed> $sidebar     Sidebar settings.
+ * @param string               $attr_slug   Attribute slug.
+ *
  * @return void
  */
 function beplus_smart_search_render_sidebar_taxonomy_list(
@@ -207,7 +210,7 @@ function beplus_smart_search_render_sidebar_taxonomy_list(
 	string $block_id,
 	string $input_id,
 	array $sidebar,
-	string $attr_slug = ''
+	string $attr_slug = '',
 ): void {
 	if ( empty( $terms ) ) {
 		return;
@@ -221,7 +224,7 @@ function beplus_smart_search_render_sidebar_taxonomy_list(
 		$taxonomy = $attr_slug;
 		if ( $taxonomy && is_tax( $taxonomy ) ) {
 			$queried = get_queried_object();
-			if ( $queried instanceof \WP_Term ) {
+			if ( $queried instanceof WP_Term ) {
 				$current_term_slug = (string) $queried->slug;
 			}
 		}
@@ -232,7 +235,7 @@ function beplus_smart_search_render_sidebar_taxonomy_list(
 		$taxonomy = 'product_cat';
 		if ( is_tax( 'product_cat' ) ) {
 			$queried = get_queried_object();
-			if ( $queried instanceof \WP_Term ) {
+			if ( $queried instanceof WP_Term ) {
 				$current_term_slug = (string) $queried->slug;
 			}
 		}
@@ -241,7 +244,7 @@ function beplus_smart_search_render_sidebar_taxonomy_list(
 		$taxonomy = 'product_tag';
 		if ( is_tax( 'product_tag' ) ) {
 			$queried = get_queried_object();
-			if ( $queried instanceof \WP_Term ) {
+			if ( $queried instanceof WP_Term ) {
 				$current_term_slug = (string) $queried->slug;
 			}
 		}
@@ -250,7 +253,7 @@ function beplus_smart_search_render_sidebar_taxonomy_list(
 		$taxonomy = wc_attribute_taxonomy_name( $attr_slug );
 		if ( is_tax( $taxonomy ) ) {
 			$queried = get_queried_object();
-			if ( $queried instanceof \WP_Term ) {
+			if ( $queried instanceof WP_Term ) {
 				$current_term_slug = (string) $queried->slug;
 			}
 		}
@@ -279,7 +282,7 @@ function beplus_smart_search_render_sidebar_taxonomy_list(
 
 	$tree = $show_sub ? beplus_smart_search_build_term_tree( $terms ) : array();
 	?>
-	<ul class="<?php echo esc_attr( $list_class ); ?>" role="list"<?php echo $list_attrs; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+	<ul class="<?php echo esc_attr( $list_class ); ?>" role="list"<?php echo $list_attrs; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped?>>
 		<?php if ( 'radio' === $input_type ) : ?>
 			<li class="beplus-smart-search__list-item">
 				<div class="beplus-smart-search__list-row">
@@ -293,7 +296,7 @@ function beplus_smart_search_render_sidebar_taxonomy_list(
 							<?php echo $current_term_slug ? '' : 'checked'; ?>
 							data-bpss-filter="<?php echo esc_attr( $filter_type ); ?>"
 							data-bpss-term-url="<?php echo esc_url( function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/' ) ); ?>"
-							<?php echo $attr_data; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+							<?php echo $attr_data; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped?>
 						/>
 						<span class="beplus-smart-search__list-text"><?php esc_html_e( 'All', 'beplus-smart-search' ); ?></span>
 					</label>
@@ -316,7 +319,7 @@ function beplus_smart_search_render_sidebar_taxonomy_list(
 					$multi_attr,
 					$current_term_slug,
 					$expand_ids,
-					true
+					true,
 				);
 			}
 		} else {
@@ -337,7 +340,7 @@ function beplus_smart_search_render_sidebar_taxonomy_list(
 					$multi_attr,
 					$current_term_slug,
 					$expand_ids,
-					false
+					false,
 				);
 			}
 		}
@@ -351,6 +354,7 @@ function beplus_smart_search_render_sidebar_taxonomy_list(
  *
  * @param string               $block_id Block ID.
  * @param array<string, mixed> $price    Price settings.
+ *
  * @return void
  */
 function beplus_smart_search_render_sidebar_price_section( string $block_id, array $price ): void {
@@ -440,6 +444,7 @@ function beplus_smart_search_render_sidebar_price_section( string $block_id, arr
  *
  * @param string               $block_id Block ID.
  * @param array<string, mixed> $price    Price settings.
+ *
  * @return void
  */
 function beplus_smart_search_render_sidebar_price_segments( string $block_id, array $price ): void {
@@ -476,7 +481,7 @@ function beplus_smart_search_render_sidebar_price_segments( string $block_id, ar
 				$label = beplus_smart_search_format_price_segment_label(
 					$min,
 					$max,
-					isset( $segment['label'] ) ? (string) $segment['label'] : ''
+					isset( $segment['label'] ) ? (string) $segment['label'] : '',
 				);
 				$slug  = $min . '-' . ( $max > 0 ? (string) $max : 'up' );
 				?>
@@ -507,6 +512,7 @@ function beplus_smart_search_render_sidebar_price_segments( string $block_id, ar
  * Render rating filter panel.
  *
  * @param string $block_id Block ID prefix.
+ *
  * @return void
  */
 function beplus_smart_search_render_sidebar_rating_section( string $block_id ): void {
@@ -535,6 +541,7 @@ function beplus_smart_search_render_sidebar_rating_section( string $block_id ): 
  * Render featured products checkbox panel.
  *
  * @param string $block_id Block ID prefix.
+ *
  * @return void
  */
 function beplus_smart_search_render_sidebar_featured_section( string $block_id ): void {
@@ -553,14 +560,15 @@ function beplus_smart_search_render_sidebar_featured_section( string $block_id )
 /**
  * Render one sidebar filter section by sort key.
  *
- * @param string               $section_id          Section key.
- * @param array<string, mixed> $attrs               Block attributes.
- * @param string               $block_id            Block ID prefix.
- * @param array<int, WP_Term>  $categories          Product categories.
- * @param array<int, WP_Term>  $tags                Product tags.
- * @param array<string, array> $attributes_by_slug  Attributes keyed by slug.
- * @param array<string, mixed> $sidebar             Sidebar settings.
- * @param array<string, mixed> $price_settings      Price settings.
+ * @param string                              $section_id         Section key.
+ * @param array<string, mixed>                $attrs              Block attributes.
+ * @param string                              $block_id           Block ID prefix.
+ * @param array<int, WP_Term>                 $categories         Product categories.
+ * @param array<int, WP_Term>                 $tags               Product tags.
+ * @param array<string, array<string, mixed>> $attributes_by_slug Attributes keyed by slug.
+ * @param array<string, mixed>                $sidebar            Sidebar settings.
+ * @param array<string, mixed>                $price_settings     Price settings.
+ *
  * @return void
  */
 function beplus_smart_search_render_sidebar_filter_section(
@@ -571,7 +579,7 @@ function beplus_smart_search_render_sidebar_filter_section(
 	array $tags,
 	array $attributes_by_slug,
 	array $sidebar,
-	array $price_settings
+	array $price_settings,
 ): void {
 	switch ( $section_id ) {
 		case 'keyword':
@@ -679,7 +687,7 @@ function beplus_smart_search_render_sidebar_filter_section(
 				break;
 			}
 			$brand_object = get_taxonomy( $brand_taxonomy );
-			$brand_label  = $brand_object instanceof \WP_Taxonomy ? $brand_object->labels->name : __( 'Brand', 'beplus-smart-search' );
+			$brand_label  = $brand_object instanceof WP_Taxonomy ? $brand_object->labels->name : __( 'Brand', 'beplus-smart-search' );
 			beplus_smart_search_render_sidebar_panel_open( $brand_label, 'brand', $sidebar, 'brand', $brand_taxonomy );
 			beplus_smart_search_render_sidebar_taxonomy_list(
 				'brand',
@@ -689,7 +697,7 @@ function beplus_smart_search_render_sidebar_filter_section(
 				$block_id,
 				'brand',
 				$sidebar,
-				$brand_taxonomy
+				$brand_taxonomy,
 			);
 			beplus_smart_search_render_sidebar_panel_close();
 			break;
@@ -710,7 +718,7 @@ function beplus_smart_search_render_sidebar_filter_section(
 					$block_id,
 					'attr-' . $attribute['slug'],
 					$sidebar,
-					$attribute['slug']
+					$attribute['slug'],
 				);
 				beplus_smart_search_render_sidebar_panel_close();
 				break;
@@ -728,7 +736,7 @@ function beplus_smart_search_render_sidebar_filter_section(
 					'custom-' . $taxonomy,
 					$sidebar,
 					'custom_tax',
-					$taxonomy
+					$taxonomy,
 				);
 				beplus_smart_search_render_sidebar_taxonomy_list(
 					'custom_tax',
@@ -738,7 +746,7 @@ function beplus_smart_search_render_sidebar_filter_section(
 					$block_id,
 					'tax-' . $taxonomy,
 					$sidebar,
-					$taxonomy
+					$taxonomy,
 				);
 				beplus_smart_search_render_sidebar_panel_close();
 			}
@@ -749,12 +757,13 @@ function beplus_smart_search_render_sidebar_filter_section(
 /**
  * Render one inline filter section by sort key.
  *
- * @param string               $section_id         Section key.
- * @param array<string, mixed> $attrs              Block attributes.
- * @param string               $block_id           Block ID prefix.
- * @param array<int, WP_Term>  $categories         Product categories.
- * @param array<int, WP_Term>  $tags               Product tags.
- * @param array<string, array> $attributes_by_slug Attributes keyed by slug.
+ * @param string                              $section_id         Section key.
+ * @param array<string, mixed>                $attrs              Block attributes.
+ * @param string                              $block_id           Block ID prefix.
+ * @param array<int, WP_Term>                 $categories         Product categories.
+ * @param array<int, WP_Term>                 $tags               Product tags.
+ * @param array<string, array<string, mixed>> $attributes_by_slug Attributes keyed by slug.
+ *
  * @return void
  */
 function beplus_smart_search_render_inline_filter_section(
@@ -763,7 +772,7 @@ function beplus_smart_search_render_inline_filter_section(
 	string $block_id,
 	array $categories,
 	array $tags,
-	array $attributes_by_slug
+	array $attributes_by_slug,
 ): void {
 	switch ( $section_id ) {
 		case 'keyword':
@@ -879,7 +888,7 @@ function beplus_smart_search_render_inline_filter_section(
 				break;
 			}
 			$brand_object = get_taxonomy( $brand_taxonomy );
-			$brand_label  = $brand_object instanceof \WP_Taxonomy ? $brand_object->labels->name : __( 'Brand', 'beplus-smart-search' );
+			$brand_label  = $brand_object instanceof WP_Taxonomy ? $brand_object->labels->name : __( 'Brand', 'beplus-smart-search' );
 			?>
 			<div class="beplus-smart-search__field beplus-smart-search__field--brand" data-bpss-facet-panel="brand" data-bpss-taxonomy="<?php echo esc_attr( $brand_taxonomy ); ?>">
 				<label class="screen-reader-text" for="<?php echo esc_attr( $block_id ); ?>-brand">
@@ -954,11 +963,12 @@ function beplus_smart_search_render_inline_filter_section(
 /**
  * Render inline (horizontal) filter form.
  *
- * @param array<string, mixed> $attrs           Block attributes.
- * @param string               $block_id        Block ID prefix.
- * @param array<int, WP_Term>  $categories      Product categories.
- * @param array<int, WP_Term>  $tags            Product tags.
- * @param array<int, array>    $attributes_list Attribute definitions.
+ * @param array<string, mixed>                                                                         $attrs           Block attributes.
+ * @param string                                                                                       $block_id        Block ID prefix.
+ * @param array<int, WP_Term>                                                                          $categories      Product categories.
+ * @param array<int, WP_Term>                                                                          $tags            Product tags.
+ * @param array<int, array{slug: string, label: string, taxonomy: string, terms: array<int, WP_Term>}> $attributes_list Attribute definitions.
+ *
  * @return void
  */
 function beplus_smart_search_render_inline_form( array $attrs, string $block_id, array $categories, array $tags, array $attributes_list ): void {
@@ -979,7 +989,7 @@ function beplus_smart_search_render_inline_form( array $attrs, string $block_id,
 			$block_id,
 			$categories,
 			$tags,
-			$attributes_by_slug
+			$attributes_by_slug,
 		);
 	}
 }
@@ -987,12 +997,13 @@ function beplus_smart_search_render_inline_form( array $attrs, string $block_id,
 /**
  * Render sidebar filter form matching storefront design.
  *
- * @param array<string, mixed> $attrs           Block attributes.
- * @param string               $block_id        Block ID prefix.
- * @param array<int, WP_Term>  $categories      Product categories.
- * @param array<int, WP_Term>  $tags            Product tags.
- * @param array<int, array>    $attributes_list Attribute definitions.
- * @param array<string, mixed> $sidebar         Sidebar settings.
+ * @param array<string, mixed>                                                                         $attrs           Block attributes.
+ * @param string                                                                                       $block_id        Block ID prefix.
+ * @param array<int, WP_Term>                                                                          $categories      Product categories.
+ * @param array<int, WP_Term>                                                                          $tags            Product tags.
+ * @param array<int, array{slug: string, label: string, taxonomy: string, terms: array<int, WP_Term>}> $attributes_list Attribute definitions.
+ * @param array<string, mixed>                                                                         $sidebar         Sidebar settings.
+ *
  * @return void
  */
 function beplus_smart_search_render_sidebar_form( array $attrs, string $block_id, array $categories, array $tags, array $attributes_list, array $sidebar ): void {
@@ -1016,7 +1027,7 @@ function beplus_smart_search_render_sidebar_form( array $attrs, string $block_id
 			$tags,
 			$attributes_by_slug,
 			$sidebar,
-			$price_settings
+			$price_settings,
 		);
 	}
 }

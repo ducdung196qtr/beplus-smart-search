@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Abstract search provider.
  *
@@ -37,6 +38,7 @@ abstract class AbstractProvider {
 	 * Execute search.
 	 *
 	 * @param SearchQuery $query Search query.
+	 *
 	 * @return array{items: array<int, array<string, mixed>>, total: int, totalPages: int, page: int, perPage: int}
 	 */
 	abstract public function search( SearchQuery $query ): array;

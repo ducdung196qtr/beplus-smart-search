@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Align WooCommerce catalog per-page with plugin settings when search block is present.
  *
@@ -22,11 +23,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class ShopQueryIntegration extends AbstractModule {
 
 	/**
-	 * Block name to detect.
-	 */
-	private const BLOCK_NAME = 'beplus-smart-search/advanced-woo-search';
-
-	/**
 	 * Register hooks.
 	 *
 	 * @return void
@@ -42,6 +38,7 @@ final class ShopQueryIntegration extends AbstractModule {
 	 * Override WooCommerce loop size (inherit product collection uses main query).
 	 *
 	 * @param int|string $per_page Current per page.
+	 *
 	 * @return int
 	 */
 	public function filter_loop_shop_per_page( $per_page ): int {
@@ -58,6 +55,7 @@ final class ShopQueryIntegration extends AbstractModule {
 	 * @param array<string, mixed> $query Query vars.
 	 * @param WP_Block             $block Block instance.
 	 * @param int                  $page  Page number.
+	 *
 	 * @return array<string, mixed>
 	 */
 	public function filter_query_loop_block( array $query, WP_Block $block, int $page ): array {
@@ -86,6 +84,7 @@ final class ShopQueryIntegration extends AbstractModule {
 	 * Ensure main product archive query matches plugin per page.
 	 *
 	 * @param WP_Query $query Query instance.
+	 *
 	 * @return void
 	 */
 	public function filter_main_product_query( WP_Query $query ): void {
@@ -108,6 +107,7 @@ final class ShopQueryIntegration extends AbstractModule {
 	 * Ensure product collection block query uses plugin per-page setting.
 	 *
 	 * @param array<string, mixed> $parsed_block Parsed block data.
+	 *
 	 * @return array<string, mixed>
 	 */
 	public function filter_product_collection_block( array $parsed_block ): array {

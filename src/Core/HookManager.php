@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Hook name constants for extensibility.
  *

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Centralized asset registration.
  *
@@ -40,7 +41,7 @@ class AssetLoader extends AbstractModule {
 			false,
 			array(),
 			$this->version,
-			true
+			true,
 		);
 	}
 
@@ -59,7 +60,7 @@ class AssetLoader extends AbstractModule {
 			false,
 			array(),
 			$this->version,
-			true
+			true,
 		);
 
 		wp_enqueue_script( 'bpss-data' );

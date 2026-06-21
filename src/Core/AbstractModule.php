@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Abstract module base class.
  *

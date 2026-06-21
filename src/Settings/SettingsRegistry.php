@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Plugin settings registry.
  *
@@ -48,7 +49,7 @@ class SettingsRegistry extends AbstractModule {
 				'type'              => 'array',
 				'sanitize_callback' => array( $this, 'sanitize_settings' ),
 				'default'           => $this->get_defaults(),
-			)
+			),
 		);
 	}
 
@@ -143,6 +144,7 @@ class SettingsRegistry extends AbstractModule {
 	 *
 	 * @param array<string, mixed> $defaults Defaults.
 	 * @param array<string, mixed> $stored   Stored values.
+	 *
 	 * @return array<string, mixed>
 	 */
 	private function merge_recursive( array $defaults, array $stored ): array {
@@ -163,6 +165,7 @@ class SettingsRegistry extends AbstractModule {
 	 * Sanitize settings input.
 	 *
 	 * @param mixed $input Raw input.
+	 *
 	 * @return array<string, mixed>
 	 */
 	public function sanitize_settings( $input ): array {
@@ -207,7 +210,7 @@ class SettingsRegistry extends AbstractModule {
 				$key = 'attribute:' . $slug;
 
 				$taxonomy_modes[ $key ] = $this->sanitize_mode(
-					(string) ( $modes_input[ $key ] ?? $modes_input['attribute'] ?? 'checkbox' )
+					(string) ( $modes_input[ $key ] ?? $modes_input['attribute'] ?? 'checkbox' ),
 				);
 				$taxonomy_sub_modes[ $key ] = ! empty( $sub_modes_input[ $key ] );
 			}
@@ -256,6 +259,7 @@ class SettingsRegistry extends AbstractModule {
 	 * Sanitize extended facet settings.
 	 *
 	 * @param array<string, mixed> $input Raw facets input.
+	 *
 	 * @return array<string, mixed>
 	 */
 	private function sanitize_facets( array $input ): array {
@@ -336,6 +340,7 @@ class SettingsRegistry extends AbstractModule {
 	 * Sanitize per-attribute visibility toggles.
 	 *
 	 * @param array<string, mixed> $sidebar_input Raw sidebar input.
+	 *
 	 * @return array<string, bool>
 	 */
 	private function sanitize_attribute_enabled( array $sidebar_input ): array {
@@ -361,6 +366,7 @@ class SettingsRegistry extends AbstractModule {
 	 * Sanitize taxonomy selection mode.
 	 *
 	 * @param string $mode Raw mode.
+	 *
 	 * @return string
 	 */
 	private function sanitize_mode( string $mode ): string {
@@ -371,6 +377,7 @@ class SettingsRegistry extends AbstractModule {
 	 * Sanitize facet display mode.
 	 *
 	 * @param string $mode Raw mode.
+	 *
 	 * @return string
 	 */
 	private function sanitize_facet_mode( string $mode ): string {
@@ -381,6 +388,7 @@ class SettingsRegistry extends AbstractModule {
 	 * Sanitize price display mode.
 	 *
 	 * @param string $display Raw display mode.
+	 *
 	 * @return string
 	 */
 	private function sanitize_price_display( string $display ): string {
@@ -391,6 +399,7 @@ class SettingsRegistry extends AbstractModule {
 	 * Sanitize price segments.
 	 *
 	 * @param array<int, mixed> $segments Raw segments.
+	 *
 	 * @return array<int, array{min: float, max: float, label: string}>
 	 */
 	private function sanitize_price_segments( array $segments ): array {

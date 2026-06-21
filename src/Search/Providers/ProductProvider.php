@@ -1,4 +1,5 @@
 <?php
+
 /**
  * WooCommerce product search provider.
  *
@@ -40,6 +41,7 @@ class ProductProvider extends AbstractProvider {
 	 * Search products.
 	 *
 	 * @param SearchQuery $query Search query.
+	 *
 	 * @return array{items: array<int, array<string, mixed>>, total: int, totalPages: int, page: int, perPage: int}
 	 */
 	public function search( SearchQuery $query ): array {
@@ -74,11 +76,14 @@ class ProductProvider extends AbstractProvider {
 	 * Normalize product to REST item.
 	 *
 	 * @param WC_Product $product Product object.
+	 *
 	 * @return array<string, mixed>
 	 */
 	private function normalize_product( WC_Product $product ): array {
-		$image_id  = $product->get_image_id();
-		$image_url = $image_id ? wp_get_attachment_image_url( $image_id, 'woocommerce_thumbnail' ) : wc_placeholder_img_src( 'woocommerce_thumbnail' );
+		$image_id  = (int) $product->get_image_id();
+		$image_url = $image_id > 0
+			? wp_get_attachment_image_url( $image_id, 'woocommerce_thumbnail' )
+			: wc_placeholder_img_src( 'woocommerce_thumbnail' );
 		$html      = ProductTemplateRenderer::render_product( $product->get_id() );
 
 		return array(
@@ -98,6 +103,7 @@ class ProductProvider extends AbstractProvider {
 	 * Empty result set.
 	 *
 	 * @param SearchQuery $query Search query.
+	 *
 	 * @return array{items: array<int, array<string, mixed>>, total: int, totalPages: int, page: int, perPage: int}
 	 */
 	private function empty_result( SearchQuery $query ): array {

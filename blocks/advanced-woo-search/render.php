@@ -4,9 +4,9 @@
  *
  * @package BePlusSmartSearch
  *
- * @var array    $attributes Block attributes.
- * @var string   $content    Block content.
- * @var WP_Block $block      Block instance.
+ * @var array<string, mixed> $attributes Block attributes.
+ * @var string               $content    Block content.
+ * @var WP_Block             $block      Block instance.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -81,14 +81,14 @@ $wrapper_attrs = get_block_wrapper_attributes(
 		'data-bpss-advanced-woo-search' => '',
 		'data-results-mode'             => esc_attr( $attrs['resultsMode'] ),
 		'data-results-selector'         => esc_attr( $attrs['resultsSelector'] ),
-		'data-debounce-ms'              => (int) $attrs['debounceMs'],
-		'data-min-chars'                => (int) $attrs['minChars'],
-		'data-per-page'                 => (int) $attrs['perPage'],
+		'data-debounce-ms'              => (string) (int) $attrs['debounceMs'],
+		'data-min-chars'                => (string) (int) $attrs['minChars'],
+		'data-per-page'                 => (string) (int) $attrs['perPage'],
 		'data-live-search'              => $attrs['enableLiveSearch'] ? '1' : '0',
 		'data-show-result-count'        => $attrs['showResultCount'] ? '1' : '0',
 		'data-facet-mode'               => esc_attr( $facet_mode ),
 		'data-bpss-filter-taxonomies'   => esc_attr( implode( ',', $filter_taxonomies ) ),
-	)
+	),
 );
 
 $categories      = $attrs['showCategory'] ? beplus_smart_search_get_product_categories() : array();
@@ -99,7 +99,7 @@ $attributes_list         = ! empty( $enabled_attribute_slugs )
 	: array();
 
 ?>
-<div <?php echo $wrapper_attrs; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+<div <?php echo $wrapper_attrs; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped?>>
 	<form
 		class="<?php echo esc_attr( $form_class ); ?>"
 		role="search"
