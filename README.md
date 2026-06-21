@@ -134,13 +134,32 @@ Blocks register via `BlockRegistry` — auto-discovers `blocks/*/block.json`.
 
 ## Git hooks
 
-After `npm install`, Husky runs on pre-commit:
+After `npm install`, Husky runs quality gates:
 
-1. `lint-staged` — format staged PHP, typecheck staged TS
-2. `npm run lint:php:all`
+| Hook | When | Checks |
+|------|------|--------|
+| **pre-commit** | `git commit` | `lint-staged` + PHP lint |
+| **pre-push** | `git push` | Composer `vendor/` + full `npm run ci` |
 
-Skip once: `git commit --no-verify`  
-Dry-run: `npm run precommit`
+Skip once: `git commit --no-verify` or `git push --no-verify`  
+Dry-run before push: **`npm run prepush`**
+
+**Push with checks (recommended):**
+
+```bash
+npm run git:push
+```
+
+### Composer — do not use global `composer`
+
+This project has **no global Composer requirement**. Always use:
+
+```bash
+npm run composer:install    # ✅ correct
+composer install            # ❌ will fail on Windows if Composer is not on PATH
+```
+
+If `vendor/` is missing, hooks block commit/push until you run `npm run composer:install`.
 
 ---
 

@@ -105,11 +105,25 @@ Document all hooks in `src/Core/HookManager.php`:
 
 ## Quality checks (from plugin root)
 
-When tooling is set up:
+**First-time setup:**
 
-- `npm install && npm run composer:install` — JS + PHP dev dependencies
+```bash
+npm install
+npm run composer:install   # NOT `composer install`
+```
+
+**Before commit / push:**
+
+| Command | When |
+|---------|------|
+| `npm run precommit` | Dry-run pre-commit |
+| `npm run prepush` | Dry-run pre-push (Composer + CI) |
+| `npm run git:push` | Push with prepush checks |
+
+Husky **pre-push** runs: `ensure:composer` → `typecheck` → `lint:php:all` → `build`.
+
 - `npm run build` — compile assets
-- `npm run lint:php:all` — PHPStan + CS Fixer
+- `npm run lint:php:all` — PHPStan + CS Fixer (needs `vendor/` from composer:install)
 - Manual: activate plugin, test search bar block, REST endpoint, admin settings save
 
 ## Security baseline
