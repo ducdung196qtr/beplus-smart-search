@@ -161,7 +161,7 @@ Creates `beplus-smart-search-v{version}.zip` in the plugin root (excludes `node_
 |------|---------|
 | [`AGENTS.md`](./AGENTS.md) | Agent / contributor briefing |
 | [`Document Plugin.md`](./Document Plugin.md) | Architecture & naming standards |
-| [`docs/github-setup.md`](./docs/github-setup.md) | GitHub MCP + first push |
+| [`docs/advanced-woo-search-block.md`](./docs/advanced-woo-search-block.md) | Primary block spec |
 | [`docs/spotlight-search-reference.md`](./docs/spotlight-search-reference.md) | UX reference from Nextora |
 
 ---
@@ -170,6 +170,7 @@ Creates `beplus-smart-search-v{version}.zip` in the plugin root (excludes `node_
 
 | Problem | Fix |
 |---------|-----|
+| `git is not recognized` | Run `npm run setup:git-path`, reopen terminal, or use `npm run git -- status` |
 | `composer is not recognized` | Use `npm run composer:install`, not `composer install` |
 | `Could not find PHP` | Run `npm run find-php`, set `PHP_BIN` in `.env`, or use Local site shell |
 | Block missing in editor | Run `npm run build:blocks`, reload wp-admin |

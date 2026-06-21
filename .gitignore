@@ -5,6 +5,10 @@ vendor/
 *.log
 .DS_Store
 beplus-smart-search-v*.zip
+blocks/**/view.js
 tools/composer.phar
 .env
 .cursor/mcp-wordpress.log
+scripts/git.ps1
+scripts/setup-git-path.ps1
+
