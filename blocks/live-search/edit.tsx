@@ -105,11 +105,34 @@ export default function Edit( {
 						label={ __( 'Enable suggestions', 'beplus-smart-search' ) }
 						checked={ attributes.enableSuggestions }
 						onChange={ ( value ) => setAttributes( { enableSuggestions: value } ) }
-						help={ __(
-							'Show inline autocomplete inside the search input.',
-							'beplus-smart-search'
-						) }
 					/>
+					{ attributes.enableSuggestions && (
+						<RadioControl
+							label={ __( 'Suggestions layout', 'beplus-smart-search' ) }
+							selected={ attributes.suggestionLayout ?? 'inline' }
+							options={ [
+								{
+									label: __(
+										'Inline (autocomplete in search box)',
+										'beplus-smart-search',
+									),
+									value: 'inline',
+								},
+								{
+									label: __(
+										'Tags (below search, above results)',
+										'beplus-smart-search',
+									),
+									value: 'tags',
+								},
+							] }
+							onChange={ ( value ) =>
+								setAttributes( {
+									suggestionLayout: value as BlockAttributes['suggestionLayout'],
+								} )
+							}
+						/>
+					) }
 					<ToggleControl
 						label={ __( 'Misspelling fix', 'beplus-smart-search' ) }
 						checked={ attributes.misspellingFix }

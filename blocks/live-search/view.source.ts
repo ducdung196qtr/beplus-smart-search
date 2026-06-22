@@ -8,6 +8,7 @@
 	'use strict';
 
 	const SELECTOR = '[data-bpss-live-search]';
+	const URL_KEYWORD_KEY = 'bpss_s';
 
 	interface BpssData {
 		restUrl: string;
@@ -22,12 +23,15 @@
 		minChars: number;
 		maxResults: number;
 		enableSuggestions: boolean;
+		suggestionLayout: 'inline' | 'tags';
 		misspellingFix: boolean;
 		exactMatch: boolean;
 		searchLogic: string;
 		showAddToCart: boolean;
 		showViewAll: boolean;
 		shopUrl: string;
+		catalogActionUrl: string;
+		needsPostType: boolean;
 		searchScope: string;
 		limitCategories: string[];
 		searchFields: string[];
@@ -86,12 +90,19 @@
 			minChars: parseInt( root.dataset.minChars || '2', 10 ),
 			maxResults: parseInt( root.dataset.maxResults || '6', 10 ),
 			enableSuggestions: root.dataset.enableSuggestions !== '0',
+			suggestionLayout:
+				root.dataset.suggestionLayout === 'tags' ? 'tags' : 'inline',
 			misspellingFix: root.dataset.misspellingFix !== '0',
 			exactMatch: root.dataset.exactMatch === '1',
 			searchLogic: root.dataset.searchLogic || 'or',
 			showAddToCart: root.dataset.showAddToCart !== '0',
 			showViewAll: root.dataset.showViewAll !== '0',
 			shopUrl: root.dataset.shopUrl || getBpssData().shopUrl,
+			catalogActionUrl:
+				root.dataset.catalogAction ||
+				root.dataset.shopUrl ||
+				getBpssData().shopUrl,
+			needsPostType: root.dataset.needsPostType === '1',
 			searchScope: root.dataset.searchScope || 'all',
 			limitCategories: limitRaw
 				.split( ',' )
@@ -283,6 +294,7 @@
 		const form = root.querySelector< HTMLFormElement >( '[data-bpss-live-form]' );
 		const input = root.querySelector< HTMLInputElement >( '[data-bpss-live-input]' );
 		const dropdown = root.querySelector< HTMLElement >( '[data-bpss-live-dropdown]' );
+		const suggestionsEl = root.querySelector< HTMLElement >( '[data-bpss-live-suggestions]' );
 		const productsEl = root.querySelector< HTMLElement >( '[data-bpss-live-products]' );
 		const footerEl = root.querySelector< HTMLElement >( '[data-bpss-live-footer]' );
 		const viewAllLink = root.querySelector< HTMLAnchorElement >( '[data-bpss-live-view-all]' );
@@ -315,8 +327,10 @@
 		const ghostLayer = ghostEl;
 		const ghostPrefixEl = ghostPrefix;
 		const ghostSuffixEl = ghostSuffix;
+		const suggestionsBox = suggestionsEl;
 
 		const config = parseConfig( root );
+		const isTagSuggestions = config.suggestionLayout === 'tags';
 		let abortController: AbortController | null = null;
 		let suggestAbort: AbortController | null = null;
 		let activeIndex = -1;
@@ -401,16 +415,30 @@
 				.join( '' );
 		}
 
-		function buildViewAllUrl( keyword: string ): string {
-			const url = new URL( config.shopUrl, window.location.origin );
+		function buildCatalogSearchUrl( keyword: string ): string {
+			const url = new URL( config.catalogActionUrl, window.location.origin );
+			url.searchParams.delete( 's' );
+			if ( config.needsPostType ) {
+				url.searchParams.set( 'post_type', 'product' );
+			} else {
+				url.searchParams.delete( 'post_type' );
+			}
 			if ( keyword ) {
-				url.searchParams.set( 's', keyword );
+				url.searchParams.set( URL_KEYWORD_KEY, keyword );
+			} else {
+				url.searchParams.delete( URL_KEYWORD_KEY );
 			}
 			const cats = getActiveCategories();
 			if ( cats.length ) {
 				url.searchParams.set( 'product_cat', cats.join( ',' ) );
+			} else {
+				url.searchParams.delete( 'product_cat' );
 			}
 			return url.toString();
+		}
+
+		function buildViewAllUrl( keyword: string ): string {
+			return buildCatalogSearchUrl( keyword );
 		}
 
 		function measureKeywordWidth( keyword: string ): number {
@@ -426,12 +454,18 @@
 			return context.measureText( keyword ).width;
 		}
 
-		function clearGhost(): void {
+		function clearSuggestions(): void {
 			ghostPrefixEl.textContent = '';
 			ghostSuffixEl.textContent = '';
 			ghostSuffixEl.style.left = '';
 			ghostLayer.hidden = true;
 			ghostLayer.style.transform = '';
+
+			if ( suggestionsBox ) {
+				suggestionsBox.hidden = true;
+				suggestionsBox.innerHTML = '';
+			}
+
 			suggestions = [];
 			suggestionIndex = 0;
 		}
@@ -441,6 +475,70 @@
 			ghostLayer.style.transform = offset
 				? `translateX(${-offset}px)`
 				: '';
+		}
+
+		function renderSuggestionTags( keyword: string ): void {
+			if ( ! suggestionsBox || ! suggestions.length ) {
+				if ( suggestionsBox ) {
+					suggestionsBox.hidden = true;
+					suggestionsBox.innerHTML = '';
+				}
+				return;
+			}
+
+			suggestionsBox.innerHTML = suggestions
+				.map( ( suggestion, index ) => {
+					return `<button
+						type="button"
+						class="beplus-smart-search__live-suggestion-tag"
+						data-bpss-suggestion
+						data-index="${index}"
+					>${highlightKeywords( suggestion, keyword )}</button>`;
+				} )
+				.join( '' );
+			suggestionsBox.hidden = false;
+		}
+
+		function updateInlineGhost( keyword: string ): void {
+			const suggestion = suggestions[ suggestionIndex ] || '';
+			const suffix = getCompletionSuffix( keyword, suggestion );
+
+			if ( ! suffix ) {
+				ghostPrefixEl.textContent = '';
+				ghostSuffixEl.textContent = '';
+				ghostSuffixEl.style.left = '';
+				ghostLayer.hidden = true;
+				ghostLayer.style.transform = '';
+				return;
+			}
+
+			ghostPrefixEl.textContent = '';
+			ghostSuffixEl.textContent = suffix;
+			const inputStyle = window.getComputedStyle( inputEl );
+			const padLeft = Number.parseFloat( inputStyle.paddingLeft ) || 0;
+			ghostSuffixEl.style.left = `${padLeft + measureKeywordWidth( keyword )}px`;
+			ghostLayer.hidden = false;
+			syncGhostScroll();
+		}
+
+		function updateSuggestionsUi( keyword: string ): void {
+			if ( ! config.enableSuggestions || ! suggestions.length ) {
+				clearSuggestions();
+				return;
+			}
+
+			if ( isTagSuggestions ) {
+				ghostLayer.hidden = true;
+				renderSuggestionTags( keyword );
+				return;
+			}
+
+			if ( suggestionsBox ) {
+				suggestionsBox.hidden = true;
+				suggestionsBox.innerHTML = '';
+			}
+
+			updateInlineGhost( keyword );
 		}
 
 		function cancelPendingRequests(): void {
@@ -458,7 +556,7 @@
 
 		function resetSearchUi(): void {
 			cancelPendingRequests();
-			clearGhost();
+			clearSuggestions();
 			closeDropdown();
 			productsBox.innerHTML = '';
 			if ( footerEl ) {
@@ -467,42 +565,21 @@
 			setStatus( '' );
 		}
 
-		function updateGhost( keyword: string ): void {
-			if ( ! config.enableSuggestions || ! suggestions.length ) {
-				clearGhost();
-				return;
-			}
-
-			const suggestion = suggestions[ suggestionIndex ] || '';
-			const suffix = getCompletionSuffix( keyword, suggestion );
-
-			if ( ! suffix ) {
-				clearGhost();
-				return;
-			}
-
-			ghostPrefixEl.textContent = '';
-			ghostSuffixEl.textContent = suffix;
-			const inputStyle = window.getComputedStyle( inputEl );
-			const padLeft = Number.parseFloat( inputStyle.paddingLeft ) || 0;
-			ghostSuffixEl.style.left = `${padLeft + measureKeywordWidth( keyword )}px`;
-			ghostLayer.hidden = false;
-			syncGhostScroll();
-		}
-
-		function acceptSuggestion(): boolean {
+		function acceptSuggestion( index?: number ): boolean {
 			if ( ! suggestions.length ) {
 				return false;
 			}
 
-			const suggestion = suggestions[ suggestionIndex ];
+			const targetIndex =
+				typeof index === 'number' ? index : suggestionIndex;
+			const suggestion = suggestions[ targetIndex ];
 			if ( ! suggestion ) {
 				return false;
 			}
 
 			inputEl.value = suggestion;
 			cancelPendingRequests();
-			clearGhost();
+			clearSuggestions();
 			void runSearch( suggestion );
 			return true;
 		}
@@ -515,7 +592,7 @@
 			suggestionIndex =
 				( suggestionIndex + direction + suggestions.length ) %
 				suggestions.length;
-			updateGhost( inputEl.value );
+			updateSuggestionsUi( inputEl.value );
 		}
 
 		async function fetchJson< T >( url: string, signal: AbortSignal ): Promise< T > {
@@ -536,7 +613,7 @@
 
 		async function fetchSuggestions( keyword: string ): Promise< void > {
 			if ( ! config.enableSuggestions || keyword.length < config.minChars ) {
-				clearGhost();
+				clearSuggestions();
 				return;
 			}
 
@@ -560,7 +637,7 @@
 
 				suggestions = result.suggestions || [];
 				suggestionIndex = 0;
-				updateGhost( keyword );
+				updateSuggestionsUi( keyword );
 
 				if ( result.corrected && config.misspellingFix ) {
 					setStatus(
@@ -571,7 +648,7 @@
 				if ( err instanceof DOMException && err.name === 'AbortError' ) {
 					return;
 				}
-				clearGhost();
+				clearSuggestions();
 			}
 		}
 
@@ -828,7 +905,16 @@
 					cycleSuggestion( -1 );
 					return;
 				}
-				if ( event.key === 'Tab' || event.key === 'ArrowRight' ) {
+
+				if ( isTagSuggestions ) {
+					if ( event.key === 'Tab' || event.key === 'Enter' ) {
+						if ( activeIndex < 0 ) {
+							event.preventDefault();
+							acceptSuggestion();
+							return;
+						}
+					}
+				} else if ( event.key === 'Tab' || event.key === 'ArrowRight' ) {
 					if ( ghostSuffixEl.textContent ) {
 						event.preventDefault();
 						acceptSuggestion();
@@ -862,6 +948,21 @@
 				resetSearchUi();
 			}
 		} );
+
+		if ( suggestionsBox ) {
+			suggestionsBox.addEventListener( 'click', ( event ) => {
+				const tag = ( event.target as HTMLElement ).closest< HTMLButtonElement >(
+					'[data-bpss-suggestion]',
+				);
+				if ( ! tag ) {
+					return;
+				}
+
+				event.preventDefault();
+				const index = parseInt( tag.dataset.index || '0', 10 );
+				acceptSuggestion( index );
+			} );
+		}
 
 		productsBox.addEventListener( 'click', ( event ) => {
 			const button = ( event.target as HTMLElement ).closest< HTMLButtonElement >(
@@ -901,7 +1002,16 @@
 			const keyword = inputEl.value.trim();
 			if ( keyword.length < config.minChars ) {
 				event.preventDefault();
+				return;
 			}
+
+			event.preventDefault();
+
+			if ( categorySelect && ! categorySelect.value ) {
+				categorySelect.removeAttribute( 'name' );
+			}
+
+			window.location.href = buildCatalogSearchUrl( keyword );
 		} );
 	}
 

@@ -36,6 +36,13 @@ $selectable_taxonomies = function_exists( 'beplus_smart_search_get_selectable_pr
 	? beplus_smart_search_get_selectable_product_taxonomies()
 	: array();
 $menu_slug             = BePlusSmartSearch\Admin\SettingsPage::MENU_SLUG;
+$cache_enabled         = ! empty( $settings['enable_cache'] );
+$cache_ttl             = (int) ( $settings['cache_ttl'] ?? 60 );
+$cache_auto_clear      = ! isset( $settings['cache_clear_on_product_save'] ) || ! empty( $settings['cache_clear_on_product_save'] );
+$cache_last_cleared    = BePlusSmartSearch\Search\CacheService::get_last_cleared_timestamp();
+$cache_ttl_presets     = BePlusSmartSearch\Search\CacheService::get_ttl_presets();
+$cache_item_catalog    = BePlusSmartSearch\Search\CacheService::get_cached_item_catalog();
+$cache_benchmark       = BePlusSmartSearch\Search\CacheService::get_benchmark_stats();
 
 // Redirect legacy tab slugs.
 if ( in_array( $tab, array( 'taxonomies', 'price', 'sidebar' ), true ) ) {
@@ -120,16 +127,166 @@ function bpss_render_filter_mode_controls( string $option_key, string $mode_name
 						<th scope="row"><label for="bpss-per-page"><?php esc_html_e( 'Results per page', 'beplus-smart-search' ); ?></label></th>
 						<td><input type="number" id="bpss-per-page" name="<?php echo esc_attr( $option_key ); ?>[per_page]" value="<?php echo esc_attr( (string) ( $settings['per_page'] ?? 10 ) ); ?>" min="1" max="50" class="small-text" /></td>
 					</tr>
-					<tr>
-						<th scope="row"><?php esc_html_e( 'Cache facets', 'beplus-smart-search' ); ?></th>
-						<td>
-							<label class="bpss-filter-row__checkbox">
-								<input type="checkbox" name="<?php echo esc_attr( $option_key ); ?>[enable_cache]" value="1" <?php checked( ! empty( $settings['enable_cache'] ) ); ?> />
-								<?php esc_html_e( 'Cache facet lists when no filters are active', 'beplus-smart-search' ); ?>
-							</label>
-						</td>
-					</tr>
 				</table>
+			</div>
+
+			<div class="bpss-settings__card bpss-settings__card--cache">
+				<div class="bpss-settings__card-header">
+					<h2 class="bpss-settings__card-title"><?php esc_html_e( 'Performance cache', 'beplus-smart-search' ); ?></h2>
+					<label class="bpss-toggle" for="bpss-enable-cache">
+						<input
+							type="checkbox"
+							id="bpss-enable-cache"
+							class="bpss-toggle__input"
+							name="<?php echo esc_attr( $option_key ); ?>[enable_cache]"
+							value="1"
+							<?php checked( $cache_enabled ); ?>
+							data-bpss-cache-toggle
+						/>
+						<span class="bpss-toggle__track" aria-hidden="true">
+							<span class="bpss-toggle__thumb"></span>
+						</span>
+						<span class="bpss-toggle__state" data-bpss-cache-state-label>
+							<?php echo $cache_enabled ? esc_html__( 'On', 'beplus-smart-search' ) : esc_html__( 'Off', 'beplus-smart-search' ); ?>
+						</span>
+					</label>
+				</div>
+
+				<p class="description bpss-cache__off-note" data-bpss-cache-off-note <?php echo $cache_enabled ? 'hidden' : ''; ?>>
+					<?php esc_html_e( 'Cache is off. Filter lists are rebuilt on every shop visit, which can be slower on large catalogs. Turn cache on to configure refresh time and performance options.', 'beplus-smart-search' ); ?>
+				</p>
+
+				<div class="bpss-cache__panel" data-bpss-cache-panel <?php echo $cache_enabled ? '' : 'hidden'; ?>>
+				<p class="description bpss-cache__intro">
+					<?php esc_html_e( 'Large catalogs can slow down filter loading. Cache stores pre-built filter data so the shop page responds faster. Filtered searches always load fresh results.', 'beplus-smart-search' ); ?>
+				</p>
+
+				<h3 class="bpss-settings__subtitle"><?php esc_html_e( 'What is cached', 'beplus-smart-search' ); ?></h3>
+				<ul class="bpss-cache__list">
+					<?php foreach ( $cache_item_catalog as $cache_item ) : ?>
+						<li>
+							<strong><?php echo esc_html( $cache_item['title'] ); ?></strong>
+							<span><?php echo esc_html( $cache_item['description'] ); ?></span>
+						</li>
+					<?php endforeach; ?>
+				</ul>
+
+				<div class="bpss-cache__options" data-bpss-cache-options>
+					<div class="bpss-cache__field">
+						<label for="bpss-cache-ttl">
+							<strong><?php esc_html_e( 'Auto-refresh cache every', 'beplus-smart-search' ); ?></strong>
+						</label>
+						<select id="bpss-cache-ttl" name="<?php echo esc_attr( $option_key ); ?>[cache_ttl]">
+							<?php foreach ( $cache_ttl_presets as $preset_minutes ) : ?>
+								<option value="<?php echo esc_attr( (string) $preset_minutes ); ?>" <?php selected( $cache_ttl, $preset_minutes ); ?>>
+									<?php echo esc_html( BePlusSmartSearch\Search\CacheService::format_ttl_label( $preset_minutes ) ); ?>
+								</option>
+							<?php endforeach; ?>
+						</select>
+						<p class="description">
+							<?php esc_html_e( 'After this time, cached filter lists are rebuilt on the next shop visit.', 'beplus-smart-search' ); ?>
+						</p>
+					</div>
+
+					<label class="bpss-filter-row__checkbox bpss-cache__checkbox">
+						<input
+							type="checkbox"
+							name="<?php echo esc_attr( $option_key ); ?>[cache_clear_on_product_save]"
+							value="1"
+							<?php checked( $cache_auto_clear ); ?>
+						/>
+						<?php esc_html_e( 'Clear cache automatically when products, stock, or categories change', 'beplus-smart-search' ); ?>
+					</label>
+				</div>
+
+				<div class="bpss-cache__actions">
+					<button type="button" class="button button-secondary" id="bpss-clear-cache" data-bpss-clear-cache>
+						<?php esc_html_e( 'Clear cache now', 'beplus-smart-search' ); ?>
+					</button>
+					<p class="description bpss-cache__status" id="bpss-cache-status" data-bpss-cache-status>
+						<?php if ( $cache_last_cleared > 0 ) : ?>
+							<?php
+							printf(
+								/* translators: %s: formatted date/time */
+								esc_html__( 'Last cleared: %s', 'beplus-smart-search' ),
+								esc_html(
+									wp_date(
+										get_option( 'date_format' ) . ' ' . get_option( 'time_format' ),
+										$cache_last_cleared,
+									),
+								),
+							);
+							?>
+						<?php else : ?>
+							<?php esc_html_e( 'Cache has not been cleared manually yet.', 'beplus-smart-search' ); ?>
+						<?php endif; ?>
+					</p>
+					<p class="bpss-cache__notice" id="bpss-cache-notice" role="status" aria-live="polite" hidden></p>
+				</div>
+
+				<div class="bpss-cache__benchmark" data-bpss-cache-benchmark>
+					<div class="bpss-cache__benchmark-head">
+						<h3 class="bpss-settings__subtitle"><?php esc_html_e( 'Estimated performance benefit', 'beplus-smart-search' ); ?></h3>
+						<button type="button" class="button button-secondary" data-bpss-benchmark-cache>
+							<?php esc_html_e( 'Measure now', 'beplus-smart-search' ); ?>
+						</button>
+					</div>
+					<p class="description">
+						<?php esc_html_e( 'Compares how long it takes to build unfiltered filter lists versus reading them from cache on this store.', 'beplus-smart-search' ); ?>
+					</p>
+
+					<div class="bpss-cache__benchmark-body" data-bpss-benchmark-body>
+						<?php if ( $cache_benchmark ) : ?>
+							<div class="bpss-cache__benchmark-grid">
+								<div class="bpss-cache__benchmark-stat">
+									<span class="bpss-cache__benchmark-label"><?php esc_html_e( 'Without cache', 'beplus-smart-search' ); ?></span>
+									<strong class="bpss-cache__benchmark-value" data-bpss-benchmark-cold>
+										<?php echo esc_html( BePlusSmartSearch\Search\CacheService::format_duration_ms( (float) $cache_benchmark['cold_ms'] ) ); ?>
+									</strong>
+								</div>
+								<div class="bpss-cache__benchmark-stat is-highlight">
+									<span class="bpss-cache__benchmark-label"><?php esc_html_e( 'With cache', 'beplus-smart-search' ); ?></span>
+									<strong class="bpss-cache__benchmark-value" data-bpss-benchmark-warm>
+										<?php echo esc_html( BePlusSmartSearch\Search\CacheService::format_duration_ms( (float) $cache_benchmark['warm_ms'] ) ); ?>
+									</strong>
+								</div>
+								<div class="bpss-cache__benchmark-stat">
+									<span class="bpss-cache__benchmark-label"><?php esc_html_e( 'Estimated saving', 'beplus-smart-search' ); ?></span>
+									<strong class="bpss-cache__benchmark-value" data-bpss-benchmark-saved>
+										<?php
+										printf(
+											/* translators: 1: time saved, 2: percent saved */
+											esc_html__( '%1$s (%2$d%% faster)', 'beplus-smart-search' ),
+											esc_html( BePlusSmartSearch\Search\CacheService::format_duration_ms( (float) $cache_benchmark['saved_ms'] ) ),
+											(int) $cache_benchmark['saved_percent'],
+										);
+										?>
+									</strong>
+								</div>
+							</div>
+							<p class="description bpss-cache__benchmark-meta" data-bpss-benchmark-meta>
+								<?php
+								printf(
+									/* translators: %s: formatted date/time */
+									esc_html__( 'Measured: %s', 'beplus-smart-search' ),
+									esc_html(
+										wp_date(
+											get_option( 'date_format' ) . ' ' . get_option( 'time_format' ),
+											(int) $cache_benchmark['measured_at'],
+										),
+									),
+								);
+								?>
+							</p>
+						<?php else : ?>
+							<p class="bpss-settings__empty" data-bpss-benchmark-empty>
+								<?php esc_html_e( 'No measurement yet. Run a quick test to compare facet load time with and without cache.', 'beplus-smart-search' ); ?>
+							</p>
+						<?php endif; ?>
+					</div>
+					<p class="bpss-cache__notice" id="bpss-benchmark-notice" role="status" aria-live="polite" hidden></p>
+				</div>
+				</div>
 			</div>
 
 			<div class="bpss-settings__card">

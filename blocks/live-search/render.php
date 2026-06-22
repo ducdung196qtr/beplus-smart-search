@@ -26,6 +26,7 @@ $defaults = array(
 	'debounceMs'         => 280,
 	'minChars'           => 2,
 	'enableSuggestions'  => true,
+	'suggestionLayout' => 'inline',
 	'misspellingFix'     => true,
 	'exactMatch'         => false,
 	'searchLogic'        => 'or',
@@ -53,7 +54,8 @@ if ( ! class_exists( 'WooCommerce' ) ) {
 $block_id   = 'bpss-ls-' . wp_unique_id();
 $input_id   = $block_id . '-input';
 $list_id    = $block_id . '-listbox';
-$shop_url   = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
+$catalog_base_url   = beplus_smart_search_get_catalog_search_base_url();
+$needs_post_type    = beplus_smart_search_catalog_search_needs_post_type_arg();
 $all_categories = beplus_smart_search_get_product_categories();
 
 $limit_slugs = array_values(
@@ -96,21 +98,28 @@ if ( empty( $search_fields ) ) {
 	$search_fields = array( 'title' );
 }
 
+$suggestion_layout = in_array( $attrs['suggestionLayout'] ?? 'inline', array( 'inline', 'tags' ), true )
+	? $attrs['suggestionLayout']
+	: 'inline';
+
 $wrapper_attrs = get_block_wrapper_attributes(
 	array(
-		'class'                      => 'beplus-smart-search beplus-smart-search--live-search',
+		'class'                      => 'beplus-smart-search beplus-smart-search--live-search beplus-smart-search--suggestion-' . $suggestion_layout,
 		'style'                      => '--bpss-accent:' . esc_attr( $accent_color ) . ';--bpss-highlight:' . esc_attr( $attrs['highlightColor'] ) . ';',
 		'data-bpss-live-search'      => '',
 		'data-debounce-ms'           => (string) (int) $attrs['debounceMs'],
 		'data-min-chars'             => (string) (int) $attrs['minChars'],
 		'data-max-results'           => (string) (int) $attrs['maxResults'],
 		'data-enable-suggestions'    => $attrs['enableSuggestions'] ? '1' : '0',
+		'data-suggestion-layout'     => esc_attr( $suggestion_layout ),
 		'data-misspelling-fix'       => $attrs['misspellingFix'] ? '1' : '0',
 		'data-exact-match'           => $attrs['exactMatch'] ? '1' : '0',
 		'data-search-logic'          => esc_attr( $attrs['searchLogic'] ),
 		'data-show-add-to-cart'      => $attrs['showAddToCart'] ? '1' : '0',
 		'data-show-view-all'         => $attrs['showViewAll'] ? '1' : '0',
-		'data-shop-url'              => esc_url( $shop_url ),
+		'data-shop-url'              => esc_url( $catalog_base_url ),
+		'data-catalog-action'        => esc_url( $catalog_base_url ),
+		'data-needs-post-type'       => $needs_post_type ? '1' : '0',
 		'data-search-scope'          => esc_attr( $is_limited ? 'limited' : 'all' ),
 		'data-limit-categories'      => esc_attr( implode( ',', $scope_slugs ) ),
 		'data-search-fields'         => esc_attr( implode( ',', $search_fields ) ),
@@ -123,10 +132,13 @@ $wrapper_attrs = get_block_wrapper_attributes(
 		class="beplus-smart-search__live-form"
 		role="search"
 		method="get"
-		action="<?php echo esc_url( $shop_url ); ?>"
+		action="<?php echo esc_url( $catalog_base_url ); ?>"
 		data-bpss-live-form
 		autocomplete="off"
 	>
+		<?php if ( $needs_post_type ) : ?>
+			<input type="hidden" name="post_type" value="product" />
+		<?php endif; ?>
 		<div class="beplus-smart-search__live-bar">
 			<?php if ( $show_category_filter ) : ?>
 				<div class="beplus-smart-search__live-category">
@@ -169,7 +181,7 @@ $wrapper_attrs = get_block_wrapper_attributes(
 						inputmode="search"
 						enterkeyhint="search"
 						id="<?php echo esc_attr( $input_id ); ?>"
-						name="s"
+						name="bpss_s"
 						class="beplus-smart-search__live-input"
 						placeholder="<?php echo esc_attr( $attrs['placeholder'] ); ?>"
 						autocomplete="off"
@@ -193,9 +205,16 @@ $wrapper_attrs = get_block_wrapper_attributes(
 			data-bpss-live-dropdown
 			hidden
 		>
+			<div
+				class="beplus-smart-search__live-suggestions"
+				data-bpss-live-suggestions
+				role="listbox"
+				aria-label="<?php esc_attr_e( 'Search suggestions', 'beplus-smart-search' ); ?>"
+				hidden
+			></div>
 			<div class="beplus-smart-search__live-products" data-bpss-live-products></div>
 			<div class="beplus-smart-search__live-footer" data-bpss-live-footer hidden>
-				<a href="<?php echo esc_url( $shop_url ); ?>" class="beplus-smart-search__live-view-all" data-bpss-live-view-all>
+				<a href="<?php echo esc_url( $catalog_base_url ); ?>" class="beplus-smart-search__live-view-all" data-bpss-live-view-all>
 					<?php esc_html_e( 'View All Results', 'beplus-smart-search' ); ?>
 				</a>
 			</div>

@@ -10,6 +10,7 @@
 namespace BePlusSmartSearch\REST;
 
 use BePlusSmartSearch\Core\AbstractModule;
+use BePlusSmartSearch\Search\CacheService;
 use BePlusSmartSearch\Search\FacetService;
 use BePlusSmartSearch\Search\SearchQuery;
 use BePlusSmartSearch\Settings\SettingsRegistry;
@@ -32,13 +33,6 @@ class FacetsController extends AbstractModule {
 	 * @var string
 	 */
 	private string $namespace = 'beplus-smart-search/v1';
-
-	/**
-	 * Cache group.
-	 *
-	 * @var string
-	 */
-	private string $cache_group = 'beplus_smart_search';
 
 	/**
 	 * Register REST routes.
@@ -139,8 +133,8 @@ class FacetsController extends AbstractModule {
 			return new WP_REST_Response( $data, 200 );
 		}
 
-		if ( 'all' === $mode && ! empty( $settings['enable_cache'] ) && ! $this->has_active_filters( $query ) ) {
-			$cached = wp_cache_get( 'bpss_facets_all', $this->cache_group );
+		if ( 'all' === $mode && ! $this->has_active_filters( $query ) ) {
+			$cached = CacheService::get_facets_all();
 			if ( false !== $cached && is_array( $cached ) ) {
 				return new WP_REST_Response( $cached, 200 );
 			}
@@ -148,8 +142,8 @@ class FacetsController extends AbstractModule {
 
 		$data = $service->get_facets( $query, 'all' );
 
-		if ( 'all' === $mode && ! $this->has_active_filters( $query ) && ! empty( $settings['enable_cache'] ) ) {
-			wp_cache_set( 'bpss_facets_all', $data, $this->cache_group, HOUR_IN_SECONDS );
+		if ( 'all' === $mode && ! $this->has_active_filters( $query ) ) {
+			CacheService::set_facets_all( $data );
 		}
 
 		return new WP_REST_Response( $data, 200 );

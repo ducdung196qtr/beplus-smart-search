@@ -10,6 +10,7 @@
 namespace BePlusSmartSearch\Settings;
 
 use BePlusSmartSearch\Core\AbstractModule;
+use BePlusSmartSearch\Search\CacheService;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -63,7 +64,9 @@ class SettingsRegistry extends AbstractModule {
 			'debounce_ms'  => 280,
 			'min_chars'    => 2,
 			'per_page'     => 10,
-			'enable_cache' => true,
+			'enable_cache'                => true,
+			'cache_ttl'                   => 60,
+			'cache_clear_on_product_save' => true,
 			'sidebar'      => array(
 				'show_term_counts'      => true,
 				'collapsible_sections'  => true,
@@ -229,11 +232,18 @@ class SettingsRegistry extends AbstractModule {
 			? $price_input['segments']
 			: array();
 
-		return array(
-			'debounce_ms'  => max( 0, min( 2000, (int) ( $input['debounce_ms'] ?? 280 ) ) ),
-			'min_chars'    => max( 0, min( 10, (int) ( $input['min_chars'] ?? 2 ) ) ),
-			'per_page'     => max( 1, min( 50, (int) ( $input['per_page'] ?? 10 ) ) ),
-			'enable_cache' => ! empty( $input['enable_cache'] ),
+		$ttl_input = isset( $input['cache_ttl'] ) ? (int) $input['cache_ttl'] : 60;
+		$ttl       = in_array( $ttl_input, CacheService::get_ttl_presets(), true ) ? $ttl_input : 60;
+
+		$previous = $this->get_settings();
+
+		$sanitized = array(
+			'debounce_ms'                 => max( 0, min( 2000, (int) ( $input['debounce_ms'] ?? 280 ) ) ),
+			'min_chars'                   => max( 0, min( 10, (int) ( $input['min_chars'] ?? 2 ) ) ),
+			'per_page'                    => max( 1, min( 50, (int) ( $input['per_page'] ?? 10 ) ) ),
+			'enable_cache'                => ! empty( $input['enable_cache'] ),
+			'cache_ttl'                   => $ttl,
+			'cache_clear_on_product_save' => ! empty( $input['cache_clear_on_product_save'] ),
 			'sidebar'      => array(
 				'show_term_counts'      => ! empty( $sidebar_input['show_term_counts'] ),
 				'collapsible_sections'  => ! empty( $sidebar_input['collapsible_sections'] ),
@@ -253,6 +263,16 @@ class SettingsRegistry extends AbstractModule {
 				),
 			),
 		);
+
+		$cache_changed = empty( $sanitized['enable_cache'] )
+			|| empty( $previous['enable_cache'] ) !== empty( $sanitized['enable_cache'] )
+			|| (int) ( $previous['cache_ttl'] ?? 60 ) !== (int) $sanitized['cache_ttl'];
+
+		if ( $cache_changed ) {
+			CacheService::flush_all( 'settings' );
+		}
+
+		return $sanitized;
 	}
 
 	/**

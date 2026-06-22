@@ -194,6 +194,184 @@
 
 		togglePriceSettings( $wrap );
 
+		function toggleCachePanel( $wrap ) {
+			const enabled = $wrap
+				.find( '[data-bpss-cache-toggle]' )
+				.is( ':checked' );
+
+			$wrap.find( '[data-bpss-cache-panel]' ).prop( 'hidden', ! enabled );
+			$wrap.find( '[data-bpss-cache-off-note]' ).prop( 'hidden', enabled );
+			$wrap
+				.find( '[data-bpss-cache-state-label]' )
+				.text(
+					enabled
+						? window.bpssAdmin?.i18n?.on || 'On'
+						: window.bpssAdmin?.i18n?.off || 'Off'
+				);
+		}
+
+		function formatLastCleared( timestamp ) {
+			if ( ! timestamp || ! window.bpssAdmin ) {
+				return window.bpssAdmin?.i18n?.neverCleared || '';
+			}
+
+			const date = new Date( timestamp * 1000 );
+			const formatted = date.toLocaleString();
+			return (
+				( window.bpssAdmin.i18n.lastCleared || 'Last cleared:' ) +
+				' ' +
+				formatted
+			);
+		}
+
+		function renderBenchmark( $wrap, labels, measuredAt ) {
+			const $body = $wrap.find( '[data-bpss-benchmark-body]' );
+			$body.find( '[data-bpss-benchmark-empty]' ).remove();
+
+			let $grid = $body.find( '.bpss-cache__benchmark-grid' );
+			if ( ! $grid.length ) {
+				$grid = $( `
+					<div class="bpss-cache__benchmark-grid">
+						<div class="bpss-cache__benchmark-stat">
+							<span class="bpss-cache__benchmark-label"></span>
+							<strong class="bpss-cache__benchmark-value" data-bpss-benchmark-cold></strong>
+						</div>
+						<div class="bpss-cache__benchmark-stat is-highlight">
+							<span class="bpss-cache__benchmark-label"></span>
+							<strong class="bpss-cache__benchmark-value" data-bpss-benchmark-warm></strong>
+						</div>
+						<div class="bpss-cache__benchmark-stat">
+							<span class="bpss-cache__benchmark-label"></span>
+							<strong class="bpss-cache__benchmark-value" data-bpss-benchmark-saved></strong>
+						</div>
+					</div>
+					<p class="description bpss-cache__benchmark-meta" data-bpss-benchmark-meta></p>
+				` );
+				$body.append( $grid );
+			}
+
+			$grid
+				.find( '.bpss-cache__benchmark-stat' )
+				.eq( 0 )
+				.find( '.bpss-cache__benchmark-label' )
+				.text( window.bpssAdmin?.i18n?.coldLabel || 'Without cache' );
+			$grid
+				.find( '.bpss-cache__benchmark-stat' )
+				.eq( 1 )
+				.find( '.bpss-cache__benchmark-label' )
+				.text( window.bpssAdmin?.i18n?.warmLabel || 'With cache' );
+			$grid
+				.find( '.bpss-cache__benchmark-stat' )
+				.eq( 2 )
+				.find( '.bpss-cache__benchmark-label' )
+				.text( window.bpssAdmin?.i18n?.savedLabel || 'Estimated saving' );
+
+			$body.find( '[data-bpss-benchmark-cold]' ).text( labels.cold );
+			$body.find( '[data-bpss-benchmark-warm]' ).text( labels.warm );
+			$body
+				.find( '[data-bpss-benchmark-saved]' )
+				.text( labels.saved + ' (' + labels.percent + '% faster)' );
+
+			if ( measuredAt ) {
+				const formatted = new Date( measuredAt * 1000 ).toLocaleString();
+				$body
+					.find( '[data-bpss-benchmark-meta]' )
+					.text(
+						( window.bpssAdmin?.i18n?.measuredAt || 'Measured:' ) +
+							' ' +
+							formatted
+					);
+			}
+		}
+
+		$wrap.on( 'change', '[data-bpss-cache-toggle]', function () {
+			toggleCachePanel( $wrap );
+		} );
+
+		$wrap.on( 'click', '[data-bpss-clear-cache]', function () {
+			const $button = $( this );
+			const $notice = $wrap.find( '#bpss-cache-notice' );
+			const $status = $wrap.find( '[data-bpss-cache-status]' );
+
+			if ( ! window.bpssAdmin?.ajaxUrl || ! window.bpssAdmin?.nonce ) {
+				return;
+			}
+
+			$button.prop( 'disabled', true );
+			$notice.prop( 'hidden', true ).removeClass( 'is-success is-error' );
+
+			$.post( window.bpssAdmin.ajaxUrl, {
+				action: 'bpss_clear_cache',
+				nonce: window.bpssAdmin.nonce,
+			} )
+				.done( function ( response ) {
+					if ( ! response?.success ) {
+						throw new Error( 'clear_failed' );
+					}
+
+					const clearedAt = response.data?.clearedAt || 0;
+					$status.text( formatLastCleared( clearedAt ) );
+					$notice
+						.text(
+							response.data?.message ||
+								window.bpssAdmin.i18n.cleared
+						)
+						.addClass( 'is-success' )
+						.prop( 'hidden', false );
+				} )
+				.fail( function () {
+					$notice
+						.text( window.bpssAdmin.i18n.clearError )
+						.addClass( 'is-error' )
+						.prop( 'hidden', false );
+				} )
+				.always( function () {
+					$button.prop( 'disabled', false );
+				} );
+		} );
+
+		$wrap.on( 'click', '[data-bpss-benchmark-cache]', function () {
+			const $button = $( this );
+			const $notice = $wrap.find( '#bpss-benchmark-notice' );
+
+			if ( ! window.bpssAdmin?.ajaxUrl || ! window.bpssAdmin?.nonce ) {
+				return;
+			}
+
+			$button.prop( 'disabled', true );
+			$notice.prop( 'hidden', true ).removeClass( 'is-success is-error' );
+
+			$.post( window.bpssAdmin.ajaxUrl, {
+				action: 'bpss_benchmark_cache',
+				nonce: window.bpssAdmin.nonce,
+			} )
+				.done( function ( response ) {
+					if ( ! response?.success || ! response.data?.labels ) {
+						throw new Error( 'benchmark_failed' );
+					}
+
+					renderBenchmark(
+						$wrap,
+						response.data.labels,
+						response.data.benchmark?.measured_at || 0
+					);
+					$notice
+						.addClass( 'is-success' )
+						.prop( 'hidden', true );
+				} )
+				.fail( function () {
+					$notice
+						.text( window.bpssAdmin.i18n.measureError )
+						.addClass( 'is-error' )
+						.prop( 'hidden', false );
+				} )
+				.always( function () {
+					$button.prop( 'disabled', false );
+				} );
+		} );
+
+		toggleCachePanel( $wrap );
+
 		if ( $.fn.wpColorPicker ) {
 			$( '.bpss-color-picker' ).wpColorPicker();
 		}

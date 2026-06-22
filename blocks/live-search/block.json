@@ -62,6 +62,11 @@
 			"type": "boolean",
 			"default": true
 		},
+		"suggestionLayout": {
+			"type": "string",
+			"enum": [ "inline", "tags" ],
+			"default": "inline"
+		},
 		"misspellingFix": {
 			"type": "boolean",
 			"default": true

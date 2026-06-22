@@ -122,6 +122,10 @@
 		"enableResponsive": {
 			"type": "boolean",
 			"default": false
+		},
+		"showActiveFilters": {
+			"type": "boolean",
+			"default": true
 		}
 	},
 	"render": "file:./render.php",

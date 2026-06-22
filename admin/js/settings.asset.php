@@ -1,1 +1,1 @@
-<?php return [ 'dependencies' => [ 'jquery', 'wp-color-picker' ], 'version' => '1782030481393' ];
+<?php return [ 'dependencies' => [ 'jquery', 'wp-color-picker' ], 'version' => '1782111501310' ];

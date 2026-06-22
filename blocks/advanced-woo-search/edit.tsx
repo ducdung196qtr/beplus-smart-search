@@ -151,6 +151,17 @@ export default function Edit( {
 											setAttributes( { enableResponsive: value } )
 										}
 									/>
+									<ToggleControl
+										label={ __( 'Active filters above results', 'beplus-smart-search' ) }
+										checked={ attributes.showActiveFilters ?? true }
+										help={ __(
+											'Show applied filters and a clear action above the Product Collection block.',
+											'beplus-smart-search'
+										) }
+										onChange={ ( value ) =>
+											setAttributes( { showActiveFilters: value } )
+										}
+									/>
 								</PanelBody>
 							);
 						}

@@ -9,6 +9,7 @@ export interface BlockAttributes {
 	debounceMs: number;
 	minChars: number;
 	enableSuggestions: boolean;
+	suggestionLayout: 'inline' | 'tags';
 	misspellingFix: boolean;
 	exactMatch: boolean;
 	searchLogic: 'or' | 'and';

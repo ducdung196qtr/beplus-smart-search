@@ -15,6 +15,7 @@ use BePlusSmartSearch\Frontend\ShopQueryIntegration;
 use BePlusSmartSearch\REST\FacetsController;
 use BePlusSmartSearch\REST\ProductsController;
 use BePlusSmartSearch\REST\SuggestionsController;
+use BePlusSmartSearch\Search\CacheService;
 use BePlusSmartSearch\Search\ProductTemplateRenderer;
 use BePlusSmartSearch\Search\SearchEngine;
 use BePlusSmartSearch\Search\SearchRegistry;
@@ -71,6 +72,7 @@ class Plugin {
 	 */
 	public function on_init(): void {
 		ProductTemplateRenderer::register();
+		CacheService::register_invalidation_hooks();
 	}
 
 	/**

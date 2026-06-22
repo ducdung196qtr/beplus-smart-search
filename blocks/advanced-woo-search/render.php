@@ -43,6 +43,7 @@ $defaults = array(
 	'showPrice'       => true,
 	'filterOrder'     => array(),
 	'enableResponsive' => false,
+	'showActiveFilters' => true,
 );
 
 $attrs = wp_parse_args( $attributes, $defaults );
@@ -103,6 +104,8 @@ $wrapper_attrs = get_block_wrapper_attributes(
 		'data-facet-mode'               => esc_attr( $facet_mode ),
 		'data-bpss-filter-taxonomies'   => esc_attr( implode( ',', $filter_taxonomies ) ),
 		'data-responsive'               => $enable_responsive ? '1' : '0',
+		'data-show-active-filters'      => ! empty( $attrs['showActiveFilters'] ) ? '1' : '0',
+		'data-bpss-block-id'            => esc_attr( $block_id ),
 	),
 );
 

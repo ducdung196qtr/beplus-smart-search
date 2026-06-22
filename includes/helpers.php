@@ -501,6 +501,89 @@ function beplus_smart_search_get_per_page(): int {
 }
 
 /**
+ * Whether the site uses WordPress plain permalinks (?p=123).
+ *
+ * @return bool
+ */
+function beplus_smart_search_uses_plain_permalinks(): bool {
+	return '' === (string) get_option( 'permalink_structure', '' );
+}
+
+/**
+ * Base URL for catalog search form submissions.
+ *
+ * Pretty permalinks: WooCommerce shop page URL (/shop/).
+ * Plain permalinks: site home — not ?page_id=shop, because WooCommerce canonical
+ * redirect (?page_id=7 → ?post_type=product) drops custom query args such as bpss_s.
+ *
+ * @return string
+ */
+function beplus_smart_search_get_catalog_search_base_url(): string {
+	if ( beplus_smart_search_uses_plain_permalinks() ) {
+		return home_url( '/' );
+	}
+
+	if ( function_exists( 'wc_get_page_permalink' ) ) {
+		$shop_url = wc_get_page_permalink( 'shop' );
+		if ( is_string( $shop_url ) && '' !== $shop_url ) {
+			return $shop_url;
+		}
+	}
+
+	return home_url( '/' );
+}
+
+/**
+ * Whether catalog search URLs need an explicit post_type=product query arg.
+ *
+ * Required on plain permalinks so the product archive loads with filter params intact.
+ *
+ * @return bool
+ */
+function beplus_smart_search_catalog_search_needs_post_type_arg(): bool {
+	return beplus_smart_search_uses_plain_permalinks();
+}
+
+/**
+ * Build a catalog search URL (GET) with bpss_s and optional filters.
+ *
+ * @param array<string, mixed> $params Supported keys: keyword, product_cat (string|string[]).
+ *
+ * @return string
+ */
+function beplus_smart_search_build_catalog_search_url( array $params = array() ): string {
+	$base = beplus_smart_search_get_catalog_search_base_url();
+	$args = array();
+
+	if ( beplus_smart_search_catalog_search_needs_post_type_arg() ) {
+		$args['post_type'] = 'product';
+	}
+
+	$keyword = isset( $params['keyword'] ) ? sanitize_text_field( (string) $params['keyword'] ) : '';
+	if ( '' !== $keyword ) {
+		$args['bpss_s'] = $keyword;
+	}
+
+	if ( ! empty( $params['product_cat'] ) ) {
+		$cats = is_array( $params['product_cat'] ) ? $params['product_cat'] : array( $params['product_cat'] );
+		$cats = array_values(
+			array_filter(
+				array_map( 'sanitize_title', $cats ),
+			),
+		);
+		if ( ! empty( $cats ) ) {
+			$args['product_cat'] = implode( ',', $cats );
+		}
+	}
+
+	if ( empty( $args ) ) {
+		return $base;
+	}
+
+	return add_query_arg( $args, $base );
+}
+
+/**
  * Whether the current front-end page contains the Advanced Woo Search block.
  *
  * @return bool

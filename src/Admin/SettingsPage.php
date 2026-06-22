@@ -10,6 +10,7 @@
 namespace BePlusSmartSearch\Admin;
 
 use BePlusSmartSearch\Core\AbstractModule;
+use BePlusSmartSearch\Search\CacheService;
 use BePlusSmartSearch\Settings\SettingsRegistry;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -37,6 +38,8 @@ class SettingsPage extends AbstractModule {
 		add_action( 'admin_menu', array( $this, 'register_menu' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 		add_filter( 'wp_redirect', array( $this, 'preserve_settings_tab' ), 10, 2 );
+		add_action( 'wp_ajax_bpss_clear_cache', array( $this, 'ajax_clear_cache' ) );
+		add_action( 'wp_ajax_bpss_benchmark_cache', array( $this, 'ajax_benchmark_cache' ) );
 	}
 
 	/**
@@ -127,6 +130,92 @@ class SettingsPage extends AbstractModule {
 			$asset['dependencies'],
 			$asset['version'],
 			true,
+		);
+
+		$last_cleared = CacheService::get_last_cleared_timestamp();
+		$benchmark    = CacheService::get_benchmark_stats();
+
+		wp_localize_script(
+			'bpss-admin-settings',
+			'bpssAdmin',
+			array(
+				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+				'nonce'   => wp_create_nonce( 'bpss_clear_cache' ),
+				'i18n'    => array(
+					'clearing'       => __( 'Clearing cache…', 'beplus-smart-search' ),
+					'cleared'        => __( 'Cache cleared successfully.', 'beplus-smart-search' ),
+					'clearError'     => __( 'Could not clear cache. Please try again.', 'beplus-smart-search' ),
+					'lastCleared'    => __( 'Last cleared:', 'beplus-smart-search' ),
+					'neverCleared'   => __( 'Cache has not been cleared manually yet.', 'beplus-smart-search' ),
+					'on'             => __( 'On', 'beplus-smart-search' ),
+					'off'            => __( 'Off', 'beplus-smart-search' ),
+					'measuring'      => __( 'Measuring…', 'beplus-smart-search' ),
+					'measureError'   => __( 'Could not measure performance. Please try again.', 'beplus-smart-search' ),
+					'measureNow'     => __( 'Measure now', 'beplus-smart-search' ),
+					'noBenchmark'    => __( 'No measurement yet. Run a quick test to compare facet load time with and without cache.', 'beplus-smart-search' ),
+					'coldLabel'      => __( 'Without cache', 'beplus-smart-search' ),
+					'warmLabel'      => __( 'With cache', 'beplus-smart-search' ),
+					'savedLabel'     => __( 'Estimated saving', 'beplus-smart-search' ),
+					'measuredAt'     => __( 'Measured:', 'beplus-smart-search' ),
+				),
+				'lastCleared' => $last_cleared,
+				'benchmark'   => $benchmark,
+			),
+		);
+	}
+
+	/**
+	 * AJAX: measure facet load performance.
+	 *
+	 * @return void
+	 */
+	public function ajax_benchmark_cache(): void {
+		check_ajax_referer( 'bpss_clear_cache', 'nonce' );
+
+		if ( ! current_user_can( 'manage_woocommerce' ) ) {
+			wp_send_json_error(
+				array( 'message' => __( 'Permission denied.', 'beplus-smart-search' ) ),
+				403,
+			);
+		}
+
+		$stats = CacheService::run_facets_benchmark();
+
+		wp_send_json_success(
+			array(
+				'benchmark' => $stats,
+				'labels'    => array(
+					'cold'   => CacheService::format_duration_ms( (float) $stats['cold_ms'] ),
+					'warm'   => CacheService::format_duration_ms( (float) $stats['warm_ms'] ),
+					'saved'  => CacheService::format_duration_ms( (float) $stats['saved_ms'] ),
+					'percent'=> (int) $stats['saved_percent'],
+				),
+			),
+		);
+	}
+
+	/**
+	 * AJAX: flush plugin caches.
+	 *
+	 * @return void
+	 */
+	public function ajax_clear_cache(): void {
+		check_ajax_referer( 'bpss_clear_cache', 'nonce' );
+
+		if ( ! current_user_can( 'manage_woocommerce' ) ) {
+			wp_send_json_error(
+				array( 'message' => __( 'Permission denied.', 'beplus-smart-search' ) ),
+				403,
+			);
+		}
+
+		CacheService::flush_all( 'manual' );
+
+		wp_send_json_success(
+			array(
+				'clearedAt' => CacheService::get_last_cleared_timestamp(),
+				'message'   => __( 'Cache cleared successfully.', 'beplus-smart-search' ),
+			),
 		);
 	}
 

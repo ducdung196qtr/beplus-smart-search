@@ -23,7 +23,13 @@
 		perPage: number;
 		liveSearch: boolean;
 		showResultCount: boolean;
+		showActiveFilters: boolean;
 		facetMode: string;
+	}
+
+	interface ActiveFilterChip {
+		key: string;
+		label: string;
 	}
 
 	interface FilterParams {
@@ -608,6 +614,7 @@
 			perPage: parseInt( root.dataset.perPage || '10', 10 ),
 			liveSearch: root.dataset.liveSearch !== '0',
 			showResultCount: root.dataset.showResultCount !== '0',
+			showActiveFilters: root.dataset.showActiveFilters !== '0',
 			facetMode: root.dataset.facetMode || 'all',
 		};
 	}
@@ -1341,6 +1348,652 @@
 	): Promise< void > {
 		await mergeInteractivityState( interactivity );
 		await hydrateProductIslands( list );
+	}
+
+	function findProductCollection(
+		root: HTMLElement,
+		selector: string
+	): HTMLElement | null {
+		let collection: Element | null = root.parentElement
+			? root.parentElement.querySelector( selector )
+			: null;
+
+		if ( ! collection ) {
+			const main = root.closest( 'main' );
+			if ( main ) {
+				collection = main.querySelector( selector );
+			}
+		}
+
+		if ( ! collection ) {
+			collection = document.querySelector( selector );
+		}
+
+		return collection as HTMLElement | null;
+	}
+
+	function getFilterGroupLabel(
+		input: HTMLInputElement | HTMLSelectElement,
+		i18n: Record< string, string >
+	): string {
+		const panel = input.closest(
+			'[data-bpss-facet-panel], [data-bpss-panel]'
+		);
+		const panelTitle = panel?.querySelector(
+			'.beplus-smart-search__panel-title'
+		);
+		if ( panelTitle?.textContent ) {
+			return panelTitle.textContent.trim();
+		}
+
+		const type = input.dataset.bpssFilter || '';
+		const map: Record< string, string > = {
+			keyword: i18n.search || 'Search',
+			category: i18n.category || 'Category',
+			tag: i18n.tag || 'Tag',
+			stock: i18n.stock || 'Stock',
+			on_sale: i18n.onSale || 'On sale',
+			featured: i18n.featured || 'Featured',
+			rating: i18n.rating || 'Rating',
+			brand: i18n.brand || 'Brand',
+			attribute: i18n.attribute || 'Attribute',
+			custom_tax: i18n.customTax || 'Taxonomy',
+			price_segment: i18n.price || 'Price',
+		};
+
+		return map[ type ] || type;
+	}
+
+	function getFilterValueLabel(
+		input: HTMLInputElement | HTMLSelectElement
+	): string {
+		const row = input.closest( 'li, [data-bpss-term-slug]' );
+		const listText = row?.querySelector( '.beplus-smart-search__list-text' );
+		if ( listText?.textContent ) {
+			return listText.textContent.trim();
+		}
+
+		if ( input instanceof HTMLSelectElement ) {
+			const selected = input.options[ input.selectedIndex ];
+			return selected?.textContent?.trim() || input.value;
+		}
+
+		return input.value;
+	}
+
+	function buildPriceFilterChip(
+		form: HTMLFormElement,
+		i18n: Record< string, string >
+	): ActiveFilterChip | null {
+		const segment = form.querySelector(
+			'input[data-bpss-filter="price_segment"]:checked'
+		) as HTMLInputElement | null;
+		if ( segment?.value ) {
+			return {
+				key: 'price',
+				label:
+					getFilterGroupLabel( segment, i18n ) +
+					': ' +
+					getFilterValueLabel( segment ),
+			};
+		}
+
+		const priceWrap = form.querySelector(
+			'[data-bpss-price]'
+		) as HTMLElement | null;
+		if ( ! priceWrap ) {
+			return null;
+		}
+
+		const { minVal, maxVal, boundMin, boundMax, active } =
+			readPriceRange( priceWrap );
+		if ( ! active ) {
+			return null;
+		}
+
+		const currency =
+			priceWrap
+				.querySelector( '.beplus-smart-search__price-currency' )
+				?.textContent?.trim() || '';
+
+		let range = '';
+		if ( minVal > boundMin && maxVal < boundMax ) {
+			range = currency + minVal + ' – ' + currency + maxVal;
+		} else if ( minVal > boundMin ) {
+			range = currency + minVal + '+';
+		} else if ( maxVal < boundMax ) {
+			range = '≤ ' + currency + maxVal;
+		}
+
+		if ( ! range ) {
+			return null;
+		}
+
+		return {
+			key: 'price',
+			label: ( i18n.price || 'Price' ) + ': ' + range,
+		};
+	}
+
+	function buildActiveFilterChips(
+		form: HTMLFormElement,
+		i18n: Record< string, string >
+	): ActiveFilterChip[] {
+		const chips: ActiveFilterChip[] = [];
+		const seen = new Set< string >();
+
+		const pushChip = ( chip: ActiveFilterChip | null ): void => {
+			if ( ! chip || seen.has( chip.key ) ) {
+				return;
+			}
+			seen.add( chip.key );
+			chips.push( chip );
+		};
+
+		const keyword = form.querySelector(
+			'[data-bpss-filter="keyword"]'
+		) as HTMLInputElement | null;
+		if ( keyword?.value ) {
+			pushChip( {
+				key: 'keyword',
+				label:
+					( i18n.search || 'Search' ) + ': ' + keyword.value.trim(),
+			} );
+		}
+
+		form.querySelectorAll( '[data-bpss-filter]' ).forEach( ( el ) => {
+			const input = el as HTMLInputElement | HTMLSelectElement;
+			const type = input.dataset.bpssFilter || '';
+
+			if (
+				! type ||
+				type === 'keyword' ||
+				type === 'min_price' ||
+				type === 'max_price' ||
+				type === 'price_segment'
+			) {
+				return;
+			}
+
+			if ( input.type === 'radio' && ! input.checked ) {
+				return;
+			}
+
+			if (
+				input.type === 'checkbox' &&
+				type !== 'on_sale' &&
+				type !== 'featured' &&
+				! input.checked
+			) {
+				return;
+			}
+
+			if ( type === 'on_sale' ) {
+				if ( input instanceof HTMLInputElement && input.checked ) {
+					pushChip( {
+						key: 'on_sale',
+						label: i18n.onSale || 'On sale',
+					} );
+				}
+				return;
+			}
+
+			if ( type === 'featured' ) {
+				if ( input instanceof HTMLInputElement && input.checked ) {
+					pushChip( {
+						key: 'featured',
+						label: i18n.featured || 'Featured',
+					} );
+				}
+				return;
+			}
+
+			const value = input.value;
+			if ( ! value ) {
+				return;
+			}
+
+			const group = getFilterGroupLabel( input, i18n );
+			const valueLabel = getFilterValueLabel( input );
+
+			if ( type === 'category' ) {
+				pushChip( {
+					key: 'category:' + value,
+					label: group + ': ' + valueLabel,
+				} );
+			} else if ( type === 'tag' ) {
+				pushChip( {
+					key: 'tag:' + value,
+					label: group + ': ' + valueLabel,
+				} );
+			} else if ( type === 'stock' ) {
+				pushChip( {
+					key: 'stock:' + value,
+					label: group + ': ' + valueLabel,
+				} );
+			} else if ( type === 'rating' ) {
+				pushChip( {
+					key: 'rating:' + value,
+					label: group + ': ' + valueLabel,
+				} );
+			} else if ( type === 'attribute' ) {
+				const slug = input.dataset.attributeSlug || '';
+				pushChip( {
+					key: 'attribute:' + slug + ':' + value,
+					label: group + ': ' + valueLabel,
+				} );
+			} else if ( type === 'brand' || type === 'custom_tax' ) {
+				const tax = input.dataset.taxonomySlug || '';
+				pushChip( {
+					key: 'taxonomy:' + tax + ':' + value,
+					label: group + ': ' + valueLabel,
+				} );
+			}
+		} );
+
+		pushChip( buildPriceFilterChip( form, i18n ) );
+
+		return chips;
+	}
+
+	function ensureActiveFiltersBar(
+		root: HTMLElement,
+		collection: HTMLElement
+	): HTMLElement {
+		const owner = root.dataset.bpssBlockId || '';
+		let bar = document.querySelector(
+			'[data-bpss-active-filters][data-bpss-owner="' + owner + '"]'
+		) as HTMLElement | null;
+
+		if ( bar ) {
+			return bar;
+		}
+
+		bar = document.createElement( 'div' );
+		bar.className = 'beplus-smart-search__active-filters';
+		bar.setAttribute( 'data-bpss-active-filters', '' );
+		bar.setAttribute( 'data-bpss-owner', owner );
+		bar.hidden = true;
+
+		if ( collection.classList.contains( 'alignwide' ) ) {
+			bar.classList.add( 'alignwide' );
+		}
+
+		if ( collection.classList.contains( 'alignfull' ) ) {
+			bar.classList.add( 'alignfull' );
+		}
+
+		const parent = collection.parentElement;
+		if ( parent ) {
+			parent.insertBefore( bar, collection );
+		}
+
+		return bar;
+	}
+
+	function removeActiveFiltersBar( root: HTMLElement ): void {
+		const owner = root.dataset.bpssBlockId || '';
+		const bar = document.querySelector(
+			'[data-bpss-active-filters][data-bpss-owner="' + owner + '"]'
+		);
+		bar?.remove();
+	}
+
+	function removeActiveFilter(
+		form: HTMLFormElement,
+		chipKey: string
+	): void {
+		if ( chipKey === 'keyword' ) {
+			const keyword = form.querySelector(
+				'[data-bpss-filter="keyword"]'
+			) as HTMLInputElement | null;
+			if ( keyword ) {
+				keyword.value = '';
+			}
+			return;
+		}
+
+		if ( chipKey === 'on_sale' ) {
+			const input = form.querySelector(
+				'[data-bpss-filter="on_sale"]'
+			) as HTMLInputElement | null;
+			if ( input ) {
+				input.checked = false;
+			}
+			return;
+		}
+
+		if ( chipKey === 'featured' ) {
+			const input = form.querySelector(
+				'[data-bpss-filter="featured"]'
+			) as HTMLInputElement | null;
+			if ( input ) {
+				input.checked = false;
+			}
+			return;
+		}
+
+		if ( chipKey === 'price' ) {
+			form
+				.querySelectorAll( '[data-bpss-filter="price_segment"]' )
+				.forEach( ( el ) => {
+					const input = el as HTMLInputElement;
+					if ( input.type === 'radio' && input.value === '' ) {
+						input.checked = true;
+					}
+				} );
+			form.querySelectorAll( '[data-bpss-price]' ).forEach( ( wrap ) => {
+				syncPriceInputs( wrap as HTMLElement );
+			} );
+			return;
+		}
+
+		if ( chipKey.startsWith( 'category:' ) ) {
+			const slug = chipKey.slice( 'category:'.length );
+			form
+				.querySelectorAll( '[data-bpss-filter="category"]' )
+				.forEach( ( el ) => {
+					const input = el as HTMLInputElement;
+					if ( input.value === slug ) {
+						if ( input.type === 'radio' ) {
+							const fallback = form.querySelector(
+								'[name="' +
+									input.name +
+									'"][value=""]'
+							) as HTMLInputElement | null;
+							if ( fallback ) {
+								fallback.checked = true;
+							}
+						} else {
+							input.checked = false;
+						}
+					}
+				} );
+			return;
+		}
+
+		if ( chipKey.startsWith( 'tag:' ) ) {
+			const slug = chipKey.slice( 'tag:'.length );
+			form
+				.querySelectorAll( '[data-bpss-filter="tag"]' )
+				.forEach( ( el ) => {
+					const input = el as HTMLInputElement;
+					if ( input.value === slug ) {
+						if ( input.type === 'radio' ) {
+							const fallback = form.querySelector(
+								'[name="' +
+									input.name +
+									'"][value=""]'
+							) as HTMLInputElement | null;
+							if ( fallback ) {
+								fallback.checked = true;
+							}
+						} else {
+							input.checked = false;
+						}
+					}
+				} );
+			return;
+		}
+
+		if ( chipKey.startsWith( 'stock:' ) ) {
+			const status = chipKey.slice( 'stock:'.length );
+			form
+				.querySelectorAll( '[data-bpss-filter="stock"]' )
+				.forEach( ( el ) => {
+					const input = el as HTMLInputElement | HTMLSelectElement;
+					if ( input.value === status ) {
+						if ( input.type === 'radio' ) {
+							const fallback = form.querySelector(
+								'[name="' +
+									input.name +
+									'"][value=""]'
+							) as HTMLInputElement | null;
+							if ( fallback ) {
+								fallback.checked = true;
+							}
+						} else {
+							input.value = '';
+						}
+					}
+				} );
+			return;
+		}
+
+		if ( chipKey.startsWith( 'rating:' ) ) {
+			const rating = chipKey.slice( 'rating:'.length );
+			form
+				.querySelectorAll( '[data-bpss-filter="rating"]' )
+				.forEach( ( el ) => {
+					const input = el as HTMLInputElement | HTMLSelectElement;
+					if ( input.value === rating ) {
+						if ( input.type === 'radio' ) {
+							const fallback = form.querySelector(
+								'[name="' +
+									input.name +
+									'"][value=""]'
+							) as HTMLInputElement | null;
+							if ( fallback ) {
+								fallback.checked = true;
+							}
+						} else {
+							input.value = '';
+						}
+					}
+				} );
+			return;
+		}
+
+		if ( chipKey.startsWith( 'attribute:' ) ) {
+			const rest = chipKey.slice( 'attribute:'.length );
+			const sep = rest.indexOf( ':' );
+			const attrSlug = rest.slice( 0, sep );
+			const termSlug = rest.slice( sep + 1 );
+			form
+				.querySelectorAll(
+					'[data-bpss-filter="attribute"][data-attribute-slug="' +
+						attrSlug +
+						'"]'
+				)
+				.forEach( ( el ) => {
+					const input = el as HTMLInputElement;
+					if ( input.value === termSlug ) {
+						if ( input.type === 'radio' ) {
+							const fallback = form.querySelector(
+								'[name="' +
+									input.name +
+									'"][value=""]'
+							) as HTMLInputElement | null;
+							if ( fallback ) {
+								fallback.checked = true;
+							}
+						} else {
+							input.checked = false;
+						}
+					}
+				} );
+			return;
+		}
+
+		if ( chipKey.startsWith( 'taxonomy:' ) ) {
+			const rest = chipKey.slice( 'taxonomy:'.length );
+			const sep = rest.indexOf( ':' );
+			const tax = rest.slice( 0, sep );
+			const termSlug = rest.slice( sep + 1 );
+			form
+				.querySelectorAll(
+					'[data-bpss-filter="brand"][data-taxonomy-slug="' +
+						tax +
+						'"], [data-bpss-filter="custom_tax"][data-taxonomy-slug="' +
+						tax +
+						'"]'
+				)
+				.forEach( ( el ) => {
+					const input = el as HTMLInputElement;
+					if ( input.value === termSlug ) {
+						if ( input.type === 'radio' ) {
+							const fallback = form.querySelector(
+								'[name="' +
+									input.name +
+									'"][value=""]'
+							) as HTMLInputElement | null;
+							if ( fallback ) {
+								fallback.checked = true;
+							}
+						} else {
+							input.checked = false;
+						}
+					}
+				} );
+		}
+	}
+
+	function resetSearchForm(
+		form: HTMLFormElement,
+		root: HTMLElement
+	): void {
+		form.querySelectorAll( '[data-bpss-filter]' ).forEach( ( el ) => {
+			const input = el as HTMLInputElement;
+			if ( input.type === 'checkbox' ) {
+				input.checked = false;
+			} else if ( input.type === 'radio' ) {
+				return;
+			} else if ( input.dataset.bpssPriceInput ) {
+				const priceWrap = input.closest(
+					'[data-bpss-price]'
+				) as HTMLElement | null;
+				if ( priceWrap ) {
+					if ( input.dataset.bpssPriceInput === 'min' ) {
+						input.value = priceWrap.dataset.priceMin || '0';
+					} else {
+						input.value = priceWrap.dataset.priceMax || '0';
+					}
+				}
+			} else {
+				input.value = '';
+			}
+		} );
+
+		const radioNames: Record< string, boolean > = {};
+		form.querySelectorAll( '[data-bpss-filter][type="radio"]' ).forEach(
+			( el ) => {
+				const input = el as HTMLInputElement;
+				radioNames[ input.name ] = true;
+			}
+		);
+		Object.keys( radioNames ).forEach( ( name ) => {
+			const fallback = form.querySelector(
+				'[name="' + name + '"][value=""]'
+			) as HTMLInputElement | null;
+			if ( fallback ) {
+				fallback.checked = true;
+			}
+		} );
+
+		form.querySelectorAll( '[data-bpss-price]' ).forEach( ( wrap ) => {
+			syncPriceInputs( wrap as HTMLElement );
+		} );
+
+		applyOrderbyToSelect( root );
+	}
+
+	function initActiveFiltersBar(
+		root: HTMLElement,
+		form: HTMLFormElement,
+		config: BlockConfig,
+		onChange: () => void
+	): ( filters: FilterParams ) => void {
+		if ( ! config.showActiveFilters ) {
+			removeActiveFiltersBar( root );
+			return () => undefined;
+		}
+
+		const i18n = getData().i18n;
+		const collection = findProductCollection( root, config.resultsSelector );
+		if ( ! collection ) {
+			return () => undefined;
+		}
+
+		const bar = ensureActiveFiltersBar( root, collection );
+		let bound = false;
+
+		const bindBarEvents = (): void => {
+			if ( bound ) {
+				return;
+			}
+			bound = true;
+
+			bar.addEventListener( 'click', ( event ) => {
+				const target = event.target as HTMLElement;
+				const chip = target.closest(
+					'[data-bpss-remove-filter]'
+				) as HTMLButtonElement | null;
+				if ( chip ) {
+					event.preventDefault();
+					removeActiveFilter( form, chip.dataset.bpssRemoveFilter || '' );
+					onChange();
+					return;
+				}
+
+				const clearAll = target.closest(
+					'[data-bpss-clear-all-filters]'
+				);
+				if ( clearAll ) {
+					event.preventDefault();
+					resetSearchForm( form, root );
+					onChange();
+				}
+			} );
+		};
+
+		return ( filters: FilterParams ): void => {
+			const chips = buildActiveFilterChips( form, i18n );
+			const hasFilters = hasActiveFilters( filters );
+
+			if ( ! hasFilters ) {
+				bar.hidden = true;
+				bar.innerHTML = '';
+				root.classList.remove( 'bpss-has-active-filters-bar' );
+				return;
+			}
+
+			bindBarEvents();
+			bar.hidden = false;
+			root.classList.add( 'bpss-has-active-filters-bar' );
+
+			const chipsHtml = chips
+				.map(
+					( chip ) =>
+						'<button type="button" class="beplus-smart-search__active-filter-chip" data-bpss-remove-filter="' +
+						escapeHtml( chip.key ) +
+						'" aria-label="' +
+						escapeHtml(
+							( i18n.removeFilter || 'Remove filter' ) +
+								': ' +
+								chip.label
+						) +
+						'"><span class="beplus-smart-search__active-filter-chip-label">' +
+						escapeHtml( chip.label ) +
+						'</span><span class="beplus-smart-search__active-filter-chip-remove" aria-hidden="true">&times;</span></button>'
+				)
+				.join( '' );
+
+			bar.innerHTML =
+				'<div class="beplus-smart-search__active-filters-inner">' +
+				chipsHtml +
+				'<button type="button" class="beplus-smart-search__active-filters-clear" data-bpss-clear-all-filters>' +
+				escapeHtml( i18n.clearAllFilters || 'Clear all filters' ) +
+				'</button>' +
+				'</div>';
+		};
+	}
+
+	function escapeHtml( value: string ): string {
+		return value
+			.replace( /&/g, '&amp;' )
+			.replace( /</g, '&lt;' )
+			.replace( />/g, '&gt;' )
+			.replace( /"/g, '&quot;' );
 	}
 
 	function findProductList(
@@ -2112,6 +2765,7 @@
 		let abortController: AbortController | null = null;
 		let facetsAbortController: AbortController | null = null;
 		const data = getData();
+		let updateActiveFiltersBar: ( filters: FilterParams ) => void = () => undefined;
 
 		if ( hasUrlSearchState() ) {
 			applyUrlStateToForm( form, parseUrlFilters(), root );
@@ -2211,6 +2865,7 @@
 						: data.i18n.noResults;
 					setStatus( form, msg, true );
 					toggleClearButton( form );
+					updateActiveFiltersBar( filters );
 				} )
 				.catch( ( err: Error ) => {
 					if ( err?.name === 'AbortError' ) {
@@ -2220,6 +2875,17 @@
 				} )
 				.finally( () => setLoading( form, false ) );
 		};
+
+		updateActiveFiltersBar = initActiveFiltersBar(
+			root,
+			form,
+			config,
+			() => {
+				currentPage = 1;
+				toggleClearButton( form );
+				runSearch( true );
+			}
+		);
 
 		const goToPage = ( page: number ): void => {
 			currentPage = Math.max( 1, page );
@@ -2336,49 +3002,7 @@
 		if ( clearBtn ) {
 			clearBtn.addEventListener( 'click', () => {
 				currentPage = 1;
-				form.querySelectorAll( '[data-bpss-filter]' ).forEach( ( el ) => {
-					const input = el as HTMLInputElement;
-					if ( input.type === 'checkbox' ) {
-						input.checked = false;
-					} else if ( input.type === 'radio' ) {
-						return;
-					} else if ( input.dataset.bpssPriceInput ) {
-						const priceWrap = input.closest(
-							'[data-bpss-price]'
-						) as HTMLElement | null;
-						if ( priceWrap ) {
-							if ( input.dataset.bpssPriceInput === 'min' ) {
-								input.value = priceWrap.dataset.priceMin || '0';
-							} else {
-								input.value = priceWrap.dataset.priceMax || '0';
-							}
-						}
-					} else {
-						input.value = '';
-					}
-				} );
-
-				const radioNames: Record< string, boolean > = {};
-				form.querySelectorAll(
-					'[data-bpss-filter][type="radio"]'
-				).forEach( ( el ) => {
-					const input = el as HTMLInputElement;
-					radioNames[ input.name ] = true;
-				} );
-				Object.keys( radioNames ).forEach( ( name ) => {
-					const fallback = form.querySelector(
-						'[name="' + name + '"][value=""]'
-					) as HTMLInputElement | null;
-					if ( fallback ) {
-						fallback.checked = true;
-					}
-				} );
-
-				form.querySelectorAll( '[data-bpss-price]' ).forEach( ( wrap ) => {
-					syncPriceInputs( wrap as HTMLElement );
-				} );
-
-				applyOrderbyToSelect( root );
+				resetSearchForm( form, root );
 
 				ajaxActive = false;
 				root.dataset.bpssAjaxActive = '0';
@@ -2389,6 +3013,7 @@
 				toggleClearButton( form );
 				setStatus( form, data.i18n.cleared, true );
 				resetFacetVisibility( root );
+				updateActiveFiltersBar( collectFilters( form, currentPage ) );
 				runSearch( true );
 			} );
 		}
