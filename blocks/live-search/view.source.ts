@@ -74,7 +74,7 @@
 
 	function getBpssData(): BpssData {
 		return ( window as Window & { bpssData?: BpssData } ).bpssData || {
-			restUrl: '/wp-json/beplus-fast-product-filter-live-search/v1/',
+			restUrl: '/wp-json/beplus-fast-product-filter-live-search-for-woocommerce/v1/',
 			nonce: '',
 			shopUrl: '/',
 			i18n: {},
@@ -122,13 +122,13 @@
 	}
 
 	const CART_ICON =
-		'<svg class="beplus-fast-product-filter-live-search__live-cart-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>';
+		'<svg class="beplus-fast-product-filter-live-search-for-woocommerce__live-cart-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>';
 
 	const VIEW_ICON =
-		'<svg class="beplus-fast-product-filter-live-search__live-cart-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+		'<svg class="beplus-fast-product-filter-live-search-for-woocommerce__live-cart-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
 
 	const CHECK_ICON =
-		'<svg class="beplus-fast-product-filter-live-search__live-cart-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>';
+		'<svg class="beplus-fast-product-filter-live-search-for-woocommerce__live-cart-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>';
 
 	function highlightKeywords( text: string, keyword: string ): string {
 		const trimmed = keyword.trim();
@@ -146,7 +146,7 @@
 			);
 			result = result.replace(
 				pattern,
-				'<mark class="beplus-fast-product-filter-live-search__highlight">$1</mark>',
+				'<mark class="beplus-fast-product-filter-live-search-for-woocommerce__highlight">$1</mark>',
 			);
 		} );
 
@@ -203,8 +203,8 @@
 
 	function markButtonAdded( button: HTMLButtonElement ): void {
 		const i18n = getBpssData().i18n;
-		const iconEl = button.querySelector( '.beplus-fast-product-filter-live-search__live-cart-icon' );
-		const labelEl = button.querySelector( '.beplus-fast-product-filter-live-search__live-cart-label' );
+		const iconEl = button.querySelector( '.beplus-fast-product-filter-live-search-for-woocommerce__live-cart-icon' );
+		const labelEl = button.querySelector( '.beplus-fast-product-filter-live-search-for-woocommerce__live-cart-label' );
 
 		if ( iconEl && ! button.dataset.bpssIcon ) {
 			button.dataset.bpssIcon = iconEl.innerHTML;
@@ -407,9 +407,9 @@
 			return meta
 				.map(
 					( row ) =>
-						`<span class="beplus-fast-product-filter-live-search__live-product-meta beplus-fast-product-filter-live-search__live-product-meta--${escapeHtml( row.type )}">
-							<span class="beplus-fast-product-filter-live-search__live-product-meta-label">${escapeHtml( row.label )}:</span>
-							<span class="beplus-fast-product-filter-live-search__live-product-meta-value">${highlightKeywords( row.value, keyword )}</span>
+						`<span class="beplus-fast-product-filter-live-search-for-woocommerce__live-product-meta beplus-fast-product-filter-live-search-for-woocommerce__live-product-meta--${escapeHtml( row.type )}">
+							<span class="beplus-fast-product-filter-live-search-for-woocommerce__live-product-meta-label">${escapeHtml( row.label )}:</span>
+							<span class="beplus-fast-product-filter-live-search-for-woocommerce__live-product-meta-value">${highlightKeywords( row.value, keyword )}</span>
 						</span>`,
 				)
 				.join( '' );
@@ -490,7 +490,7 @@
 				.map( ( suggestion, index ) => {
 					return `<button
 						type="button"
-						class="beplus-fast-product-filter-live-search__live-suggestion-tag"
+						class="beplus-fast-product-filter-live-search-for-woocommerce__live-suggestion-tag"
 						data-bpss-suggestion
 						data-index="${index}"
 					>${highlightKeywords( suggestion, keyword )}</button>`;
@@ -660,12 +660,12 @@
 			const i18n = getBpssData().i18n;
 			const addLabel = escapeHtml( i18n.addToCart || 'Add to cart' );
 			const viewLabel = escapeHtml( i18n.viewProduct || 'View product' );
-			const cartContent = `<span class="beplus-fast-product-filter-live-search__live-cart-icon" aria-hidden="true">${CART_ICON}</span><span class="beplus-fast-product-filter-live-search__live-cart-label">${addLabel}</span>`;
-			const viewContent = `<span class="beplus-fast-product-filter-live-search__live-cart-icon" aria-hidden="true">${VIEW_ICON}</span><span class="beplus-fast-product-filter-live-search__live-cart-label">${viewLabel}</span>`;
+			const cartContent = `<span class="beplus-fast-product-filter-live-search-for-woocommerce__live-cart-icon" aria-hidden="true">${CART_ICON}</span><span class="beplus-fast-product-filter-live-search-for-woocommerce__live-cart-label">${addLabel}</span>`;
+			const viewContent = `<span class="beplus-fast-product-filter-live-search-for-woocommerce__live-cart-icon" aria-hidden="true">${VIEW_ICON}</span><span class="beplus-fast-product-filter-live-search-for-woocommerce__live-cart-label">${viewLabel}</span>`;
 
 			if ( item.ajax_add_to_cart ) {
 				return `<button type="button"
-					class="beplus-fast-product-filter-live-search__live-cart beplus-fast-product-filter-live-search__live-cart--add"
+					class="beplus-fast-product-filter-live-search-for-woocommerce__live-cart beplus-fast-product-filter-live-search-for-woocommerce__live-cart--add"
 					data-bpss-add-to-cart
 					data-product_id="${item.id}"
 					data-product_url="${escapeHtml( item.url )}"
@@ -674,7 +674,7 @@
 				>${cartContent}</button>`;
 			}
 
-			return `<a href="${escapeHtml( item.url )}" class="beplus-fast-product-filter-live-search__live-cart beplus-fast-product-filter-live-search__live-cart--view" aria-label="${viewLabel}">${viewContent}</a>`;
+			return `<a href="${escapeHtml( item.url )}" class="beplus-fast-product-filter-live-search-for-woocommerce__live-cart beplus-fast-product-filter-live-search-for-woocommerce__live-cart--view" aria-label="${viewLabel}">${viewContent}</a>`;
 		}
 
 		async function ajaxAddToCart(
@@ -730,7 +730,7 @@
 
 		function renderProducts( items: ProductItem[], keyword: string ): void {
 			if ( items.length === 0 ) {
-				productsBox.innerHTML = `<p class="beplus-fast-product-filter-live-search__live-empty">${escapeHtml(
+				productsBox.innerHTML = `<p class="beplus-fast-product-filter-live-search-for-woocommerce__live-empty">${escapeHtml(
 					getBpssData().i18n.noResults || 'No products found.',
 				)}</p>`;
 				return;
@@ -742,23 +742,23 @@
 					const metaHtml = renderMatchMeta( item.match_meta || [], keyword );
 
 					return `<div
-						class="beplus-fast-product-filter-live-search__live-product"
+						class="beplus-fast-product-filter-live-search-for-woocommerce__live-product"
 						role="option"
 						data-bpss-option="product"
 						data-index="${index}"
 						aria-selected="false"
 					>
-						<a href="${escapeHtml( item.url )}" class="beplus-fast-product-filter-live-search__live-product-link">
-							<span class="beplus-fast-product-filter-live-search__live-product-image">
+						<a href="${escapeHtml( item.url )}" class="beplus-fast-product-filter-live-search-for-woocommerce__live-product-link">
+							<span class="beplus-fast-product-filter-live-search-for-woocommerce__live-product-image">
 								<img src="${escapeHtml( item.image )}" alt="" loading="lazy" width="60" height="60" />
 							</span>
-							<span class="beplus-fast-product-filter-live-search__live-product-body">
-								<span class="beplus-fast-product-filter-live-search__live-product-title">${highlightKeywords( item.title, keyword )}</span>
-								<span class="beplus-fast-product-filter-live-search__live-product-price">${item.price_html}</span>
-								${metaHtml ? `<span class="beplus-fast-product-filter-live-search__live-product-meta-wrap">${metaHtml}</span>` : ''}
+							<span class="beplus-fast-product-filter-live-search-for-woocommerce__live-product-body">
+								<span class="beplus-fast-product-filter-live-search-for-woocommerce__live-product-title">${highlightKeywords( item.title, keyword )}</span>
+								<span class="beplus-fast-product-filter-live-search-for-woocommerce__live-product-price">${item.price_html}</span>
+								${metaHtml ? `<span class="beplus-fast-product-filter-live-search-for-woocommerce__live-product-meta-wrap">${metaHtml}</span>` : ''}
 							</span>
 						</a>
-						${actionBtn ? `<span class="beplus-fast-product-filter-live-search__live-product-action">${actionBtn}</span>` : ''}
+						${actionBtn ? `<span class="beplus-fast-product-filter-live-search-for-woocommerce__live-product-action">${actionBtn}</span>` : ''}
 					</div>`;
 				} )
 				.join( '' );
@@ -794,7 +794,7 @@
 			const params = buildSearchParams( keyword );
 			const data = getBpssData();
 
-			root.classList.add( 'beplus-fast-product-filter-live-search--loading' );
+			root.classList.add( 'beplus-fast-product-filter-live-search-for-woocommerce--loading' );
 			setStatus( data.i18n.searching || 'Searching…' );
 
 			try {
@@ -855,7 +855,7 @@
 				}
 				setStatus( data.i18n.error || 'Search failed. Please try again.' );
 			} finally {
-				root.classList.remove( 'beplus-fast-product-filter-live-search--loading' );
+				root.classList.remove( 'beplus-fast-product-filter-live-search-for-woocommerce--loading' );
 			}
 		}
 
@@ -939,7 +939,7 @@
 				event.preventDefault();
 				const active = optionElements[ activeIndex ];
 				const link = active?.querySelector< HTMLAnchorElement >(
-					'.beplus-fast-product-filter-live-search__live-product-link',
+					'.beplus-fast-product-filter-live-search-for-woocommerce__live-product-link',
 				);
 				if ( link ) {
 					window.location.href = link.href;

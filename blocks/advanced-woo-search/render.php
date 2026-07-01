@@ -19,7 +19,7 @@ require_once BEPLUS_FAST_PRODUCT_FILTER_LIVE_SEARCH_PLUGIN_DIR . 'includes/rende
 // phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- Block render template variables.
 
 $defaults = array(
-	'placeholder'       => __( 'Search productsâ€¦', 'beplus-fast-product-filter-live-search-for-woocommerce' ),
+	'placeholder'       => __( 'Search products…', 'beplus-fast-product-filter-live-search-for-woocommerce' ),
 	'showKeyword'       => true,
 	'showCategory'      => true,
 	'showTag'           => true,
@@ -63,7 +63,7 @@ if ( 'stacked' === $attrs['layout'] ) {
 }
 
 if ( ! class_exists( 'WooCommerce' ) ) {
-	echo '<p class="beplus-fast-product-filter-live-search__notice">' . esc_html__( 'WooCommerce is required for Advanced Woo Search.', 'beplus-fast-product-filter-live-search-for-woocommerce' ) . '</p>';
+	echo '<p class="beplus-fast-product-filter-live-search-for-woocommerce__notice">' . esc_html__( 'WooCommerce is required for Advanced Woo Search.', 'beplus-fast-product-filter-live-search-for-woocommerce' ) . '</p>';
 	return;
 }
 
@@ -71,7 +71,7 @@ $block_id    = 'bpss-aws-' . wp_unique_id();
 $shop_url    = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/' );
 $is_sidebar  = 'sidebar' === $attrs['layout'];
 $layout_mod  = $is_sidebar ? 'sidebar' : 'inline';
-$form_class  = 'beplus-fast-product-filter-live-search__form beplus-fast-product-filter-live-search__form--' . $layout_mod;
+$form_class  = 'beplus-fast-product-filter-live-search-for-woocommerce__form beplus-fast-product-filter-live-search-for-woocommerce__form--' . $layout_mod;
 
 $sidebar_settings = beplus_fast_product_filter_live_search_get_sidebar_settings();
 $accent_color     = $sidebar_settings['accent_color'] ?? '#000000';
@@ -79,14 +79,14 @@ $facet_mode       = beplus_fast_product_filter_live_search_get_facet_display_mod
 $filter_taxonomies = beplus_fast_product_filter_live_search_get_configured_filter_taxonomies();
 $enable_responsive = ! empty( $attrs['enableResponsive'] );
 
-$wrapper_classes = array(
-	'beplus-fast-product-filter-live-search',
-	'beplus-fast-product-filter-live-search--advanced-woo',
-	'beplus-fast-product-filter-live-search--' . $layout_mod,
-);
+	$wrapper_classes = array(
+		'beplus-fast-product-filter-live-search-for-woocommerce',
+		'beplus-fast-product-filter-live-search-for-woocommerce--advanced-woo',
+		'beplus-fast-product-filter-live-search-for-woocommerce--' . $layout_mod,
+	);
 
 if ( $enable_responsive ) {
-	$wrapper_classes[] = 'beplus-fast-product-filter-live-search--responsive';
+	$wrapper_classes[] = 'beplus-fast-product-filter-live-search-for-woocommerce--responsive';
 }
 
 $wrapper_attrs = get_block_wrapper_attributes(
@@ -121,15 +121,15 @@ $attributes_list         = ! empty( $enabled_attribute_slugs )
 	<?php if ( $enable_responsive ) : ?>
 		<button
 			type="button"
-			class="beplus-fast-product-filter-live-search__filter-trigger"
+			class="beplus-fast-product-filter-live-search-for-woocommerce__filter-trigger"
 			data-bpss-filter-trigger
 			aria-expanded="false"
 			aria-controls="<?php echo esc_attr( $block_id ); ?>-drawer"
 		>
-			<span class="beplus-fast-product-filter-live-search__filter-trigger-icon" aria-hidden="true"></span>
+			<span class="beplus-fast-product-filter-live-search-for-woocommerce__filter-trigger-icon" aria-hidden="true"></span>
 			<span class="screen-reader-text"><?php esc_html_e( 'Open filters', 'beplus-fast-product-filter-live-search-for-woocommerce' ); ?></span>
 		</button>
-		<div class="beplus-fast-product-filter-live-search__drawer-backdrop" data-bpss-drawer-backdrop hidden></div>
+		<div class="beplus-fast-product-filter-live-search-for-woocommerce__drawer-backdrop" data-bpss-drawer-backdrop hidden></div>
 	<?php endif; ?>
 	<form
 		class="<?php echo esc_attr( $form_class ); ?>"
@@ -143,10 +143,10 @@ $attributes_list         = ! empty( $enabled_attribute_slugs )
 		<?php endif; ?>
 	>
 		<?php if ( $enable_responsive ) : ?>
-			<div class="beplus-fast-product-filter-live-search__drawer-header">
-				<span class="beplus-fast-product-filter-live-search__drawer-title"><?php esc_html_e( 'Filters', 'beplus-fast-product-filter-live-search-for-woocommerce' ); ?></span>
-				<button type="button" class="beplus-fast-product-filter-live-search__drawer-close" data-bpss-drawer-close aria-label="<?php esc_attr_e( 'Close filters', 'beplus-fast-product-filter-live-search-for-woocommerce' ); ?>">
-					<span class="beplus-fast-product-filter-live-search__drawer-close-icon" aria-hidden="true"></span>
+			<div class="beplus-fast-product-filter-live-search-for-woocommerce__drawer-header">
+				<span class="beplus-fast-product-filter-live-search-for-woocommerce__drawer-title"><?php esc_html_e( 'Filters', 'beplus-fast-product-filter-live-search-for-woocommerce' ); ?></span>
+				<button type="button" class="beplus-fast-product-filter-live-search-for-woocommerce__drawer-close" data-bpss-drawer-close aria-label="<?php esc_attr_e( 'Close filters', 'beplus-fast-product-filter-live-search-for-woocommerce' ); ?>">
+					<span class="beplus-fast-product-filter-live-search-for-woocommerce__drawer-close-icon" aria-hidden="true"></span>
 				</button>
 			</div>
 		<?php endif; ?>
@@ -158,22 +158,22 @@ $attributes_list         = ! empty( $enabled_attribute_slugs )
 		}
 		?>
 
-		<div class="beplus-fast-product-filter-live-search__actions">
-			<button type="submit" class="beplus-fast-product-filter-live-search__submit">
+		<div class="beplus-fast-product-filter-live-search-for-woocommerce__actions">
+			<button type="submit" class="beplus-fast-product-filter-live-search-for-woocommerce__submit">
 				<?php esc_html_e( 'Search', 'beplus-fast-product-filter-live-search-for-woocommerce' ); ?>
 			</button>
 
 			<?php if ( $attrs['showClearButton'] ) : ?>
-				<button type="button" class="beplus-fast-product-filter-live-search__clear" data-bpss-clear hidden>
+				<button type="button" class="beplus-fast-product-filter-live-search-for-woocommerce__clear" data-bpss-clear hidden>
 					<?php esc_html_e( 'Clear', 'beplus-fast-product-filter-live-search-for-woocommerce' ); ?>
 				</button>
 			<?php endif; ?>
 
-			<span class="beplus-fast-product-filter-live-search__status" role="status" aria-live="polite" data-bpss-status hidden></span>
+			<span class="beplus-fast-product-filter-live-search-for-woocommerce__status" role="status" aria-live="polite" data-bpss-status hidden></span>
 		</div>
 	</form>
 
 	<?php if ( 'own-grid' === $attrs['resultsMode'] ) : ?>
-		<div class="beplus-fast-product-filter-live-search__results" data-bpss-results hidden></div>
+		<div class="beplus-fast-product-filter-live-search-for-woocommerce__results" data-bpss-results hidden></div>
 	<?php endif; ?>
 </div>

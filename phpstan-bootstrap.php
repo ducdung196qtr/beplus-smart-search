@@ -19,9 +19,9 @@ if ( ! defined( 'BEPLUS_FAST_PRODUCT_FILTER_LIVE_SEARCH_PLUGIN_DIR' ) ) {
 }
 
 if ( ! defined( 'BEPLUS_FAST_PRODUCT_FILTER_LIVE_SEARCH_PLUGIN_URL' ) ) {
-	define( 'BEPLUS_FAST_PRODUCT_FILTER_LIVE_SEARCH_PLUGIN_URL', 'https://example.test/wp-content/plugins/beplus-fast-product-filter-live-search/' );
+	define( 'BEPLUS_FAST_PRODUCT_FILTER_LIVE_SEARCH_PLUGIN_URL', 'https://example.test/wp-content/plugins/beplus-fast-product-filter-live-search-for-woocommerce/' );
 }
 
 if ( ! defined( 'BEPLUS_FAST_PRODUCT_FILTER_LIVE_SEARCH_PLUGIN_BASENAME' ) ) {
-	define( 'BEPLUS_FAST_PRODUCT_FILTER_LIVE_SEARCH_PLUGIN_BASENAME', 'beplus-fast-product-filter-live-search/beplus-fast-product-filter-live-search.php' );
+	define( 'BEPLUS_FAST_PRODUCT_FILTER_LIVE_SEARCH_PLUGIN_BASENAME', 'beplus-fast-product-filter-live-search-for-woocommerce/beplus-fast-product-filter-live-search-for-woocommerce.php' );
 }

@@ -17,12 +17,12 @@ Before finishing PHP work:
 
 ## Conventions
 
-- **Bootstrap:** Constants and boot functions live in `beplus-fast-product-filter-live-search.php`; domain logic in `src/`.
+- **Bootstrap:** Constants and boot functions live in `beplus-fast-product-filter-live-search-for-woocommerce.php`; domain logic in `src/`.
 - **Modules:** Extend `AbstractModule`; constructor receives `Container`; implement `register(): void`.
 - **Services:** Resolve via `Container::get()` — do not `new` singletons in random files.
 - **Settings:** Use `SettingsRegistry` with `OPTION_KEY` constant and merged defaults — do not scatter `get_option()` calls.
 - **Block `render.php`:** `@var array<string, mixed> $attributes` in file docblock; escape all output.
-- **Script data:** Prefer `wp_localize_script` in `AssetLoader` with handle `beplus-fast-product-filter-live-search-frontend` and object `bpssData`.
+- **Script data:** Prefer `wp_localize_script` in `AssetLoader` with handle `beplus-fast-product-filter-live-search-for-woocommerce-frontend` and object `bpssData`.
 
 ## Naming
 
@@ -41,6 +41,6 @@ Follow existing classes in `src/Core/Plugin.php`, `Container.php`, `SettingsRegi
 ❌ function get_settings() without prefix in includes/common.php
 ✅ function beplus_fast_product_filter_live_search_get_settings()
 
-❌ new SearchEngine() in beplus-fast-product-filter-live-search.php top level
+❌ new SearchEngine() in beplus-fast-product-filter-live-search-for-woocommerce.php top level
 ✅ $container->get( SearchEngine::class ) inside Plugin boot
 ```

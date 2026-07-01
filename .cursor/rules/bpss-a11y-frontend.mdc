@@ -22,6 +22,6 @@ alwaysApply: false
 Compile with **`npm run build`** — do not edit `build/**` directly.
 
 ```text
-❌ .beplus-fast-product-filter-live-search__input:focus { outline: none; }
-✅ .beplus-fast-product-filter-live-search__input:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+❌ .beplus-fast-product-filter-live-search-for-woocommerce__input:focus { outline: none; }
+✅ .beplus-fast-product-filter-live-search-for-woocommerce__input:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
 ```

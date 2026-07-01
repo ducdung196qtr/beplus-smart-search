@@ -8,14 +8,14 @@ alwaysApply: false
 
 ## Namespace
 
-- Base: `beplus-fast-product-filter-live-search/v1`
+- Base: `beplus-fast-product-filter-live-search-for-woocommerce/v1`
 - Controllers extend `WP_REST_Controller` under `src/REST/`.
 
 ## Route conventions
 
 | Route | Methods | Permission | Notes |
 |-------|---------|------------|-------|
-| `/search` | GET | public read | Sanitize `s` param; apply `beplus-fast-product-filter-live-search/search.query` filter |
+| `/search` | GET | public read | Sanitize `s` param; apply `beplus-fast-product-filter-live-search-for-woocommerce/search.query` filter |
 | `/settings` | GET, POST | `manage_options` | Delegate to `SettingsRegistry` |
 | `/settings/defaults` | GET | `manage_options` | Return schema defaults |
 
@@ -27,7 +27,7 @@ Register routes on `rest_api_init` inside `Plugin::register_core_services()`.
 class SearchController extends \WP_REST_Controller {
 
 	public function __construct() {
-		$this->namespace = 'beplus-fast-product-filter-live-search/v1';
+		$this->namespace = 'beplus-fast-product-filter-live-search-for-woocommerce/v1';
 		$this->rest_base = 'search';
 	}
 
@@ -57,7 +57,7 @@ array(
 )
 ```
 
-Apply `beplus-fast-product-filter-live-search/search.results` filter before returning.
+Apply `beplus-fast-product-filter-live-search-for-woocommerce/search.results` filter before returning.
 
 Reference: `src/REST/ProductsController.php`, `src/REST/FacetsController.php`.
 

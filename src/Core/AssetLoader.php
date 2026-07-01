@@ -108,7 +108,7 @@ class AssetLoader extends AbstractModule {
 	 */
 	private function get_localized_data(): array {
 		$data = array(
-			'restUrl' => esc_url_raw( rest_url( 'beplus-fast-product-filter-live-search/v1/' ) ),
+			'restUrl' => esc_url_raw( rest_url( 'beplus-fast-product-filter-live-search-for-woocommerce/v1/' ) ),
 			'nonce'   => wp_create_nonce( 'wp_rest' ),
 			'shopUrl' => esc_url_raw( beplus_fast_product_filter_live_search_get_catalog_search_base_url() ),
 			'facetDisplayMode' => beplus_fast_product_filter_live_search_get_facet_display_mode(),
@@ -116,7 +116,7 @@ class AssetLoader extends AbstractModule {
 			'attributeDefinitions' => beplus_fast_product_filter_live_search_get_all_attribute_definitions(),
 			'productCategories'    => beplus_fast_product_filter_live_search_get_product_category_definitions(),
 			'i18n'    => array(
-				'searching'    => __( 'Searchingâ€¦', 'beplus-fast-product-filter-live-search-for-woocommerce' ),
+				'searching'    => __( 'Searching…', 'beplus-fast-product-filter-live-search-for-woocommerce' ),
 				'noResults'    => __( 'No products found.', 'beplus-fast-product-filter-live-search-for-woocommerce' ),
 				/* translators: %d: number of products found */
 				'resultsFound' => __( '%d products found', 'beplus-fast-product-filter-live-search-for-woocommerce' ),

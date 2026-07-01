@@ -17,9 +17,9 @@ Standards: [`Document Plugin.md`](../../Document Plugin.md) § Gutenberg Blocks.
 
 ## block.json conventions
 
-- `textdomain`: `beplus-fast-product-filter-live-search`
-- `category`: `beplus-fast-product-filter-live-search`
-- `name`: `beplus-fast-product-filter-live-search/{slug}` (e.g. `beplus-fast-product-filter-live-search/search-bar`)
+- `textdomain`: `beplus-fast-product-filter-live-search-for-woocommerce`
+- `category`: `beplus-fast-product-filter-live-search-for-woocommerce`
+- `name`: `beplus-fast-product-filter-live-search-for-woocommerce/{slug}` (e.g. `beplus-fast-product-filter-live-search-for-woocommerce/search-bar`)
 - Prefer `render: file:./render.php` for dynamic search UI.
 - Attributes: camelCase (`placeholder`, `showIcon`, `maxResults`, `enableLiveSearch`).
 
@@ -42,8 +42,8 @@ Full build spec: [`docs/advanced-woo-search-block.md`](../../docs/advanced-woo-s
 
 ## Styling
 
-- Scoped classes: `beplus-fast-product-filter-live-search__*` — inherit theme typography where possible.
-- Loading state: `beplus-fast-product-filter-live-search--loading` → `beplus-fast-product-filter-live-search--ready` after init (avoid layout shift).
+- Scoped classes: `beplus-fast-product-filter-live-search-for-woocommerce__*` — inherit theme typography where possible.
+- Loading state: `beplus-fast-product-filter-live-search-for-woocommerce--loading` → `beplus-fast-product-filter-live-search-for-woocommerce--ready` after init (avoid layout shift).
 - Idempotent JS init: `data-bpss-search-init-pending` / `data-bpss-search-inited`.
 
 ## Reference
@@ -53,7 +53,7 @@ Full build spec: [`docs/advanced-woo-search-block.md`](../../docs/advanced-woo-s
 
 ```text
 ❌ New block named woocommerce/search-bar or category widgets
-✅ beplus-fast-product-filter-live-search/search-bar, category beplus-fast-product-filter-live-search
+✅ beplus-fast-product-filter-live-search-for-woocommerce/search-bar, category beplus-fast-product-filter-live-search-for-woocommerce
 
 ❌ Inline <script> in render.php for autocomplete
 ✅ block.js + REST + wp_enqueue_script via block.json editorScript/viewScript

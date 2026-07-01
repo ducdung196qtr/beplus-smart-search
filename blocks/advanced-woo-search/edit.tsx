@@ -133,7 +133,7 @@ export default function Edit( {
 											},
 										] }
 										help={ __(
-											'Filter bar shows controls in a compact row. Sidebar panel shows collapsible filter sections in a column â€” ideal next to a Product Collection block.',
+											'Filter bar shows controls in a compact row. Sidebar panel shows collapsible filter sections in a column — ideal next to a Product Collection block.',
 											'beplus-fast-product-filter-live-search-for-woocommerce'
 										) }
 										onChange={ ( value ) =>
@@ -171,7 +171,7 @@ export default function Edit( {
 				</TabPanel>
 			</InspectorControls>
 			<ServerSideRender
-				block="beplus-fast-product-filter-live-search/advanced-woo-search"
+				block="beplus-fast-product-filter-live-search-for-woocommerce/advanced-woo-search"
 				attributes={ attributes as unknown as Record< string, unknown > }
 			/>
 		</div>

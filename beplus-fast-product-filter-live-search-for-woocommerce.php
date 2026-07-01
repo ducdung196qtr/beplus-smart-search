@@ -2,8 +2,8 @@
 
 /**
  * Plugin Name: Beplus Fast Product Filter & Live Search for WooCommerce
- * Plugin URI:  https://beplusthemes.com/
- * Description: Fast, smart AJAX product filter & live search for WooCommerce. Instant results, no page reload â€” more conversions on your shop.
+ * Plugin URI:  https://github.com/ducdung196qtr/beplus-fast-product-filter-live-search-for-woocommerce
+ * Description: Fast, smart AJAX product filter & live search for WooCommerce. Instant results, no page reload — more conversions on your shop.
  * Version:     1.0.0
  * Author:      Beplus
  * Author URI:  https://beplusthemes.com/

@@ -15,7 +15,7 @@ $finder = PhpCsFixer\Finder::create()
 			__DIR__ . '/admin',
 		),
 	)
-	->append( array( __DIR__ . '/beplus-fast-product-filter-live-search.php' ) )
+	->append( array( __DIR__ . '/beplus-fast-product-filter-live-search-for-woocommerce.php' ) )
 	->name( '*.php' )
 	->notPath( 'index.asset.php' )
 	->notPath( 'settings.asset.php' )

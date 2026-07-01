@@ -22,7 +22,7 @@ Built with **PHP 7.4+**, **TypeScript**, **esbuild**, **PHPStan**, and **PHP CS 
 
 ## Quick start
 
-From `wp-content/plugins/beplus-fast-product-filter-live-search/`:
+From `wp-content/plugins/beplus-fast-product-filter-live-search-for-woocommerce/`:
 
 ```bash
 npm install
@@ -119,8 +119,8 @@ npm run build:blocks
 ## Project layout
 
 ```
-beplus-fast-product-filter-live-search/
-├── beplus-fast-product-filter-live-search.php   # Bootstrap
+beplus-fast-product-filter-live-search-for-woocommerce/
+├── beplus-fast-product-filter-live-search-for-woocommerce.php   # Bootstrap
 ├── src/                      # PSR-4 PHP (BePlusFastProductFilterLiveSearch\)
 ├── blocks/                   # Gutenberg blocks (block.json + TS source)
 ├── admin/                    # Settings page (PHP views + TS/JS)
@@ -172,7 +172,7 @@ npm run build
 npm run build:package
 ```
 
-Creates `beplus-fast-product-filter-live-search-v{version}.zip` in the plugin root (runtime files only: PHP, built JS/CSS, `readme.txt` — no dev config or TS sources).
+Creates `beplus-fast-product-filter-live-search-for-woocommerce-v{version}.zip` in the plugin root (runtime files only: PHP, built JS/CSS, `readme.txt` — no dev config or TS sources).
 
 ---
 

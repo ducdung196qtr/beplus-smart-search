@@ -102,7 +102,7 @@ class Plugin {
 	 */
 	public function register_block_category( array $categories ): array {
 		$categories[] = array(
-			'slug'  => 'beplus-fast-product-filter-live-search',
+			'slug'  => 'beplus-fast-product-filter-live-search-for-woocommerce',
 			'title' => __( 'Beplus Fast Product Filter & Live Search for WooCommerce', 'beplus-fast-product-filter-live-search-for-woocommerce' ),
 			'icon'  => 'search',
 		);

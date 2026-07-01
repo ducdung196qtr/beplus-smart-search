@@ -199,7 +199,7 @@ export default function Edit( {
 			</InspectorControls>
 
 			<ServerSideRender
-				block="beplus-fast-product-filter-live-search/live-search"
+				block="beplus-fast-product-filter-live-search-for-woocommerce/live-search"
 				attributes={ attributes as unknown as Record< string, unknown > }
 			/>
 		</div>

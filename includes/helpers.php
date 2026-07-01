@@ -378,8 +378,8 @@ function beplus_fast_product_filter_live_search_get_rating_filter_options(): arr
 	$options = array();
 
 	for ( $stars = 5; $stars >= 1; $stars-- ) {
-		$filled = str_repeat( 'â˜…', $stars );
-		$empty  = str_repeat( 'â˜†', 5 - $stars );
+		$filled = str_repeat( '★', $stars );
+		$empty  = str_repeat( '☆', 5 - $stars );
 		/* translators: %d: minimum star rating */
 		$label = sprintf( __( '%1$s%2$s & up', 'beplus-fast-product-filter-live-search-for-woocommerce' ), $filled, $empty );
 
@@ -449,7 +449,7 @@ function beplus_fast_product_filter_live_search_format_price_segment_label( floa
 	$max_fmt = number_format_i18n( $max );
 
 	/* translators: 1: currency symbol, 2: minimum price, 3: currency symbol, 4: maximum price */
-	return sprintf( __( '%1$s%2$s â€” %3$s%4$s', 'beplus-fast-product-filter-live-search-for-woocommerce' ), $currency, $min_fmt, $currency, $max_fmt );
+	return sprintf( __( '%1$s%2$s — %3$s%4$s', 'beplus-fast-product-filter-live-search-for-woocommerce' ), $currency, $min_fmt, $currency, $max_fmt );
 }
 
 /**
@@ -513,8 +513,8 @@ function beplus_fast_product_filter_live_search_uses_plain_permalinks(): bool {
  * Base URL for catalog search form submissions.
  *
  * Pretty permalinks: WooCommerce shop page URL (/shop/).
- * Plain permalinks: site home â€” not ?page_id=shop, because WooCommerce canonical
- * redirect (?page_id=7 â†’ ?post_type=product) drops custom query args such as bpss_s.
+ * Plain permalinks: site home — not ?page_id=shop, because WooCommerce canonical
+ * redirect (?page_id=7 → ?post_type=product) drops custom query args such as bpss_s.
  *
  * @return string
  */
@@ -596,7 +596,7 @@ function beplus_fast_product_filter_live_search_page_has_search_block(): bool {
 	}
 
 	$has_block = false;
-	$block     = 'beplus-fast-product-filter-live-search/advanced-woo-search';
+	$block     = 'beplus-fast-product-filter-live-search-for-woocommerce/advanced-woo-search';
 
 	if ( is_singular() ) {
 		global $post;

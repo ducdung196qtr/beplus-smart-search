@@ -38,7 +38,7 @@ After `render.php` edits: verify escaping. After block JS/CSS: **`npm run build`
 
 ```text
 ❌ <div onclick="search()"> with no keyboard support
-✅ <button type="submit" class="beplus-fast-product-filter-live-search__submit">
+✅ <button type="submit" class="beplus-fast-product-filter-live-search-for-woocommerce__submit">
 
 ❌ Dynamic results injected without aria-live update
 ✅ Update [data-bpss-search-status] when results load or fail

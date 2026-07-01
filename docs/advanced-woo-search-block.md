@@ -28,7 +28,7 @@
 
 | Requirement | Solution |
 |-------------|----------|
-| Gutenberg block | `beplus-fast-product-filter-live-search/advanced-woo-search` |
+| Gutenberg block | `beplus-fast-product-filter-live-search-for-woocommerce/advanced-woo-search` |
 | Drop into shop page | Compatible with `archive-product` FSE template |
 | No page reload | REST `fetch()` + client-side DOM update |
 | Keyword search | `s` query param → `WP_Query` / `wc_get_products` |
@@ -51,7 +51,7 @@ Place the block **above** the existing WooCommerce product grid in Site Editor:
 archive-product template
 ├── template-part: header
 ├── main
-│   ├── beplus-fast-product-filter-live-search/advanced-woo-search   ← NEW (drag here)
+│   ├── beplus-fast-product-filter-live-search-for-woocommerce/advanced-woo-search   ← NEW (drag here)
 │   ├── woocommerce/breadcrumbs                 (optional, can hide via block attr)
 │   ├── core/query-title                        (optional)
 │   ├── woocommerce/product-results-count     (sync with filtered count)
@@ -66,7 +66,7 @@ archive-product template
 User changes filter (keyword / category / tag / attribute / stock)
         │
         ▼
-JS debounce (keyword only) ──► GET /wp-json/beplus-fast-product-filter-live-search/v1/products?...
+JS debounce (keyword only) ──► GET /wp-json/beplus-fast-product-filter-live-search-for-woocommerce/v1/products?...
         │
         ▼
 SearchEngine → ProductProvider → WC query
@@ -96,9 +96,9 @@ Update URL with history.replaceState (optional, shareable filters) — NO naviga
 
 | Item | Value |
 |------|-------|
-| Block name | `beplus-fast-product-filter-live-search/advanced-woo-search` |
+| Block name | `beplus-fast-product-filter-live-search-for-woocommerce/advanced-woo-search` |
 | Title | Advanced Woo Search |
-| Category | `beplus-fast-product-filter-live-search` |
+| Category | `beplus-fast-product-filter-live-search-for-woocommerce` |
 | Icon | `filter` or `search` |
 | Folder | `blocks/advanced-woo-search/` |
 
@@ -146,35 +146,35 @@ Use **ServerSideRender** in the block editor preview (`edit.tsx`) so the inspect
 Root wrapper from `get_block_wrapper_attributes()` with `data-bpss-advanced-woo-search`.
 
 ```html
-<div class="beplus-fast-product-filter-live-search beplus-fast-product-filter-live-search--advanced-woo" data-bpss-advanced-woo-search>
-  <form class="beplus-fast-product-filter-live-search__form" role="search" method="get"
+<div class="beplus-fast-product-filter-live-search beplus-fast-product-filter-live-search-for-woocommerce--advanced-woo" data-bpss-advanced-woo-search>
+  <form class="beplus-fast-product-filter-live-search-for-woocommerce__form" role="search" method="get"
         action="{shop_permalink}" data-bpss-search-form>
 
     <!-- Keyword -->
-    <div class="beplus-fast-product-filter-live-search__field beplus-fast-product-filter-live-search__field--keyword">
+    <div class="beplus-fast-product-filter-live-search-for-woocommerce__field beplus-fast-product-filter-live-search-for-woocommerce__field--keyword">
       <label class="screen-reader-text" for="{id}-keyword">…</label>
       <input type="search" name="s" id="{id}-keyword" … />
     </div>
 
     <!-- Category -->
-    <div class="beplus-fast-product-filter-live-search__field beplus-fast-product-filter-live-search__field--category">
+    <div class="beplus-fast-product-filter-live-search-for-woocommerce__field beplus-fast-product-filter-live-search-for-woocommerce__field--category">
       <label for="{id}-cat">Category</label>
       <select name="product_cat" id="{id}-cat" data-bpss-filter="category">…</select>
     </div>
 
     <!-- Tag -->
-    <div class="beplus-fast-product-filter-live-search__field beplus-fast-product-filter-live-search__field--tag">
+    <div class="beplus-fast-product-filter-live-search-for-woocommerce__field beplus-fast-product-filter-live-search-for-woocommerce__field--tag">
       <select name="product_tag" data-bpss-filter="tag">…</select>
     </div>
 
     <!-- Attributes (one select per pa_*) -->
-    <div class="beplus-fast-product-filter-live-search__field beplus-fast-product-filter-live-search__field--attribute"
+    <div class="beplus-fast-product-filter-live-search-for-woocommerce__field beplus-fast-product-filter-live-search-for-woocommerce__field--attribute"
          data-attribute="{slug}">
       <select name="filter_{slug}" data-bpss-filter="attribute" data-attribute-slug="{slug}">…</select>
     </div>
 
     <!-- Stock -->
-    <div class="beplus-fast-product-filter-live-search__field beplus-fast-product-filter-live-search__field--stock">
+    <div class="beplus-fast-product-filter-live-search-for-woocommerce__field beplus-fast-product-filter-live-search-for-woocommerce__field--stock">
       <select name="stock_status" data-bpss-filter="stock">
         <option value="">All stock</option>
         <option value="instock">In stock</option>
@@ -183,15 +183,15 @@ Root wrapper from `get_block_wrapper_attributes()` with `data-bpss-advanced-woo-
       </select>
     </div>
 
-    <button type="submit" class="beplus-fast-product-filter-live-search__submit">Search</button>
-    <button type="button" class="beplus-fast-product-filter-live-search__clear" data-bpss-clear hidden>Clear</button>
+    <button type="submit" class="beplus-fast-product-filter-live-search-for-woocommerce__submit">Search</button>
+    <button type="button" class="beplus-fast-product-filter-live-search-for-woocommerce__clear" data-bpss-clear hidden>Clear</button>
 
-    <span class="beplus-fast-product-filter-live-search__status" role="status" aria-live="polite"
+    <span class="beplus-fast-product-filter-live-search-for-woocommerce__status" role="status" aria-live="polite"
           data-bpss-status hidden></span>
   </form>
 
   <!-- own-grid mode only -->
-  <div class="beplus-fast-product-filter-live-search__results" data-bpss-results hidden></div>
+  <div class="beplus-fast-product-filter-live-search-for-woocommerce__results" data-bpss-results hidden></div>
 </div>
 ```
 
@@ -200,7 +200,7 @@ PHP responsibilities in `render.php`:
 1. Merge block attributes with defaults.
 2. Pre-render `<option>` lists for categories, tags, attributes (cached transients, 1h).
 3. Output only enabled filters per block attributes.
-4. Escape all output; translatable strings with text domain `beplus-fast-product-filter-live-search`.
+4. Escape all output; translatable strings with text domain `beplus-fast-product-filter-live-search-for-woocommerce`.
 5. Do **not** run product query in `render.php` for interactive mode.
 
 ### 3.5 viewScript (view.js)
@@ -222,7 +222,7 @@ Register in `block.json`:
 // Bind input/change on [data-bpss-filter]
 // Debounce keyword; immediate on select change
 // AbortController for stale requests
-// Toggle beplus-fast-product-filter-live-search--loading on form
+// Toggle beplus-fast-product-filter-live-search-for-woocommerce--loading on form
 ```
 
 **Results update — `filter-collection` mode (default):**
@@ -244,7 +244,7 @@ Render into `[data-bpss-results]` inside the block (simpler MVP fallback).
 
 ### 4.1 Products search endpoint
 
-**Route:** `GET beplus-fast-product-filter-live-search/v1/products`
+**Route:** `GET beplus-fast-product-filter-live-search-for-woocommerce/v1/products`
 
 Register in `SearchController` or dedicated `ProductsController` (extends `WP_REST_Controller`).
 
@@ -270,7 +270,7 @@ Register in `SearchController` or dedicated `ProductsController` (extends `WP_RE
 **Example:**
 
 ```
-GET /wp-json/beplus-fast-product-filter-live-search/v1/products?s=beanie&product_cat=clothing&stock_status=instock&attribute[color]=blue&page=1&per_page=10
+GET /wp-json/beplus-fast-product-filter-live-search-for-woocommerce/v1/products?s=beanie&product_cat=clothing&stock_status=instock&attribute[color]=blue&page=1&per_page=10
 ```
 
 ### 4.3 Response shape
@@ -299,13 +299,13 @@ GET /wp-json/beplus-fast-product-filter-live-search/v1/products?s=beanie&product
 Apply filters before return:
 
 ```php
-apply_filters( 'beplus-fast-product-filter-live-search/search.results', $items, $query );
-do_action( 'beplus-fast-product-filter-live-search/search.completed', $query, $items );
+apply_filters( 'beplus-fast-product-filter-live-search-for-woocommerce/search.results', $items, $query );
+do_action( 'beplus-fast-product-filter-live-search-for-woocommerce/search.completed', $query, $items );
 ```
 
 ### 4.4 Facets endpoint (for editor + dynamic filters)
 
-**Route:** `GET beplus-fast-product-filter-live-search/v1/facets`
+**Route:** `GET beplus-fast-product-filter-live-search-for-woocommerce/v1/facets`
 
 Returns available categories, tags, attributes, stock options for populating selects:
 
@@ -410,7 +410,7 @@ Normalize each `WC_Product` to REST item shape (title, url, image src, `get_pric
 `src/Search/SearchEngine.php`:
 
 1. Accept `SearchQuery`.
-2. Apply `beplus-fast-product-filter-live-search/search.query` filter.
+2. Apply `beplus-fast-product-filter-live-search-for-woocommerce/search.query` filter.
 3. Delegate to `ProductProvider` when WooCommerce active.
 4. Return paginated result set.
 
@@ -504,7 +504,7 @@ templates/partials/
 
 ### Phase 1 — Scaffold (MVP)
 
-- [ ] Plugin bootstrap (`beplus-fast-product-filter-live-search.php`, `Plugin`, `Container`, `AbstractModule`)
+- [ ] Plugin bootstrap (`beplus-fast-product-filter-live-search-for-woocommerce.php`, `Plugin`, `Container`, `AbstractModule`)
 - [ ] `BlockRegistry` + `blocks/advanced-woo-search/` with static render
 - [ ] `ProductProvider` + `GET /products?s=&product_cat=`
 - [ ] `view.js`: keyword + category, `filter-collection` mode, debounce, abort
@@ -530,7 +530,7 @@ templates/partials/
 
 - [ ] Transient cache for facets
 - [ ] Optional index table (future, like advanced-woo-search)
-- [ ] Filters: `beplus_fast_product_filter_live_search.providers`, `beplus-fast-product-filter-live-search/search.query`
+- [ ] Filters: `beplus_fast_product_filter_live_search.providers`, `beplus-fast-product-filter-live-search-for-woocommerce/search.query`
 - [ ] Admin settings page for global defaults
 
 ---
@@ -560,8 +560,8 @@ templates/partials/
 ### 9.3 REST tests
 
 ```bash
-curl "http://plugin.local/wp-json/beplus-fast-product-filter-live-search/v1/products?s=beanie&per_page=5"
-curl "http://plugin.local/wp-json/beplus-fast-product-filter-live-search/v1/facets"
+curl "http://plugin.local/wp-json/beplus-fast-product-filter-live-search-for-woocommerce/v1/products?s=beanie&per_page=5"
+curl "http://plugin.local/wp-json/beplus-fast-product-filter-live-search-for-woocommerce/v1/facets"
 ```
 
 ---
@@ -587,7 +587,7 @@ From [`.cursor/rules/bpss-a11y-blocks.mdc`](../.cursor/rules/bpss-a11y-blocks.md
 - Every `<select>` has `<label>` or `aria-label`.
 - Keyword field: `role="search"` on form; combobox pattern if autocomplete dropdown added later.
 - `[data-bpss-status]` with `aria-live="polite"` — announce "12 products found".
-- Loading: `beplus-fast-product-filter-live-search--loading` class; respect `prefers-reduced-motion`.
+- Loading: `beplus-fast-product-filter-live-search-for-woocommerce--loading` class; respect `prefers-reduced-motion`.
 - Clear button: `aria-label` translatable.
 - Focus management: after filter, focus stays on control (no trap).
 
@@ -600,7 +600,7 @@ The workspace includes `plugins/advanced-woo-search` (AWS). **Do not fork it.** 
 | AWS pattern | Beplus Fast Product Filter & Live Search for WooCommerce approach |
 |-------------|------------------------------|
 | Custom DB index table | Phase 4 optional; MVP uses `wc_get_products` |
-| AJAX admin-ajax | REST `beplus-fast-product-filter-live-search/v1/products` |
+| AJAX admin-ajax | REST `beplus-fast-product-filter-live-search-for-woocommerce/v1/products` |
 | Shortcode/widget | Gutenberg block only (phase 1) |
 | Filter query string | Same tax/meta concepts; our REST schema |
 | Pro filter plugins integration | Out of scope MVP; hooks for extension |

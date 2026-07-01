@@ -1,10 +1,10 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
-	"name": "beplus-fast-product-filter-live-search/live-search",
+	"name": "beplus-fast-product-filter-live-search-for-woocommerce/live-search",
 	"version": "1.0.0",
 	"title": "Live Search",
-	"category": "beplus-fast-product-filter-live-search",
+	"category": "beplus-fast-product-filter-live-search-for-woocommerce",
 	"icon": "search",
 	"description": "Quick product search with suggestions as you type—highlighted matches and optional add to cart.",
 	"keywords": [ "search", "woocommerce", "live", "autocomplete", "suggestions", "dropdown" ],

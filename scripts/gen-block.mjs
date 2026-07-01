@@ -17,7 +17,7 @@ const get = ( flag ) => {
 };
 
 const name = get( '--name' );
-const ns = 'beplus-fast-product-filter-live-search';
+const ns = 'beplus-fast-product-filter-live-search-for-woocommerce';
 
 if ( ! name ) {
 	console.error( '❌  Missing --name argument.' );
@@ -31,7 +31,7 @@ if ( ! /^[a-z][a-z0-9-]*$/.test( name ) ) {
 }
 
 const title = get( '--title' ) ?? name.replace( /-/g, ' ' ).replace( /\b\w/g, ( c ) => c.toUpperCase() );
-const category = get( '--category' ) ?? 'beplus-fast-product-filter-live-search';
+const category = get( '--category' ) ?? 'beplus-fast-product-filter-live-search-for-woocommerce';
 const pascal = name.replace( /(^|-)([a-z])/g, ( _, __, c ) => c.toUpperCase() );
 const blockDir = path.resolve( `./blocks/${name}` );
 
@@ -135,7 +135,7 @@ $wrapper_attributes = get_block_wrapper_attributes();
 ?>
 
 <div <?php echo $wrapper_attributes; ?>>
-	<h2 class="beplus-fast-product-filter-live-search__${name.replace( /-/g, '-' ) }-heading"><?php echo $heading; ?></h2>
+	<h2 class="beplus-fast-product-filter-live-search-for-woocommerce__${name.replace( /-/g, '-' ) }-heading"><?php echo $heading; ?></h2>
 </div>
 `,
 	'style.css': `.wp-block-${ns.replace( '/', '-' )}-${name} {

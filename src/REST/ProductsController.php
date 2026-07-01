@@ -31,7 +31,7 @@ class ProductsController extends AbstractModule {
 	 *
 	 * @var string
 	 */
-	private string $namespace = 'beplus-fast-product-filter-live-search/v1';
+	private string $namespace = 'beplus-fast-product-filter-live-search-for-woocommerce/v1';
 
 	/**
 	 * Register REST routes.

@@ -9,17 +9,17 @@
 | Item | Value |
 |------|-------|
 | **Display name** | Beplus Fast Product Filter & Live Search for WooCommerce |
-| **Directory slug** | `beplus-fast-product-filter-live-search` |
-| **Bootstrap file** | `beplus-fast-product-filter-live-search.php` |
-| **Text domain** | `beplus-fast-product-filter-live-search` |
+| **Directory slug** | `beplus-fast-product-filter-live-search-for-woocommerce` |
+| **Bootstrap file** | `beplus-fast-product-filter-live-search-for-woocommerce.php` |
+| **Text domain** | `beplus-fast-product-filter-live-search-for-woocommerce` |
 | **PHP namespace** | `BePlusFastProductFilterLiveSearch` |
 | **Global function prefix** | `beplus_fast_product_filter_live_search_` |
 | **Constants prefix** | `BEPLUS_FAST_PRODUCT_FILTER_LIVE_SEARCH_` |
 | **Hook prefix (legacy WP style)** | `beplus_fast_product_filter_live_search_` |
-| **Hook prefix (new, namespaced)** | `beplus-fast-product-filter-live-search/` or `beplus_fast_product_filter_live_search.` |
-| **REST namespace** | `beplus-fast-product-filter-live-search/v1` |
-| **Block category** | `beplus-fast-product-filter-live-search` |
-| **Block name prefix** | `beplus-fast-product-filter-live-search/` |
+| **Hook prefix (new, namespaced)** | `beplus-fast-product-filter-live-search-for-woocommerce/` or `beplus_fast_product_filter_live_search.` |
+| **REST namespace** | `beplus-fast-product-filter-live-search-for-woocommerce/v1` |
+| **Block category** | `beplus-fast-product-filter-live-search-for-woocommerce` |
+| **Block name prefix** | `beplus-fast-product-filter-live-search-for-woocommerce/` |
 | **Requires WP** | 6.0+ |
 | **Requires PHP** | 7.4+ (8.0+ recommended) |
 
@@ -30,7 +30,7 @@
 This plugin uses a **container-based architecture** — every module registers hooks inside `register()`, with no side effects when files are `require`d.
 
 ```
-beplus-fast-product-filter-live-search.php          ← Bootstrap: constants, autoload, activation hooks
+beplus-fast-product-filter-live-search-for-woocommerce.php          ← Bootstrap: constants, autoload, activation hooks
         │
         ▼
 BePlusFastProductFilterLiveSearch\Core\Plugin    ← Entry point: boot(), activate(), deactivate()
@@ -59,8 +59,8 @@ BePlusFastProductFilterLiveSearch\Core\Plugin    ← Entry point: boot(), activa
 ## 3. Recommended Directory Structure
 
 ```
-beplus-fast-product-filter-live-search/
-├── beplus-fast-product-filter-live-search.php       # Main plugin file (WordPress reads the header here)
+beplus-fast-product-filter-live-search-for-woocommerce/
+├── beplus-fast-product-filter-live-search-for-woocommerce.php       # Main plugin file (WordPress reads the header here)
 ├── readme.txt                    # WordPress.org readme (if publishing)
 ├── composer.json                 # PSR-4 autoload + dev dependencies
 ├── package.json                  # wp-scripts / frontend build
@@ -162,7 +162,7 @@ beplus-fast-product-filter-live-search/
 │       └── result-item.php
 │
 ├── languages/                    # .pot, .po, .mo
-│   └── beplus-fast-product-filter-live-search.pot
+│   └── beplus-fast-product-filter-live-search-for-woocommerce.pot
 │
 └── vendor/                       # Composer autoload (dev)
 ```
@@ -171,7 +171,7 @@ beplus-fast-product-filter-live-search/
 
 ---
 
-## 4. Bootstrap File — `beplus-fast-product-filter-live-search.php`
+## 4. Bootstrap File — `beplus-fast-product-filter-live-search-for-woocommerce.php`
 
 ```php
 <?php
@@ -182,7 +182,7 @@ beplus-fast-product-filter-live-search/
  * Version:     1.0.0
  * Author:      Beplus
  * Author URI:  https://beplusthemes.com/
- * Text Domain: beplus-fast-product-filter-live-search
+ * Text Domain: beplus-fast-product-filter-live-search-for-woocommerce
  * Domain Path: /languages
  * Requires at least: 6.0
  * Requires PHP: 7.4
@@ -372,8 +372,8 @@ The plugin uses **two hook naming styles** — prefer modern `HookManager` const
 
 ```php
 // HookManager.php
-public const SEARCH_QUERY     = 'beplus-fast-product-filter-live-search/search.query';
-public const SEARCH_RESULTS   = 'beplus-fast-product-filter-live-search/search.results';
+public const SEARCH_QUERY     = 'beplus-fast-product-filter-live-search-for-woocommerce/search.query';
+public const SEARCH_RESULTS   = 'beplus-fast-product-filter-live-search-for-woocommerce/search.results';
 public const FILTER_SERVICES  = 'beplus_fast_product_filter_live_search.services';
 public const FILTER_PROVIDERS = 'beplus_fast_product_filter_live_search.providers';
 public const CRON_REINDEX     = 'beplus_fast_product_filter_live_search_reindex';
@@ -390,7 +390,7 @@ apply_filters( 'beplus_fast_product_filter_live_search_result_item', $html, $pos
 
 ```php
 do_action( HookManager::SEARCH_COMPLETED, $query, $results );
-// → 'beplus-fast-product-filter-live-search/search.completed'
+// → 'beplus-fast-product-filter-live-search-for-woocommerce/search.completed'
 ```
 
 ### 5.7 Options and transients
@@ -420,19 +420,19 @@ $wpdb->prefix . 'bpfpfls_search_index'
 ### 5.9 Script and style handles
 
 ```php
-'beplus-fast-product-filter-live-search-admin'
-'beplus-fast-product-filter-live-search-frontend'
-'beplus-fast-product-filter-live-search-autocomplete'
-'beplus-fast-product-filter-live-search-block-search-bar'
+'beplus-fast-product-filter-live-search-for-woocommerce-admin'
+'beplus-fast-product-filter-live-search-for-woocommerce-frontend'
+'beplus-fast-product-filter-live-search-for-woocommerce-autocomplete'
+'beplus-fast-product-filter-live-search-for-woocommerce-block-search-bar'
 ```
 
 ### 5.10 CSS class prefix
 
 ```html
-<div class="beplus-fast-product-filter-live-search beplus-fast-product-filter-live-search__form">
+<div class="beplus-fast-product-filter-live-search-for-woocommerce beplus-fast-product-filter-live-search-for-woocommerce__form">
 ```
 
-- BEM blocks: `beplus-fast-product-filter-live-search__element--modifier`.
+- BEM blocks: `beplus-fast-product-filter-live-search-for-woocommerce__element--modifier`.
 
 ---
 
@@ -589,7 +589,7 @@ namespace BePlusFastProductFilterLiveSearch\REST;
 class SearchController extends \WP_REST_Controller {
 
 	public function __construct() {
-		$this->namespace = 'beplus-fast-product-filter-live-search/v1';
+		$this->namespace = 'beplus-fast-product-filter-live-search-for-woocommerce/v1';
 		$this->rest_base = 'search';
 	}
 
@@ -672,9 +672,9 @@ blocks/search-bar/
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
-	"name": "beplus-fast-product-filter-live-search/search-bar",
+	"name": "beplus-fast-product-filter-live-search-for-woocommerce/search-bar",
 	"title": "Search Bar",
-	"category": "beplus-fast-product-filter-live-search",
+	"category": "beplus-fast-product-filter-live-search-for-woocommerce",
 	"icon": "search",
 	"description": "Smart search bar with live autocomplete.",
 	"attributes": {
@@ -682,7 +682,7 @@ blocks/search-bar/
 		"showIcon": { "type": "boolean", "default": true }
 	},
 	"render": "file:./render.php",
-	"editorScript": "beplus-fast-product-filter-live-search-block-search-bar",
+	"editorScript": "beplus-fast-product-filter-live-search-for-woocommerce-block-search-bar",
 	"style": "file:./style.css"
 }
 ```
@@ -710,10 +710,10 @@ apply_filters( 'beplus_fast_product_filter_live_search.blocks', array() );
 
 ```php
 wp_localize_script(
-	'beplus-fast-product-filter-live-search-frontend',
+	'beplus-fast-product-filter-live-search-for-woocommerce-frontend',
 	'bpssData',
 	array(
-		'restUrl' => rest_url( 'beplus-fast-product-filter-live-search/v1/' ),
+		'restUrl' => rest_url( 'beplus-fast-product-filter-live-search-for-woocommerce/v1/' ),
 		'nonce'   => wp_create_nonce( 'wp_rest' ),
 	)
 );
@@ -751,7 +751,7 @@ function beplus_fast_product_filter_live_search_get_template( $template_name, $a
 	$paths = apply_filters(
 		'beplus_fast_product_filter_live_search_template_paths',
 		array(
-			get_stylesheet_directory() . '/beplus-fast-product-filter-live-search/',
+			get_stylesheet_directory() . '/beplus-fast-product-filter-live-search-for-woocommerce/',
 			BEPLUS_FAST_PRODUCT_FILTER_LIVE_SEARCH_PLUGIN_DIR . 'templates/',
 		)
 	);
@@ -759,7 +759,7 @@ function beplus_fast_product_filter_live_search_get_template( $template_name, $a
 }
 ```
 
-Theme override: copy a template to `{theme}/beplus-fast-product-filter-live-search/search-form.php`.
+Theme override: copy a template to `{theme}/beplus-fast-product-filter-live-search-for-woocommerce/search-form.php`.
 
 ---
 
@@ -767,7 +767,7 @@ Theme override: copy a template to `{theme}/beplus-fast-product-filter-live-sear
 
 ```json
 {
-	"name": "beplus/beplus-fast-product-filter-live-search",
+	"name": "beplus/beplus-fast-product-filter-live-search-for-woocommerce",
 	"description": "Beplus Fast Product Filter & Live Search for WooCommerce",
 	"type": "wordpress-plugin",
 	"license": "GPL-2.0-or-later",
@@ -807,7 +807,7 @@ Every file must follow:
 
 ## 12. Internationalization (i18n)
 
-- Text domain: `beplus-fast-product-filter-live-search`
+- Text domain: `beplus-fast-product-filter-live-search-for-woocommerce`
 - Domain Path: `/languages`
 - Load in `Plugin::load_textdomain()`:
 
@@ -819,7 +819,7 @@ load_plugin_textdomain(
 );
 ```
 
-- Generate POT: `wp i18n make-pot . languages/beplus-fast-product-filter-live-search.pot`
+- Generate POT: `wp i18n make-pot . languages/beplus-fast-product-filter-live-search-for-woocommerce.pot`
 
 ---
 
@@ -843,8 +843,8 @@ add_action( HookManager::CRON_REINDEX, array( $index_service, 'rebuild' ) );
 
 ### Phase 1 — Scaffold
 
-- [ ] Create `beplus-fast-product-filter-live-search/` directory
-- [ ] Write `beplus-fast-product-filter-live-search.php` with plugin header
+- [ ] Create `beplus-fast-product-filter-live-search-for-woocommerce/` directory
+- [ ] Write `beplus-fast-product-filter-live-search-for-woocommerce.php` with plugin header
 - [ ] Define `BEPLUS_FAST_PRODUCT_FILTER_LIVE_SEARCH_*` constants
 - [ ] Set up `composer.json` + PSR-4 autoload
 - [ ] Create `src/Core/Plugin.php`, `Container.php`, `AbstractModule.php`
@@ -899,9 +899,9 @@ add_action( HookManager::CRON_REINDEX, array( $index_service, 'rebuild' ) );
 | `BlockRegistry` | `src/Blocks/BlockRegistry.php` | Auto-discover blocks |
 | `ProductsController` | `src/REST/ProductsController.php` | `GET /products` |
 | `FacetsController` | `src/REST/FacetsController.php` | `GET /facets` |
-| REST namespace | `beplus-fast-product-filter-live-search/v1` | Public API |
+| REST namespace | `beplus-fast-product-filter-live-search-for-woocommerce/v1` | Public API |
 | Services filter | `beplus_fast_product_filter_live_search.services` | Container extensions |
-| Search completed action | `beplus-fast-product-filter-live-search/search.completed` | After search runs |
+| Search completed action | `beplus-fast-product-filter-live-search-for-woocommerce/search.completed` | After search runs |
 | Primary block | `blocks/advanced-woo-search/` | Advanced Woo Search |
 
 ---
@@ -930,7 +930,7 @@ Before building the main plugin feature, read:
 
 **[`docs/advanced-woo-search-block.md`](./docs/advanced-woo-search-block.md)**
 
-That document specifies the `beplus-fast-product-filter-live-search/advanced-woo-search` block: WooCommerce filters (keyword, category, tag, attribute, stock), REST `/products`, no page reload on the shop `archive-product` template, and integration with `woocommerce/product-collection`.
+That document specifies the `beplus-fast-product-filter-live-search-for-woocommerce/advanced-woo-search` block: WooCommerce filters (keyword, category, tag, attribute, stock), REST `/products`, no page reload on the shop `archive-product` template, and integration with `woocommerce/product-collection`.
 
 ---
 
@@ -950,7 +950,7 @@ When implementing, read these plugin files directly:
 
 | File | Purpose |
 |------|---------|
-| `beplus-fast-product-filter-live-search.php` | Bootstrap pattern |
+| `beplus-fast-product-filter-live-search-for-woocommerce.php` | Bootstrap pattern |
 | `src/Core/Plugin.php` | Boot flow, activate/deactivate |
 | `src/Core/Container.php` | DI container |
 | `src/Core/AbstractModule.php` | Module base |

@@ -81,8 +81,8 @@ add_filter( 'beplus_fast_product_filter_live_search.services', function ( $servi
 1. Load enabled providers from `SearchRegistry`.
 2. Run searches (parallel or sequential).
 3. Merge and sort by score/relevance.
-4. Apply filters: `beplus-fast-product-filter-live-search/search.query`, `beplus-fast-product-filter-live-search/search.results`.
-5. Fire action: `beplus-fast-product-filter-live-search/search.completed`.
+4. Apply filters: `beplus-fast-product-filter-live-search-for-woocommerce/search.query`, `beplus-fast-product-filter-live-search-for-woocommerce/search.results`.
+5. Fire action: `beplus-fast-product-filter-live-search-for-woocommerce/search.completed`.
 
 ## Settings integration
 

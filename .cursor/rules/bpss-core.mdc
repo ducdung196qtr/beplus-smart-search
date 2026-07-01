@@ -6,7 +6,7 @@ alwaysApply: true
 # Beplus Fast Product Filter & Live Search for WooCommerce — core
 
 - **Briefing:** Read [`AGENTS.md`](../../AGENTS.md) first; architecture in [`Document Plugin.md`](../../Document Plugin.md).
-- **Slug / i18n:** Text domain `beplus-fast-product-filter-live-search`; PHP hooks/functions `beplus_fast_product_filter_live_search_`; PSR-4 `BePlusFastProductFilterLiveSearch\` → `src/`.
+- **Slug / i18n:** Text domain `beplus-fast-product-filter-live-search-for-woocommerce`; PHP hooks/functions `beplus_fast_product_filter_live_search_`; PSR-4 `BePlusFastProductFilterLiveSearch\` → `src/`.
 - **Constants:** `BEPLUS_FAST_PRODUCT_FILTER_LIVE_SEARCH_VERSION`, `BEPLUS_FAST_PRODUCT_FILTER_LIVE_SEARCH_PLUGIN_DIR`, `BEPLUS_FAST_PRODUCT_FILTER_LIVE_SEARCH_PLUGIN_URL`, `BEPLUS_FAST_PRODUCT_FILTER_LIVE_SEARCH_PLUGIN_BASENAME`.
 - **Architecture:** Single entry `Plugin::boot()`; modules extend `AbstractModule` and attach hooks only in `register()` — no side effects at file load.
 - **After editing** `admin/js/**`, `assets/**`, or block sources under `blocks/**`, run **`npm run build`** or **`npm run start`** from the plugin root.

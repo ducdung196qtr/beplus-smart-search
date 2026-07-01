@@ -1,6 +1,6 @@
 ---
 name: bpss-add-plugin-block
-description: Adds or extends a Beplus Fast Product Filter & Live Search for WooCommerce Gutenberg block under blocks/ using block.json, TypeScript, esbuild, render.php. Use when creating blocks, editing BlockRegistry, block.json, render.php, index.tsx, or npm build for beplus-fast-product-filter-live-search.
+description: Adds or extends a Beplus Fast Product Filter & Live Search for WooCommerce Gutenberg block under blocks/ using block.json, TypeScript, esbuild, render.php. Use when creating blocks, editing BlockRegistry, block.json, render.php, index.tsx, or npm build for beplus-fast-product-filter-live-search-for-woocommerce.
 disable-model-invocation: true
 ---
 
@@ -17,9 +17,9 @@ disable-model-invocation: true
 
 1. Create `blocks/{slug}/` with `block.json`, `index.tsx`, `edit.tsx`, `render.php`, `style.css`.
 2. Set `block.json`:
-   - `name`: `beplus-fast-product-filter-live-search/{slug}`
-   - `textdomain`: `beplus-fast-product-filter-live-search`
-   - `category`: `beplus-fast-product-filter-live-search`
+- `name`: `beplus-fast-product-filter-live-search-for-woocommerce/{slug}`
+- `textdomain`: `beplus-fast-product-filter-live-search-for-woocommerce`
+- `category`: `beplus-fast-product-filter-live-search-for-woocommerce`
    - `render`: `file:./render.php`
 3. Register block category in `Plugin::register_block_category()` if not already present.
 
@@ -39,8 +39,8 @@ disable-model-invocation: true
 
 ## Styling
 
-- Class prefix: `beplus-fast-product-filter-live-search__*`
-- Loading: `beplus-fast-product-filter-live-search--loading` → `beplus-fast-product-filter-live-search--ready`
+- Class prefix: `beplus-fast-product-filter-live-search-for-woocommerce__*`
+- Loading: `beplus-fast-product-filter-live-search-for-woocommerce--loading` → `beplus-fast-product-filter-live-search-for-woocommerce--ready`
 - Scope styles to block wrapper — avoid global resets
 
 ## Build and verify
@@ -59,7 +59,7 @@ disable-model-invocation: true
 
 ## Checklist
 
-- [ ] `block.json` uses `beplus-fast-product-filter-live-search/` name prefix and textdomain.
+- [ ] `block.json` uses `beplus-fast-product-filter-live-search-for-woocommerce/` name prefix and textdomain.
 - [ ] `render.php` escaped; no raw user input in output.
 - [ ] REST used for live search — not ad-hoc SQL in render.
 - [ ] `npm run build` run; no hand-edits to `build/**`.

@@ -129,30 +129,30 @@ export default function SortTab( { attributes, setAttributes }: SortTabProps ) {
 
 	if ( visibleOrder.length === 0 ) {
 		return (
-			<p className="beplus-fast-product-filter-live-search-sort-tab__empty">
+			<p className="beplus-fast-product-filter-live-search-for-woocommerce-sort-tab__empty">
 				{ __( 'Enable filters in the Filters tab to sort them.', 'beplus-fast-product-filter-live-search-for-woocommerce' ) }
 			</p>
 		);
 	}
 
 	return (
-		<div className="beplus-fast-product-filter-live-search-sort-tab">
-			<p className="beplus-fast-product-filter-live-search-sort-tab__help">
+		<div className="beplus-fast-product-filter-live-search-for-woocommerce-sort-tab">
+			<p className="beplus-fast-product-filter-live-search-for-woocommerce-sort-tab__help">
 				{ __(
 					'Drag order of filter sections. Each attribute appears as its own panel.',
 					'beplus-fast-product-filter-live-search-for-woocommerce'
 				) }
 			</p>
-			<ul className="beplus-fast-product-filter-live-search-sort-tab__list">
+			<ul className="beplus-fast-product-filter-live-search-for-woocommerce-sort-tab__list">
 				{ visibleOrder.map( ( sectionId, index ) => (
 					<li
 						key={ sectionId }
-						className="beplus-fast-product-filter-live-search-sort-tab__item"
+						className="beplus-fast-product-filter-live-search-for-woocommerce-sort-tab__item"
 					>
-						<span className="beplus-fast-product-filter-live-search-sort-tab__label">
+						<span className="beplus-fast-product-filter-live-search-for-woocommerce-sort-tab__label">
 							{ catalog[ sectionId ] ?? sectionId }
 						</span>
-						<span className="beplus-fast-product-filter-live-search-sort-tab__actions">
+						<span className="beplus-fast-product-filter-live-search-for-woocommerce-sort-tab__actions">
 							<Button
 								icon="arrow-up-alt2"
 								label={ __( 'Move up', 'beplus-fast-product-filter-live-search-for-woocommerce' ) }

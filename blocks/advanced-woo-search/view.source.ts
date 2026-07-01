@@ -582,7 +582,7 @@
 		const win = window as Window & { bpssData?: BpssData };
 		return (
 			win.bpssData || {
-				restUrl: '/wp-json/beplus-fast-product-filter-live-search/v1/',
+				restUrl: '/wp-json/beplus-fast-product-filter-live-search-for-woocommerce/v1/',
 				nonce: '',
 				i18n: {
 					searching: 'Searching…',
@@ -959,7 +959,7 @@
 		root.querySelectorAll( '[data-bpss-term-slug]' ).forEach( ( el ) => {
 			const item = el as HTMLElement;
 			item.hidden = false;
-			item.classList.remove( 'beplus-fast-product-filter-live-search__list-item--hidden' );
+			item.classList.remove( 'beplus-fast-product-filter-live-search-for-woocommerce__list-item--hidden' );
 			if ( item.tagName === 'OPTION' ) {
 				( item as HTMLOptionElement ).disabled = false;
 			}
@@ -1111,13 +1111,13 @@
 			} else {
 				item.hidden = ! visible;
 				item.classList.toggle(
-					'beplus-fast-product-filter-live-search__list-item--hidden',
+					'beplus-fast-product-filter-live-search-for-woocommerce__list-item--hidden',
 					! visible
 				);
 			}
 
 			const countEl = item.querySelector(
-				'.beplus-fast-product-filter-live-search__list-count'
+				'.beplus-fast-product-filter-live-search-for-woocommerce__list-count'
 			);
 			if ( countEl && count > 0 ) {
 				countEl.textContent = '(' + count + ')';
@@ -1380,7 +1380,7 @@
 			'[data-bpss-facet-panel], [data-bpss-panel]'
 		);
 		const panelTitle = panel?.querySelector(
-			'.beplus-fast-product-filter-live-search__panel-title'
+			'.beplus-fast-product-filter-live-search-for-woocommerce__panel-title'
 		);
 		if ( panelTitle?.textContent ) {
 			return panelTitle.textContent.trim();
@@ -1408,7 +1408,7 @@
 		input: HTMLInputElement | HTMLSelectElement
 	): string {
 		const row = input.closest( 'li, [data-bpss-term-slug]' );
-		const listText = row?.querySelector( '.beplus-fast-product-filter-live-search__list-text' );
+		const listText = row?.querySelector( '.beplus-fast-product-filter-live-search-for-woocommerce__list-text' );
 		if ( listText?.textContent ) {
 			return listText.textContent.trim();
 		}
@@ -1453,7 +1453,7 @@
 
 		const currency =
 			priceWrap
-				.querySelector( '.beplus-fast-product-filter-live-search__price-currency' )
+				.querySelector( '.beplus-fast-product-filter-live-search-for-woocommerce__price-currency' )
 				?.textContent?.trim() || '';
 
 		let range = '';
@@ -1610,7 +1610,7 @@
 		}
 
 		bar = document.createElement( 'div' );
-		bar.className = 'beplus-fast-product-filter-live-search__active-filters';
+		bar.className = 'beplus-fast-product-filter-live-search-for-woocommerce__active-filters';
 		bar.setAttribute( 'data-bpss-active-filters', '' );
 		bar.setAttribute( 'data-bpss-owner', owner );
 		bar.hidden = true;
@@ -1979,7 +1979,7 @@
 			const chipsHtml = chips
 				.map(
 					( chip ) =>
-						'<button type="button" class="beplus-fast-product-filter-live-search__active-filter-chip" data-bpss-remove-filter="' +
+						'<button type="button" class="beplus-fast-product-filter-live-search-for-woocommerce__active-filter-chip" data-bpss-remove-filter="' +
 						escapeHtml( chip.key ) +
 						'" aria-label="' +
 						escapeHtml(
@@ -1987,16 +1987,16 @@
 								': ' +
 								chip.label
 						) +
-						'"><span class="beplus-fast-product-filter-live-search__active-filter-chip-label">' +
+						'"><span class="beplus-fast-product-filter-live-search-for-woocommerce__active-filter-chip-label">' +
 						escapeHtml( chip.label ) +
-						'</span><span class="beplus-fast-product-filter-live-search__active-filter-chip-remove" aria-hidden="true">&times;</span></button>'
+						'</span><span class="beplus-fast-product-filter-live-search-for-woocommerce__active-filter-chip-remove" aria-hidden="true">&times;</span></button>'
 				)
 				.join( '' );
 
 			bar.innerHTML =
-				'<div class="beplus-fast-product-filter-live-search__active-filters-inner">' +
+				'<div class="beplus-fast-product-filter-live-search-for-woocommerce__active-filters-inner">' +
 				chipsHtml +
-				'<button type="button" class="beplus-fast-product-filter-live-search__active-filters-clear" data-bpss-clear-all-filters>' +
+				'<button type="button" class="beplus-fast-product-filter-live-search-for-woocommerce__active-filters-clear" data-bpss-clear-all-filters>' +
 				escapeHtml( i18n.clearAllFilters || 'Clear all filters' ) +
 				'</button>' +
 				'</div>';
@@ -2074,7 +2074,7 @@
 			if ( ownGrid ) {
 				ownGrid.hidden = false;
 				ownGrid.innerHTML =
-					'<ul class="beplus-fast-product-filter-live-search__grid">' + html + '</ul>';
+					'<ul class="beplus-fast-product-filter-live-search-for-woocommerce__grid">' + html + '</ul>';
 			}
 			return;
 		}
@@ -2087,7 +2087,7 @@
 
 		if ( items.length === 0 ) {
 			list.innerHTML =
-				'<li class="beplus-fast-product-filter-live-search__empty">' +
+				'<li class="beplus-fast-product-filter-live-search-for-woocommerce__empty">' +
 				getData().i18n.noResults +
 				'</li>';
 		} else {
@@ -2273,7 +2273,7 @@
 	}
 
 	function setLoading( form: HTMLFormElement, loading: boolean ): void {
-		form.classList.toggle( 'beplus-fast-product-filter-live-search--loading', loading );
+		form.classList.toggle( 'beplus-fast-product-filter-live-search-for-woocommerce--loading', loading );
 	}
 
 	function inputHasFilterValue( el: HTMLInputElement | HTMLSelectElement ): boolean {
@@ -2433,10 +2433,10 @@
 
 	function toggleTermChildren( btn: HTMLElement ): void {
 		const item = btn.closest(
-			'.beplus-fast-product-filter-live-search__list-item--parent'
+			'.beplus-fast-product-filter-live-search-for-woocommerce__list-item--parent'
 		) as HTMLElement | null;
 		const children = item?.querySelector(
-			':scope > .beplus-fast-product-filter-live-search__list--children'
+			':scope > .beplus-fast-product-filter-live-search-for-woocommerce__list--children'
 		) as HTMLElement | null;
 		if ( ! item || ! children ) {
 			return;

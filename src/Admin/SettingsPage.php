@@ -27,7 +27,7 @@ class SettingsPage extends AbstractModule {
 	 *
 	 * @var string
 	 */
-	public const MENU_SLUG = 'beplus-fast-product-filter-live-search';
+	public const MENU_SLUG = 'beplus-fast-product-filter-live-search-for-woocommerce';
 
 	/**
 	 * Register hooks.
@@ -142,14 +142,14 @@ class SettingsPage extends AbstractModule {
 				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
 				'nonce'   => wp_create_nonce( 'bpss_clear_cache' ),
 				'i18n'    => array(
-					'clearing'       => __( 'Clearing cacheâ€¦', 'beplus-fast-product-filter-live-search-for-woocommerce' ),
+					'clearing'       => __( 'Clearing cache…', 'beplus-fast-product-filter-live-search-for-woocommerce' ),
 					'cleared'        => __( 'Cache cleared successfully.', 'beplus-fast-product-filter-live-search-for-woocommerce' ),
 					'clearError'     => __( 'Could not clear cache. Please try again.', 'beplus-fast-product-filter-live-search-for-woocommerce' ),
 					'lastCleared'    => __( 'Last cleared:', 'beplus-fast-product-filter-live-search-for-woocommerce' ),
 					'neverCleared'   => __( 'Cache has not been cleared manually yet.', 'beplus-fast-product-filter-live-search-for-woocommerce' ),
 					'on'             => __( 'On', 'beplus-fast-product-filter-live-search-for-woocommerce' ),
 					'off'            => __( 'Off', 'beplus-fast-product-filter-live-search-for-woocommerce' ),
-					'measuring'      => __( 'Measuringâ€¦', 'beplus-fast-product-filter-live-search-for-woocommerce' ),
+					'measuring'      => __( 'Measuring…', 'beplus-fast-product-filter-live-search-for-woocommerce' ),
 					'measureError'   => __( 'Could not measure performance. Please try again.', 'beplus-fast-product-filter-live-search-for-woocommerce' ),
 					'measureNow'     => __( 'Measure now', 'beplus-fast-product-filter-live-search-for-woocommerce' ),
 					'noBenchmark'    => __( 'No measurement yet. Run a quick test to compare facet load time with and without cache.', 'beplus-fast-product-filter-live-search-for-woocommerce' ),

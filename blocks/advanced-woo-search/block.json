@@ -1,7 +1,7 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
-	"name": "beplus-fast-product-filter-live-search/advanced-woo-search",
+	"name": "beplus-fast-product-filter-live-search-for-woocommerce/advanced-woo-search",
 	"version": "1.0.0",
 	"title": "Advanced Woo Search",
 	"category": "woocommerce",

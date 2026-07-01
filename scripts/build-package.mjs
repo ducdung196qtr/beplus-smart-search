@@ -26,7 +26,7 @@ const PLUGIN_SLUG = path.basename( ROOT );
  * Run `npm run build` before packaging so block/admin JS is up to date.
  */
 const INCLUDE_GLOBS = [
-	'beplus-fast-product-filter-live-search.php',
+	'beplus-fast-product-filter-live-search-for-woocommerce.php',
 	'readme.txt',
 	'src/**/*.php',
 	'includes/**/*.php',
@@ -48,7 +48,7 @@ const INCLUDE_GLOBS = [
 
 function readVersion() {
 	const bootstrap = fs.readFileSync(
-		path.join( ROOT, 'beplus-fast-product-filter-live-search.php' ),
+		path.join( ROOT, 'beplus-fast-product-filter-live-search-for-woocommerce.php' ),
 		'utf8',
 	);
 	const m = bootstrap.match(
@@ -56,7 +56,7 @@ function readVersion() {
 	);
 	if ( ! m ) {
 		console.error(
-			'Could not parse BEPLUS_FAST_PRODUCT_FILTER_LIVE_SEARCH_VERSION from beplus-fast-product-filter-live-search.php',
+			'Could not parse BEPLUS_FAST_PRODUCT_FILTER_LIVE_SEARCH_VERSION from beplus-fast-product-filter-live-search-for-woocommerce.php',
 		);
 		process.exit( 1 );
 	}

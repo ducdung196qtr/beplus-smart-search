@@ -313,7 +313,7 @@ function bpss_render_filter_mode_controls( string $option_key, string $mode_name
 
 		<div class="bpss-settings__panel<?php echo 'filters' === $tab ? ' is-active' : ''; ?>" data-tab-panel="filters">
 			<p class="bpss-settings__hint">
-				<?php esc_html_e( 'Configure how each filter behaves here. Turn individual filters on or off per block in the editor (Advanced Woo Search â†’ Filters panel).', 'beplus-fast-product-filter-live-search-for-woocommerce' ); ?>
+				<?php esc_html_e( 'Configure how each filter behaves here. Turn individual filters on or off per block in the editor (Advanced Woo Search → Filters panel).', 'beplus-fast-product-filter-live-search-for-woocommerce' ); ?>
 			</p>
 
 			<div class="bpss-settings__card">
@@ -340,7 +340,7 @@ function bpss_render_filter_mode_controls( string $option_key, string $mode_name
 			<div class="bpss-settings__card">
 				<div class="bpss-settings__card-header">
 					<h2 class="bpss-settings__card-title"><?php esc_html_e( 'Default filters', 'beplus-fast-product-filter-live-search-for-woocommerce' ); ?></h2>
-					<span class="bpss-settings__badge"><?php esc_html_e( 'Categories Â· Tags Â· Attributes Â· Brand', 'beplus-fast-product-filter-live-search-for-woocommerce' ); ?></span>
+					<span class="bpss-settings__badge"><?php esc_html_e( 'Categories · Tags · Attributes · Brand', 'beplus-fast-product-filter-live-search-for-woocommerce' ); ?></span>
 				</div>
 				<p class="description"><?php esc_html_e( 'Core WooCommerce filters shown on most shops. Configure selection mode and sub-item display for each.', 'beplus-fast-product-filter-live-search-for-woocommerce' ); ?></p>
 
@@ -387,7 +387,7 @@ function bpss_render_filter_mode_controls( string $option_key, string $mode_name
 							if ( taxonomy_exists( $brand_taxonomy ) ) {
 								esc_html_e( 'Uses the WooCommerce product brand taxonomy automatically.', 'beplus-fast-product-filter-live-search-for-woocommerce' );
 							} else {
-								esc_html_e( 'Brand taxonomy not found yet â€” install/enable WooCommerce Brands or create product_brand.', 'beplus-fast-product-filter-live-search-for-woocommerce' );
+								esc_html_e( 'Brand taxonomy not found yet — install/enable WooCommerce Brands or create product_brand.', 'beplus-fast-product-filter-live-search-for-woocommerce' );
 							}
 							?>
 						</p>
@@ -409,7 +409,7 @@ function bpss_render_filter_mode_controls( string $option_key, string $mode_name
 				<p class="description"><?php esc_html_e( 'Choose how customers select attribute values (single or multiple). Enable each attribute per block in the block editor.', 'beplus-fast-product-filter-live-search-for-woocommerce' ); ?></p>
 
 				<?php if ( empty( $attribute_definitions ) ) : ?>
-					<p class="bpss-settings__empty"><?php esc_html_e( 'No product attributes found. Create attributes under Products â†’ Attributes.', 'beplus-fast-product-filter-live-search-for-woocommerce' ); ?></p>
+					<p class="bpss-settings__empty"><?php esc_html_e( 'No product attributes found. Create attributes under Products → Attributes.', 'beplus-fast-product-filter-live-search-for-woocommerce' ); ?></p>
 				<?php else : ?>
 					<div class="bpss-settings__table-wrap">
 						<table class="widefat bpss-settings__data-table bpss-settings__attr-table">
@@ -474,7 +474,7 @@ function bpss_render_filter_mode_controls( string $option_key, string $mode_name
 						<input type="radio" name="<?php echo esc_attr( $option_key ); ?>[sidebar][price][display]" value="segments" <?php checked( $price_display, 'segments' ); ?> data-bpss-price-display="segments" />
 						<span class="bpss-settings__choice-text">
 							<strong><?php esc_html_e( 'Price segments', 'beplus-fast-product-filter-live-search-for-woocommerce' ); ?></strong>
-							<span><?php esc_html_e( 'Predefined ranges (e.g. $0â€“$50, $50â€“$100).', 'beplus-fast-product-filter-live-search-for-woocommerce' ); ?></span>
+							<span><?php esc_html_e( 'Predefined ranges (e.g. $0–$50, $50–$100).', 'beplus-fast-product-filter-live-search-for-woocommerce' ); ?></span>
 						</span>
 					</label>
 				</fieldset>
@@ -521,7 +521,7 @@ function bpss_render_filter_mode_controls( string $option_key, string $mode_name
 								<tr class="bpss-settings__segment-row">
 									<td><input type="text" class="regular-text" name="<?php echo esc_attr( $option_key ); ?>[sidebar][price][segments][<?php echo esc_attr( (string) $index ); ?>][label]" value="<?php echo esc_attr( (string) $seg_label ); ?>" placeholder="<?php esc_attr_e( 'Auto label', 'beplus-fast-product-filter-live-search-for-woocommerce' ); ?>" /></td>
 									<td><input type="number" class="small-text" name="<?php echo esc_attr( $option_key ); ?>[sidebar][price][segments][<?php echo esc_attr( (string) $index ); ?>][min]" value="<?php echo esc_attr( (string) $seg_min ); ?>" min="0" step="0.01" /></td>
-									<td><input type="number" class="small-text" name="<?php echo esc_attr( $option_key ); ?>[sidebar][price][segments][<?php echo esc_attr( (string) $index ); ?>][max]" value="<?php echo esc_attr( $seg_max > 0 ? (string) $seg_max : '' ); ?>" min="0" step="0.01" placeholder="âˆž" /></td>
+									<td><input type="number" class="small-text" name="<?php echo esc_attr( $option_key ); ?>[sidebar][price][segments][<?php echo esc_attr( (string) $index ); ?>][max]" value="<?php echo esc_attr( $seg_max > 0 ? (string) $seg_max : '' ); ?>" min="0" step="0.01" placeholder="∞" /></td>
 									<td><button type="button" class="button-link-delete bpss-remove-segment"><?php esc_html_e( 'Remove', 'beplus-fast-product-filter-live-search-for-woocommerce' ); ?></button></td>
 								</tr>
 							<?php endforeach; ?>
@@ -532,7 +532,7 @@ function bpss_render_filter_mode_controls( string $option_key, string $mode_name
 						<tr class="bpss-settings__segment-row">
 							<td><input type="text" class="regular-text" data-name="label" placeholder="<?php esc_attr_e( 'Auto label', 'beplus-fast-product-filter-live-search-for-woocommerce' ); ?>" /></td>
 							<td><input type="number" class="small-text" data-name="min" min="0" step="0.01" value="0" /></td>
-							<td><input type="number" class="small-text" data-name="max" min="0" step="0.01" placeholder="âˆž" /></td>
+							<td><input type="number" class="small-text" data-name="max" min="0" step="0.01" placeholder="∞" /></td>
 							<td><button type="button" class="button-link-delete bpss-remove-segment"><?php esc_html_e( 'Remove', 'beplus-fast-product-filter-live-search-for-woocommerce' ); ?></button></td>
 						</tr>
 					</template>
@@ -618,11 +618,11 @@ function bpss_render_filter_mode_controls( string $option_key, string $mode_name
 
 			<div class="bpss-settings__card">
 				<h2 class="bpss-settings__card-title"><?php esc_html_e( 'Additional filters', 'beplus-fast-product-filter-live-search-for-woocommerce' ); ?></h2>
-				<p class="description"><?php esc_html_e( 'Optional filters â€” enable each one in the block editor when needed.', 'beplus-fast-product-filter-live-search-for-woocommerce' ); ?></p>
+				<p class="description"><?php esc_html_e( 'Optional filters — enable each one in the block editor when needed.', 'beplus-fast-product-filter-live-search-for-woocommerce' ); ?></p>
 				<div class="bpss-filter-grid bpss-filter-grid--compact">
 					<div class="bpss-filter-row bpss-filter-row--info">
 						<h3><?php esc_html_e( 'Rating', 'beplus-fast-product-filter-live-search-for-woocommerce' ); ?></h3>
-						<p><?php esc_html_e( 'Minimum average rating (5â˜… to 1â˜… & up).', 'beplus-fast-product-filter-live-search-for-woocommerce' ); ?></p>
+						<p><?php esc_html_e( 'Minimum average rating (5★ to 1★ & up).', 'beplus-fast-product-filter-live-search-for-woocommerce' ); ?></p>
 					</div>
 					<div class="bpss-filter-row bpss-filter-row--info">
 						<h3><?php esc_html_e( 'On sale', 'beplus-fast-product-filter-live-search-for-woocommerce' ); ?></h3>

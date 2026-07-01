@@ -38,7 +38,7 @@ Drop either block into any shop template built with the Site Editor.
 
 == Installation ==
 
-1. Upload the plugin to `/wp-content/plugins/beplus-fast-product-filter-live-search/`
+1. Upload the plugin to `/wp-content/plugins/beplus-fast-product-filter-live-search-for-woocommerce/`
 2. Activate through the 'Plugins' menu in WordPress
 3. Requires WooCommerce to be active
 4. In Site Editor, edit the shop template and insert the **Advanced Woo Search** or **Live Search** block
